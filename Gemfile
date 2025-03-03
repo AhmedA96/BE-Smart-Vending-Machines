@@ -1,84 +1,67 @@
-# frozen_string_literal: true
-
 source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'rails', '~> 8.0.1'
-# The modern asset pipeline for Rails [https://github.com/rails/propshaft]
-gem 'propshaft'
-# Use sqlite3 as the database for Active Record
+ruby '3.4.1'
+
+# Core
+gem 'rails', '~> 8.0'
 gem 'pg', '~> 1.5'
-# Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '>= 5.0'
-# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem 'importmap-rails'
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem 'turbo-rails'
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'stimulus-rails'
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem 'jbuilder'
+gem 'puma', '>= 6.4.2'
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
-gem 'activemodel-serializers-xml'
-gem 'avo', '>= 3.11'
-gem 'chartkick'
+# Authentication & Authorization
 gem 'devise', '~> 4.9'
-gem 'devise-bootstrap5', '~> 0.1.3'
 gem 'doorkeeper', '~> 5.6'
+gem 'rolify'
+gem 'pundit'
+
+# Data Management
+gem 'acts_as_paranoid', github: 'ActsAsParanoid/acts_as_paranoid', branch: 'master'
+gem 'paper_trail'
+gem 'ransack'
+gem 'pg_search'
+
+# API & Communication
+gem 'jbuilder'
 gem 'rack-cors', '<= 2.0.2'
+gem 'phonelib'
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[windows jruby]
+# Background Jobs
+gem 'sidekiq', '~> 7.2'
+gem 'redis'
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem 'solid_cable'
-gem 'solid_cache'
-gem 'solid_queue'
+# File Storage
+gem 'aws-sdk-s3'
+gem 'image_processing', '~> 1.2'
 
-# Reduces boot times through caching; required in config/boot.rb
+# Utilities
+gem 'dotenv-rails'
+gem 'rails-i18n'
 gem 'bootsnap', require: false
 
-# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem 'kamal', require: false
+# Password Security
+gem 'pbkdf2'
+gem 'pbkdf2-ruby'
 
-# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
-gem 'thruster', require: false
-
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rubocop'
+  gem 'rubocop-rails'
+  gem 'debug'
+  gem 'brakeman'
+  gem 'bundle-audit'
+end
 
 group :development do
-  gem 'actual_db_schema'
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'memory_profiler'
-  gem 'pg_query'
-  gem 'rack-mini-profiler'
-  gem 'web-console'
-end
-
-group :development, :test do
-  gem 'brakeman', require: false
-  gem 'bundle-audit'
-  gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
-  gem 'factory_bot_rails'
-  gem 'faker'
-  gem 'rspec-rails'
-  gem 'rubocop'
-  gem 'rubocop-minitest'
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'letter_opener_web'
 end
 
 group :test do
-  gem 'capybara'
   gem 'database_cleaner-active_record'
-  gem 'pundit-matchers'
-  gem 'rails-controller-testing'
-  gem 'selenium-webdriver'
+  gem 'shoulda-matchers'
+  gem 'simplecov'
 end
