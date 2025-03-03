@@ -1,0 +1,87 @@
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+Rails/AddColumnIndex:
+  Enabled: true
+Rails/AfterCommitOverride:
+  Enabled: true
+Rails/AttributeDefaultBlockValue:
+  Enabled: true
+Rails/DefaultScope:
+  Enabled: false
+Rails/EagerEvaluationLogMessage:
+  Enabled: true
+Rails/ExpandedDateRange:
+  Enabled: true
+Rails/FindById:
+  Enabled: true
+Rails/I18nLocaleAssignment:
+  Enabled: true
+Rails/Inquiry:
+  Enabled: true
+Rails/MailerName:
+  Enabled: true
+Rails/MatchRoute:
+  Enabled: true
+Rails/NegateInclude:
+  Enabled: true
+Rails/OrderById:
+  Enabled: true
+Rails/Pluck:
+  Enabled: true
+Rails/PluckId:
+  Enabled: true
+  AutoCorrect: true
+Rails/PluckInWhere:
+  Enabled: true
+Rails/RenderInline:
+  Enabled: true
+Rails/RenderPlainText:
+  Enabled: true
+Rails/SaveBang:
+  Enabled: false
+  AllowImplicitReturn: false
+  AutoCorrect: true
+Rails/ShortI18n:
+  Enabled: true
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+Rails/TimeZoneAssignment:
+  Enabled: true
+Rails/UnusedIgnoredColumns:
+  Enabled: true
+Rails/WhereEquals:
+  Enabled: true
+Rails/WhereExists:
+  Enabled: true
+Rails/WhereNot:
+  Enabled: true
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+Rails/RedundantForeignKey:
+  Enabled: true
+Rails/FilePath:
+  Enabled: true
+Rails/SkipsModelValidations:
+  Enabled: true
+Rails/RakeEnvironment:
+  Enabled: true
+Rails/BelongsTo:
+  Enabled: true
+Rails/UniqueValidationWithoutIndex:
+  Enabled: true
+Rails/InverseOf:
+  Enabled: true
+Rails/ApplicationController:
+  Enabled: true
+Rails/ContentTag:
+  Enabled: true
+Rails/Delegate:
+  Enabled: true
+Rails/BulkChangeTable:
+  Enabled: false
+Rails/LexicallyScopedActionFilter:
+  Enabled: false
+Rails/HasAndBelongsToMany:
+  Enabled: false
+Rails/ThreeStateBooleanColumn:
+  Enabled: false
