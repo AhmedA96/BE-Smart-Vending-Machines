@@ -56,6 +56,8 @@ en:
   errors:
     messages:
       already_confirmed: "was already confirmed, please try signing in"
+      password_must_be_different: "must be different from your current password" 
+      password_complexity: "length should be at least 8 digits and include at least: 1 uppercase, 1 lowercase letter"
       confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
       expired: "has expired, please request a new one"
       not_found: "not found"
