@@ -12,10 +12,10 @@ class User < ApplicationRecord
                             uniqueness: true
 
   validates :gender, inclusion: { in: %w[male female] }, allow_nil: true
-  validates :nationality, inclusion: { in: WORLD_COUNTRITES }, allow_nil: true
+  validates :nationality, inclusion: { in: WORLD_COUNTRIES }, allow_nil: true
 
-  validates :password_complexity
-  validates :new_and_old_password_must_be_different
+  validate :password_complexity
+  validate :new_and_old_password_must_be_different
 
   def password_complexity
     return if password.blank? || password.match? =~ /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,70}$/
