@@ -76,6 +76,7 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[8.0]
 
     add_index :oauth_access_tokens, :token, unique: true
 
+    # rubocop:disable  Rails/ReversibleMigration
     # See https://github.com/doorkeeper-gem/doorkeeper/issues/1592
     if ActiveRecord::Base.connection.adapter_name == 'SQLServer'
       execute <<~SQL.squish
@@ -85,6 +86,8 @@ class CreateDoorkeeperTables < ActiveRecord::Migration[8.0]
     else
       add_index :oauth_access_tokens, :refresh_token, unique: true
     end
+
+    # rubocop:enable Rails/ReversibleMigration
 
     add_foreign_key(
       :oauth_access_tokens,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddAuthenticationFieldsToUsers < ActiveRecord::Migration[8.0]
   def change
     add_column :users, :sign_in_count, :integer, default: 0, null: false
