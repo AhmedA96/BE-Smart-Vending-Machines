@@ -9,25 +9,25 @@ default: &default
 
 development:
   <<: *default
-  database: backend_development
+  database: vndgme_development
 
 test:
   <<: *default
-  database: backend_test
+  database: vndgme_test
 
 production:
   primary:
     <<: *default
-    database: backend_production
+    database: vndgme_production
   cache:
     <<: *default
-    database: backend_production_cache
+    database: vndgme_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: backend_production_queue
+    database: vndgme_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: backend_production_cable
+    database: vndgme_production_cable
     migrations_paths: db/cable_migrate
