@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_10_003949) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_11_180039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,9 +78,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_003949) do
     t.date "date_of_birth"
     t.string "gender"
     t.string "nationality"
-    t.string "locale"
+    t.string "locale", default: "en"
     t.string "mobile_number"
-    t.boolean "verified"
+    t.boolean "verified", default: false, null: false
     t.datetime "last_active_at"
     t.datetime "deleted_at"
     t.string "membership_number"
@@ -103,8 +103,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_003949) do
     t.string "provider"
     t.string "hashed_password"
     t.bigint "profile_id"
+    t.integer "client_id"
+    t.bigint "client_country_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locale"], name: "index_users_on_locale"
+    t.index ["mobile_number", "client_id"], name: "index_users_on_mobile_number_and_client_id", unique: true
     t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
