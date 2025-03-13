@@ -18,7 +18,12 @@ module Avo
         field :location_name, as: :text
         field :latitude, as: :number
         field :longitude, as: :number
-        field :status, as: :text
+        field :status, as: :select, options: {
+          active: 'active',
+          maintenance: 'maintenance',
+          inactive: 'inactive',
+          retired: 'retired'
+        }
         field :installed_at, as: :date_time
         field :last_service_date, as: :date_time
       end

@@ -12,7 +12,12 @@ module Avo
       def fields
         field :id, as: :id
         field :vending_machine, as: :belongs_to
-        field :status, as: :text
+        field :status, as: :select, options: {
+          active: 'active',
+          maintenance: 'maintenance',
+          inactive: 'inactive',
+          retired: 'retired'
+        }
         field :changed_at, as: :date_time
         field :notes, as: :textarea
       end
