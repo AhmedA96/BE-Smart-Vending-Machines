@@ -4,6 +4,8 @@ module Api
   module V1
     module Base
       class SessionsController < Devise::SessionsController
+        include ErrorHandling
+
         respond_to :json
         skip_before_action :verify_authenticity_token
         skip_before_action :verify_signed_out_user, only: :destroy
@@ -35,11 +37,6 @@ module Api
         end
 
         private
-
-        def render_error(errors, status)
-          @errors = errors.is_a?(String) ? [errors] : errors.full_messages
-          render 'api/v1/shared/error', formats: :json, status:
-        end
 
         def find_resource
           resource_class.find_by(email: params[:email])

@@ -17,8 +17,8 @@ module Api
         private
 
         def user_params
-          params.expect(:name, :email, :password, :mobile_number, :date_of_birth, :gender,
-                        :sms_notification, :email_notification)
+          params.expect(user: %i[name email password mobile_number date_of_birth
+                                 sms_notification email_notification])
         end
       end
     end
