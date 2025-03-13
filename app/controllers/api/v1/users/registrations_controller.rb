@@ -10,7 +10,6 @@ module Api
 
         def create
           build_resource(user_params)
-          resource.client_id = user_params[:client_id]
 
           resource.save ? render('create', status: :created) : render_error(resource.errors, :unprocessable_entity)
         end
@@ -18,8 +17,8 @@ module Api
         private
 
         def user_params
-          params.permit(:name, :email, :password, :mobile_number, :client_id, :date_of_birth, :gender,
-                        :sms_notification, :email_notification, :client_country_id, :referred_code)
+          params.expect(:name, :email, :password, :mobile_number, :date_of_birth, :gender,
+                        :sms_notification, :email_notification)
         end
       end
     end

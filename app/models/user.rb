@@ -1,5 +1,51 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :bigint           not null, primary key
+#  avatar                 :string
+#  confirmation_sent_at   :datetime
+#  confirmation_token     :string
+#  confirmed_at           :datetime
+#  current_sign_in_at     :datetime
+#  current_sign_in_ip     :string
+#  date_of_birth          :date
+#  deleted_at             :datetime
+#  email                  :string           default(""), not null
+#  email_notification     :boolean          default(TRUE), not null
+#  encrypted_password     :string           default(""), not null
+#  failed_attempts        :integer          default(0), not null
+#  hashed_password        :string
+#  last_active_at         :datetime
+#  last_sign_in_at        :datetime
+#  last_sign_in_ip        :string
+#  locale                 :string           default("en")
+#  locked_at              :datetime
+#  mobile_number          :string
+#  name                   :string
+#  provider               :string
+#  remember_created_at    :datetime
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string
+#  sign_in_count          :integer          default(0), not null
+#  sms_notification       :boolean          default(TRUE), not null
+#  uid                    :string
+#  unconfirmed_email      :string
+#  unlock_token           :string
+#  verified               :boolean          default(FALSE), not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  profile_id             :bigint
+#
+# Indexes
+#
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_locale                (locale)
+#  index_users_on_mobile_number         (mobile_number) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
 class User < ApplicationRecord
   rolify
   # Include default devise modules. Others available are:
@@ -10,9 +56,6 @@ class User < ApplicationRecord
 
   validates :mobile_number, phone: { possible: true, allow_blank: false }, presence: true,
                             uniqueness: true
-
-  validates :gender, inclusion: { in: %w[male female] }, allow_nil: true
-  validates :nationality, inclusion: { in: WORLD_COUNTRIES }, allow_nil: true
 
   validate :password_complexity
   validate :new_and_old_password_must_be_different
