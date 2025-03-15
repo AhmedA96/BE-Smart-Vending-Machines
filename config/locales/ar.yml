@@ -1,0 +1,76 @@
+ar:
+
+  avo:
+    resource_translations:
+      machine_category:
+        name: "فئة الماكينة"
+        plural: "فئات الماكينات"
+        fields:
+          name: "الاسم"
+          description: "الوصف"
+
+      machine_status:
+        name: "حالة الماكينة"
+        plural: "حالات الماكينات"
+        fields:
+          vending_machine: "ماكينة البيع"
+          status: "الحالة"
+          changed_at: "تاريخ التغيير"
+          notes: "ملاحظات"
+
+      role:
+        name: "الدور"
+        plural: "الأدوار"
+        fields:
+          name: "الاسم"
+          resource_type: "نوع المورد"
+          resource_id: "معرف المورد"
+
+      user:
+        name: "المستخدم"
+        plural: "المستخدمين"
+        fields:
+          email: "البريد الإلكتروني"
+          name: "الاسم"
+          avatar: "الصورة الشخصية"
+          date_of_birth: "تاريخ الميلاد"
+          locale: "اللغة"
+          mobile_number: "رقم الجوال"
+          verified: "موثق"
+          last_active_at: "آخر نشاط"
+          deleted_at: "تاريخ الحذف"
+          sign_in_count: "عدد مرات الدخول"
+          current_sign_in_at: "وقت الدخول الحالي"
+          last_sign_in_at: "وقت آخر دخول"
+          current_sign_in_ip: "عنوان IP الحالي"
+          last_sign_in_ip: "آخر عنوان IP"
+          confirmed_at: "تاريخ التأكيد"
+          email_notification: "إشعارات البريد"
+          sms_notification: "إشعارات الرسائل"
+          provider: "مزود الخدمة"
+          profile: "الملف الشخصي"
+
+      vending_machine:
+        name: "ماكينة البيع"
+        plural: "ماكينات البيع"
+        fields:
+          manufacturer_id: "معرف المصنع"
+          name: "الاسم"
+          category: "الفئة"
+          vendor: "المورد"
+          location_name: "اسم الموقع"
+          latitude: "خط العرض"
+          longitude: "خط الطول"
+          status: "الحالة"
+          installed_at: "تاريخ التركيب"
+          last_service_date: "تاريخ آخر صيانة"
+
+      vendor:
+        name: "المورد"
+        plural: "الموردين"
+        fields:
+          name: "الاسم"
+          contact_person: "الشخص المسؤول"
+          phone_number: "رقم الهاتف"
+          email: "البريد الإلكتروني"
+          address: "العنوان"
