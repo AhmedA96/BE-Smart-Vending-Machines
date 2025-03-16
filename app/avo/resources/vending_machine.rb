@@ -3,11 +3,12 @@
 module Avo
   module Resources
     class VendingMachine < Avo::BaseResource
-      # self.includes = []
-      # self.attachments = []
-      # self.search = {
-      #   query: -> { query.ransack(id_eq: params[:q], m: "or").result(distinct: false) }
-      # }
+      STATUSES = {
+        active: 'active',
+        maintenance: 'maintenance',
+        inactive: 'inactive',
+        retired: 'retired'
+      }.freeze
 
       def fields
         field :id, as: :id
@@ -18,12 +19,7 @@ module Avo
         field :location_name, as: :text
         field :latitude, as: :number
         field :longitude, as: :number
-        field :status, as: :select, options: {
-          active: 'active',
-          maintenance: 'maintenance',
-          inactive: 'inactive',
-          retired: 'retired'
-        }
+        field :status, as: :select, options: STATUSES
         field :installed_at, as: :date_time
         field :last_service_date, as: :date_time
       end
