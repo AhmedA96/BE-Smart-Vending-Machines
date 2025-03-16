@@ -109,7 +109,7 @@ gem 'google-apis-drive_v3', '~> 0.54'
 # Development Tools
 group :development do
   gem "actual_db_schema"
-  gem 'annotate'
+  gem 'annotaterb'
   gem 'better_errors'
   gem "binding_of_caller"
   gem 'memory_profiler'
