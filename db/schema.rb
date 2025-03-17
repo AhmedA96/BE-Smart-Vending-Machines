@@ -14,6 +14,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_150400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "machine_categories", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "machine_statuses", force: :cascade do |t|
+    t.bigint "vending_machine_id", null: false
+    t.string "status"
+    t.datetime "changed_at"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["vending_machine_id"], name: "index_machine_statuses_on_vending_machine_id"
+  end
+
   create_table "oauth_access_grants", force: :cascade do |t|
     t.bigint "resource_owner_id", null: false
     t.bigint "application_id", null: false
@@ -114,6 +131,37 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_150400) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "vending_machines", force: :cascade do |t|
+    t.string "manufacturer_id"
+    t.string "name"
+    t.bigint "category_id", null: false
+    t.bigint "vendor_id", null: false
+    t.string "location_name"
+    t.decimal "latitude"
+    t.decimal "longitude"
+    t.string "status"
+    t.datetime "installed_at"
+    t.datetime "last_service_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_vending_machines_on_category_id"
+    t.index ["manufacturer_id"], name: "index_vending_machines_on_manufacturer_id", unique: true
+    t.index ["vendor_id"], name: "index_vending_machines_on_vendor_id"
+  end
+
+  create_table "vendors", force: :cascade do |t|
+    t.string "name"
+    t.string "contact_person"
+    t.string "phone_number"
+    t.string "email"
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "vending_machines", "machine_categories", column: "category_id"
+  add_foreign_key "vending_machines", "vendors"
 end
