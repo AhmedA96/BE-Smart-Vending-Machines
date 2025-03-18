@@ -41,12 +41,16 @@ class VendingMachine < ApplicationRecord
   scope :active, -> { where(status: 'active') }
 
   def self.nearby(latitude:, longitude:, radius_in_meters: 5000)
-    point = Arel.sql("ST_SetSRID(ST_MakePoint(#{longitude}, #{latitude}), 4326)")
+    point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
+    distance_sql = "ST_Distance(location, #{point_sql})"
+    within_sql = "ST_DWithin(location, #{point_sql}, :radius)"
+
+    binds = { latitude: latitude, longitude: longitude, radius: radius_in_meters }
 
     active
-      .where('ST_DWithin(location, ?, ?)', point, radius_in_meters)
-      .select(Arel.sql("*, ST_Distance(location, #{point}) as distance"))
-      .order(Arel.sql('distance ASC'))
+      .where(ActiveRecord::Base.sanitize_sql_array([within_sql, binds]))
+      .select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
+      .order('distance ASC')
   end
 
   def as_nearby_json
