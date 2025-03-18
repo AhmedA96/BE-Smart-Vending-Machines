@@ -24,4 +24,12 @@ class MachineStatus < ApplicationRecord
   belongs_to :vending_machine
 
   validates :status, inclusion: { in: %w[active inactive maintenance retired] }
+
+  after_create :update_vending_machine_status
+
+  private
+
+  def update_vending_machine_status
+    vending_machine.update(status: status)
+  end
 end
