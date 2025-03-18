@@ -37,4 +37,26 @@ class VendingMachine < ApplicationRecord
 
   validates :manufacturer_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[active inactive maintenance retired] }, allow_nil: true
+
+  scope :active, -> { where(status: 'active') }
+
+  def self.nearby(latitude:, longitude:, radius_in_meters: 5000)
+    point = Arel.sql("ST_SetSRID(ST_MakePoint(#{longitude}, #{latitude}), 4326)")
+
+    active
+      .where('ST_DWithin(location, ?, ?)', point, radius_in_meters)
+      .select(Arel.sql("*, ST_Distance(location, #{point}) as distance"))
+      .order(Arel.sql('distance ASC'))
+  end
+
+  def as_nearby_json
+    {
+      id: id,
+      name: name,
+      location_name: location_name,
+      distance: distance.round(2),
+      status: status,
+      category: category.name
+    }
+  end
 end

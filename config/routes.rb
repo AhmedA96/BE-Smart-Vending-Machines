@@ -18,6 +18,12 @@ Rails.application.routes.draw do
                              registrations: 'api/v1/users/registrations'
                            }
       end
+
+      resources :vending_machines, only: [] do
+        collection do
+          get :nearby
+        end
+      end
     end
   end
 end
