@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_13_150400) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_18_012052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "postgis"
 
   create_table "machine_categories", force: :cascade do |t|
     t.string "name"
@@ -137,14 +138,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_150400) do
     t.bigint "category_id", null: false
     t.bigint "vendor_id", null: false
     t.string "location_name"
-    t.decimal "latitude"
-    t.decimal "longitude"
     t.string "status"
     t.datetime "installed_at"
     t.datetime "last_service_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.datetime "location_updated_at"
     t.index ["category_id"], name: "index_vending_machines_on_category_id"
+    t.index ["location"], name: "index_vending_machines_on_location", using: :gist
     t.index ["manufacturer_id"], name: "index_vending_machines_on_manufacturer_id", unique: true
     t.index ["vendor_id"], name: "index_vending_machines_on_vendor_id"
   end
