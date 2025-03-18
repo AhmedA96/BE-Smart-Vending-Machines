@@ -9,13 +9,13 @@
 :position_in_test: before
 :classified_sort: true
 :exclude_controllers: true
-:exclude_factories: false
-:exclude_fixtures: false
+:exclude_factories: true # Exclude factories from annotation
+:exclude_fixtures: true # Exclude fixtures from annotation
 :exclude_helpers: true
 :exclude_scaffolds: true
-:exclude_serializers: false
+:exclude_serializers: true # Exclude serializers from annotation
 :exclude_sti_subclasses: false
-:exclude_tests: false
+:exclude_tests: true # Exclude tests from annotation
 :force: false
 :format_markdown: false
 :format_rdoc: false
@@ -44,7 +44,7 @@
 :ignore_routes:
 :models: true
 :routes: false
-:skip_on_db_migrate: false
+:skip_on_db_migrate: true # Skip annotation on db:migrate
 :target_action: :do_annotations
 :wrapper:
 :wrapper_close:

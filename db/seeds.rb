@@ -55,8 +55,7 @@ vending_machines = [
     category: machine_categories[0],
     vendor: vendor_records[1],
     location_name: 'Downtown Mall',
-    latitude: 30.0444,
-    longitude: 31.2357,
+    location: 'POINT(31.2357 30.0444)',
     status: 'active',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago
@@ -67,11 +66,32 @@ vending_machines = [
     category: machine_categories[1],
     vendor: vendor_records[0],
     location_name: 'Tech Park',
-    latitude: 30.0333,
-    longitude: 31.2333,
+    location: 'POINT(31.2333 30.0333)',
     status: 'maintenance',
     installed_at: 1.year.ago,
     last_service_date: 2.months.ago
+  },
+  {
+    manufacturer_id: 'ELEC-201',
+    name: 'Electronics Vendor Gamma',
+    category: machine_categories[2],
+    vendor: vendor_records[0],
+    location_name: 'Shopping Center',
+    location: 'POINT(31.2400 30.0500)',
+    status: 'active',
+    installed_at: 3.months.ago,
+    last_service_date: 1.week.ago
+  },
+  {
+    manufacturer_id: 'SNACK-002',
+    name: 'Snack Machine Delta',
+    category: machine_categories[0],
+    vendor: vendor_records[1],
+    location_name: 'University Campus',
+    location: 'POINT(31.2800 30.0600)',
+    status: 'inactive',
+    installed_at: 8.months.ago,
+    last_service_date: 3.months.ago
   }
 ]
 
