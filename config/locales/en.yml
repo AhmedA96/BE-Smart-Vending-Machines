@@ -28,4 +28,45 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  avo:
+    resource_translations:
+      machine_category:
+        name: Machine Category
+        plural: Machine Categories
+        fields:
+          name: Name
+          description: Description
+
+      machine_status:
+        name: Machine Status
+        plural: Machine Statuses
+        fields:
+          vending_machine: Vending Machine
+          status: Status
+          changed_at: Changed At
+          notes: Notes
+
+      vending_machine:
+        name: Vending Machine
+        plural: Vending Machines
+        fields:
+          manufacturer_id: Manufacturer ID
+          name: Name
+          category: Category
+          vendor: Vendor
+          location_name: Location Name
+          latitude: Latitude
+          longitude: Longitude
+          status: Status
+          installed_at: Installation Date
+          last_service_date: Last Service Date
+
+      vendor:
+        name: Vendor
+        plural: Vendors
+        fields:
+          name: Name
+          contact_person: Contact Person
+          phone_number: Phone Number
+          email: Email
+          address: Address
