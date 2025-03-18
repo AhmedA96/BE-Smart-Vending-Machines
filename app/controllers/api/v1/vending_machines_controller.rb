@@ -7,7 +7,7 @@ module Api
         @vending_machines = VendingMachine.nearby(
           latitude: params[:latitude],
           longitude: params[:longitude]
-        )
+        ).page(params[:page] || 1).per(params[:per_page] || 5)
       end
     end
   end

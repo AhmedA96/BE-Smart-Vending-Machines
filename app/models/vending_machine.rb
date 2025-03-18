@@ -52,15 +52,4 @@ class VendingMachine < ApplicationRecord
       .select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
       .order('distance ASC')
   end
-
-  def as_nearby_json
-    {
-      id: id,
-      name: name,
-      location_name: location_name,
-      distance: distance.round(2),
-      status: status,
-      category: category.name
-    }
-  end
 end
