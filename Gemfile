@@ -43,7 +43,7 @@ gem 'mini_magick'
 
 # Background Processing
 gem 'sidekiq', '~> 8.0'
-gem 'sidekiq-cron', '~> 2.0'
+gem 'sidekiq-cron', '~> 2.2'
 gem 'sidekiq-limit_fetch', '~> 4.4.1'
 
 # Caching & Performance
