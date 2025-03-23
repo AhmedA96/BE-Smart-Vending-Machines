@@ -1,52 +1,68 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe 'User Registration', type: :request do
-  let(:existing_user) { create(:user, email: 'user@example.com') }
-  let(:valid_attributes) do
-    {
-      email: 'user@example.com',
-      password: 'Password@!123',
-      mobile_number: '+201234567890'
-    }
-  end
+  path '/api/v1/users/signup' do
+    post 'Register a new user' do
+      tags 'Users'
+      consumes 'application/json'
+      produces 'application/json'
 
-  let(:invalid_attributes) do
-    {
-      email: '',
-      password: 'short'
-    }
-  end
-
-  describe 'POST /api/v1/users/signup' do
-    context 'with valid parameters' do
-      it 'registers a new user and returns success' do
-        post '/api/v1/users/signup', params: { user: valid_attributes }
-
-        expect(response).to have_http_status(:created)
-        expect(User.last.email).to eq(valid_attributes[:email])
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          email: { type: :string, example: 'user@example.com' },
+          password: { type: :string, example: 'Password@!123' },
+          mobile_number: { type: :string, example: '+201234567890' }
+        },
+        required: %w[email password mobile_number]
+      }
+      let(:existing_user) { create(:user, email: 'user@example.com') }
+      let(:valid_attributes) do
+        {
+          email: 'user@example.com',
+          password: 'Password@!123',
+          mobile_number: '+201234567890'
+        }
       end
-    end
 
-    context 'with invalid parameters' do
-      it 'does not register a user and returns errors' do
-        post '/api/v1/users/signup', params: { user: invalid_attributes }
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include("can't be blank")
+      let(:invalid_attributes) do
+        {
+          email: '',
+          password: 'short'
+        }
       end
-    end
 
-    context 'with valid but taken email' do
-      before { existing_user }
+      describe 'POST /api/v1/users/signup' do
+        context 'with valid parameters' do
+          response '201', 'user created' do
+            let(:user) { { user: valid_attributes } }
+            run_test! do
+              expect(User.last.email).to eq(valid_attributes[:email])
+            end
+          end
+        end
 
-      it 'returns an error for duplicate email' do
-        post '/api/v1/users/signup', params: { user: valid_attributes }
+        context 'with invalid parameters' do
+          response '422', 'invalid request' do
+            let(:user) { { user: invalid_attributes } }
+            run_test! do
+              expect(response.body).to include("can't be blank")
+            end
+          end
+        end
 
-        expect(response).to have_http_status(:unprocessable_entity)
-        json_response = response.parsed_body
-        expect(json_response['errors'].first['email']).to include('has already been taken')
+        context 'with valid but taken email' do
+          response '422', 'email already taken' do
+            before { existing_user }
+            let(:user) { { user: valid_attributes } }
+            run_test! do
+              json_response = response.parsed_body
+              expect(json_response['errors'].first['email']).to include('has already been taken')
+            end
+          end
+        end
       end
     end
   end
