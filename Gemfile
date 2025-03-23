@@ -33,6 +33,8 @@ gem 'rolify'
 gem 'activemodel-serializers-xml'
 gem 'jbuilder'
 gem 'rack-cors', '<= 2.0.2'
+gem 'rswag-api'
+gem 'rswag-ui'
 
 # File Storage & Processing
 gem 'activestorage'
@@ -145,6 +147,7 @@ group :development, :test do
   gem 'overcommit', require: false
   gem 'parallel_tests'
   gem "rspec-rails"
+  gem 'rswag-specs'
   gem 'rubocop'
   gem 'rubocop-minitest'
   gem 'rubocop-performance'
