@@ -5,19 +5,41 @@ Doorkeeper.configure do
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms
   orm :active_record
 
-  # This block will be called to check whether the resource owner is authenticated or not.
-  resource_owner_authenticator do
-    current_user || warden.authenticate!(scope: :user)
+  resource_owner_from_credentials do |_routes|
+    ActiveRecord::Base.transaction do
+      I18n.locale = if request.params[:locale].present? &&
+                       I18n.available_locales.include?(request.params[:locale].to_sym)
+                      request.params[:locale]
+                    elsif request.headers['Accept-Language'].present? &&
+                          I18n.available_locales.include?(request.headers['Accept-Language'].to_sym)
+                      request.headers['Accept-Language']
+                    else
+                      I18n.default_locale
+                    end
+    end
+    authenticated_user = User.authenticate(params[:mobile_number], params[:password])
+    raise Doorkeeper::Errors::DoorkeeperError, I18n.t('doorkeeper.errors.invalid_credentials') unless authenticated_user
+
+    authenticated_user
   end
 
-  resource_owner_from_credentials do |_routes|
-    User.authenticate!(params[:email], params[:password])
-  end
+  # Configure access token expiration
+  access_token_expires_in nil
+
+  # Enable password grant flow only
+  grant_flows %w[password]
+
+  access_token_expires_in nil
+
+  # Skip client authentication for password grant
+  skip_client_authentication_for_password_grant true
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
   # file then you need to declare this block in order to restrict access to the web interface for
   # adding oauth authorized applications. In other case it will return 403 Forbidden response
   # every time somebody will try to access the admin web interface.
-  #
+
+  use_refresh_token
+
   # admin_authenticator do
   #   # Put your admin authentication logic here.
   #   # Example implementation:
@@ -95,8 +117,6 @@ Doorkeeper.configure do
   # It is RECOMMENDED to set expiration time explicitly.
   # Prefer access_token_expires_in 100.years or similar,
   # which would be functionally equivalent and avoid the risk of unexpected behavior by callers.
-  #
-  access_token_expires_in 3.months
 
   # Assign custom TTL for access tokens. Will be used instead of access_token_expires_in
   # option if defined. In case the block returns `nil` value Doorkeeper fallbacks to
@@ -229,8 +249,6 @@ Doorkeeper.configure do
   # `client` - the OAuth client application (see Doorkeeper::OAuth::Client)
   # `grant_type` - the grant type of the request (see Doorkeeper::OAuth)
   # `scopes` - the requested scopes (see Doorkeeper::OAuth::Scopes)
-  #
-  use_refresh_token
 
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default: false) if you want to enforce ownership of
@@ -268,7 +286,7 @@ Doorkeeper.configure do
   # Check out https://github.com/doorkeeper-gem/doorkeeper/wiki/Changing-how-clients-are-authenticated
   # for more information on customization
   #
-  client_credentials :from_basic, :from_params
+  # client_credentials :from_basic, :from_params
 
   # Change the way access token is authenticated from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -276,7 +294,7 @@ Doorkeeper.configure do
   # Check out https://github.com/doorkeeper-gem/doorkeeper/wiki/Changing-how-clients-are-authenticated
   # for more information on customization
   #
-  access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
+  # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
   # Forces the usage of the HTTPS protocol in non-native redirect uris (enabled
   # by default in non-development environments). OAuth2 delegates security in
@@ -325,7 +343,7 @@ Doorkeeper.configure do
   #   Doorkeeper::Errors::TokenForbidden, Doorkeeper::Errors::TokenExpired,
   #   Doorkeeper::Errors::TokenRevoked, Doorkeeper::Errors::TokenUnknown
   #
-  # handle_auth_errors :raise
+  handle_auth_errors :raise
   #
   # If you want to redirect back to the client application in accordance with
   # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1, you can set
@@ -366,8 +384,6 @@ Doorkeeper.configure do
   # before enabling:
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.2
   #   https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.3
-  #
-  grant_flows %w[authorization_code client_credentials password]
 
   # Allows to customize OAuth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must
