@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_012052) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -48,7 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012052) do
 
   create_table "oauth_access_tokens", force: :cascade do |t|
     t.bigint "resource_owner_id"
-    t.bigint "application_id", null: false
+    t.bigint "application_id"
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in"
@@ -163,7 +163,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012052) do
 
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"
   add_foreign_key "vending_machines", "vendors"
 end

@@ -70,3 +70,7 @@ en:
           phone_number: Phone Number
           email: Email
           address: Address
+          
+  doorkeeper:
+    errors:
+      invalid_credentials: "The entered credentials are incorrect. Please check your mobile number and password."
