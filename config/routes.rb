@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
+  get '/', to: redirect('/admin')
+  authenticate :user, ->(u) { u.super_admin? || u.admin? } do
+    mount Rswag::Ui::Engine => '/api-docs'
+    mount Rswag::Api::Engine => '/api-docs'
+  end
   authenticate :user do
     mount Avo::Engine, at: Avo.configuration.root_path
   end
