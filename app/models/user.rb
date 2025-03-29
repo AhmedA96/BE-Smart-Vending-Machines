@@ -60,6 +60,8 @@ class User < ApplicationRecord
   validate :password_complexity
   validate :new_and_old_password_must_be_different
 
+  has_many :users_roles, dependent: :destroy
+
   def password_complexity
     return if password.blank? || password.match?(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,70}$/)
 
@@ -75,5 +77,23 @@ class User < ApplicationRecord
   def self.authenticate(mobile_number, password)
     user = find_by(mobile_number:)
     user if user&.valid_password?(password)
+  end
+
+  def loaded_roles
+    @loaded_roles ||= roles.to_a
+  end
+
+  def role?(role_name)
+    loaded_roles.any? { |role| role.name == role_name.to_s }
+  end
+
+  ROLES.each do |role|
+    define_method :"#{role}?" do
+      instance_variable_set(:"@#{role}", load_role(role))
+    end
+  end
+
+  def load_role(role)
+    role?(role)
   end
 end
