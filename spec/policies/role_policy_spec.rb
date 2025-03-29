@@ -5,10 +5,6 @@ require 'rails_helper'
 RSpec.describe RolePolicy, type: :policy do
   subject { described_class }
 
-  let(:super_admin) { create(:user, :super_admin) }
-  let(:admin) { create(:user, :admin) }
-  let(:user) { create(:user) }
-
   permissions :index?, :show?, :update? do
     context 'when the user is a super admin' do
       it 'grants access' do
