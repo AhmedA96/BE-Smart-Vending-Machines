@@ -1,0 +1,159 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/users/signup":
+    post:
+      summary: Register a new user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: user created
+        '422':
+          description: email already taken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: Password@!123
+                mobile_number:
+                  type: string
+                  example: "+201234567890"
+              required:
+              - email
+              - password
+              - mobile_number
+  "/api/v1/users/login":
+    post:
+      summary: User login
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: login successful
+        '422':
+          description: non-existent user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: Password@!123
+              required:
+              - email
+              - password
+  "/oauth/token":
+    post:
+      summary: Generate or refresh access token
+      tags:
+      - OAuth
+      parameters: []
+      responses:
+        '200':
+          description: token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiJ9...
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+                    example: 7200
+                  refresh_token:
+                    type: string
+                    example: def50200...
+                  created_at:
+                    type: integer
+                    example: 1710893668
+        '400':
+          description: invalid credentials or refresh token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: invalid_grant
+                  error_description:
+                    type: string
+                    example: The provided authorization grant is invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum: [password, refresh_token]
+                  example: password
+                mobile_number:
+                  type: string
+                  example: "+201234567890"
+                password:
+                  type: string
+                  example: Password@!123
+                refresh_token:
+                  type: string
+                  example: def50200...
+              required:
+              - grant_type
+              oneOf:
+              - required: [mobile_number, password]
+                properties:
+                  grant_type:
+                    enum: [password]
+              - required: [refresh_token]
+                properties:
+                  grant_type:
+                    enum: [refresh_token]
+  "/oauth/revoke":
+    post:
+      summary: Revoke token
+      tags:
+      - OAuth
+      parameters: []
+      responses:
+        '200':
+          description: token revoked
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: valid_token
+              required:
+              - token
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
