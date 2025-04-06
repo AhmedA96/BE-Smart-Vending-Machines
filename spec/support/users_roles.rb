@@ -3,5 +3,4 @@
 shared_context 'users#roles' do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:super_admin) { create(:user, :super_admin) }
 end

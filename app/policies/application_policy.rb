@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-module RolseDelegation
+module RolesDelegation
   extend ActiveSupport::Concern
 
   included do
-    delegate :super_admin?, :admin?, to: :user, allow_nil: true
+    delegate :admin?, to: :user, allow_nil: true
   end
 end
 
 class ApplicationPolicy
-  include RolseDelegation
+  include RolesDelegation
   attr_reader :user, :record
 
   def initialize(user, record)
@@ -21,12 +21,12 @@ class ApplicationPolicy
 
   ACTIONS.each do |action|
     define_method(action) do
-      super_admin?
+      admin?
     end
   end
 
   class BaseScope
-    include RolseDelegation
+    include RolesDelegation
 
     attr_reader :user, :scope
 

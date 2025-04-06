@@ -6,12 +6,6 @@ RSpec.describe RolePolicy, type: :policy do
   subject { described_class }
 
   permissions :index?, :show?, :update? do
-    context 'when the user is a super admin' do
-      it 'grants access' do
-        expect(subject).to permit(super_admin)
-      end
-    end
-
     context 'when the user is an admin' do
       it 'grants access' do
         expect(subject).to permit(admin)

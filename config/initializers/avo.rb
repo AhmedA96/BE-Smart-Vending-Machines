@@ -24,8 +24,7 @@ Avo.configure do |config|
   ## == Authentication ==
   config.current_user_method = :current_user
   config.authenticate_with do
-    if current_user.super_admin? ||
-       current_user.admin?
+    if current_user.admin?
       current_user
     else
       sign_out

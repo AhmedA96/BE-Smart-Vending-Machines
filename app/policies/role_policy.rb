@@ -3,26 +3,20 @@
 class RolePolicy < ApplicationPolicy
   class Scope < BaseScope
     def resolve
-      if super_admin?
+      if admin?
         scope.all
-      elsif admin?
-        scope.where.not(name: 'super_admin')
+      else
+        scope.none
       end
     end
   end
 
-  def index? = admins?
-  def show? = admins?
-  def new? = admins?
-  def create? = admins?
-  def edit? = admins?
-  def update? = admins?
-  def destroy? = admins?
+  def index? = admin?
+  def show? = admin?
+  def new? = admin?
+  def create? = admin?
+  def edit? = admin?
+  def update? = admin?
+  def destroy? = admin?
   def search? = true
-
-  private
-
-  def admins?
-    user.super_admin? || user.admin?
-  end
 end

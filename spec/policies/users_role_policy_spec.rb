@@ -5,48 +5,16 @@ require 'rails_helper'
 RSpec.describe UsersRolePolicy, type: :policy do
   subject { described_class }
 
-  permissions :index?, :update? do
-    context 'when the user is a super admin' do
+  permissions :index?, :show?, :update?, :create?, :destroy? do
+    context 'when the user is admin' do
       it 'grants access' do
-        expect(subject).to permit(super_admin)
+        expect(subject).to permit(admin)
       end
     end
 
-    context 'when the user is an admin' do
-      it 'denies access' do
-        expect(subject).not_to permit(admin)
-      end
-    end
-
-    context 'when the user is not a super admin or admin' do
+    context 'when the user is not admin' do
       it 'denies access' do
         expect(subject).not_to permit(user)
-      end
-    end
-  end
-
-  permissions :show? do
-    context 'when the user is not a super admin' do
-      it 'grants access' do
-        expect(subject).to permit(super_admin)
-      end
-    end
-  end
-
-  permissions :create?, :destroy? do
-    context 'when the user is a super admin' do
-      it 'grants access' do
-        expect(subject).to permit(super_admin)
-      end
-    end
-
-    context 'when the user is not a super admin' do
-      it 'denies access' do
-        expect(subject).not_to permit(user)
-      end
-
-      it 'denies access' do
-        expect(subject).not_to permit(admin)
       end
     end
   end
