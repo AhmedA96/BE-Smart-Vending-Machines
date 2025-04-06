@@ -9,10 +9,12 @@ Avo.configure do |config|
   # config.prefix_path = "/internal"
 
   # Where should the user be redirected when visiting the `/avo` url
-  # config.home_path = nil
 
   ## == Licensing ==
   # config.license_key = ENV['AVO_LICENSE_KEY']
+  config.click_row_to_view_record = true
+  config.alert_dismiss_time = 5000 # 5 seconds
+  config.associations_lookup_list_limit = 500
 
   ## == Set the context ==
   config.set_context do
@@ -20,41 +22,49 @@ Avo.configure do |config|
   end
 
   ## == Authentication ==
-  # config.current_user_method = :current_user
-  # config.authenticate_with do
-  # end
+  config.current_user_method = :current_user
+  config.authenticate_with do
+    if current_user.admin?
+      current_user
+    else
+      sign_out
+      redirect_to '/'
+    end
+  end
 
   ## == Authorization ==
   # config.is_admin_method = :is_admin
   # config.is_developer_method = :is_developer
-  # config.authorization_methods = {
-  #   index: 'index?',
-  #   show: 'show?',
-  #   edit: 'edit?',
-  #   new: 'new?',
-  #   update: 'update?',
-  #   create: 'create?',
-  #   destroy: 'destroy?',
-  #   search: 'search?',
-  # }
+  config.authorization_methods = {
+    index: 'index?',
+    show: 'show?',
+    edit: 'edit?',
+    new: 'new?',
+    update: 'update?',
+    create: 'create?',
+    destroy: 'destroy?',
+    search: 'search?'
+  }
   # config.raise_error_on_missing_policy = false
-  config.authorization_client = nil
-  config.explicit_authorization = true
+  config.authorization_client = :pundit
+  # config.explicit_authorization = true
 
   ## == Localization ==
-  # config.locale = 'en-US'
+  config.locale = :en
 
   ## == Resource options ==
-  # config.resource_row_controls_config = {
-  #   placement: :right,
-  #   float: false,
-  #   show_on_hover: false
-  # }.freeze
+  config.resource_row_controls_config = {
+    placement: :right,
+    float: false,
+    show_on_hover: false
+  }
+
   # config.model_resource_mapping = {}
-  # config.default_view_type = :table
-  # config.per_page = 24
-  # config.per_page_steps = [12, 24, 48, 72]
-  # config.via_per_page = 8
+  #
+  config.default_view_type = :table
+  config.per_page = 24
+  config.per_page_steps = [12, 24, 48, 72]
+  config.via_per_page = 8
   # config.id_links_to_resource = false
   # config.pagination = -> do
   #   {
@@ -103,7 +113,7 @@ Avo.configure do |config|
 
   ## == Customization ==
   config.click_row_to_view_record = true
-  # config.app_name = 'Avocadelicious'
+  config.app_name = ''
   # config.timezone = 'UTC'
   # config.currency = 'USD'
   # config.hide_layout_when_printing = false
@@ -112,29 +122,34 @@ Avo.configure do |config|
   # config.search_debounce = 300
   # config.view_component_path = "app/components"
   # config.display_license_request_timeout_error = true
-  # config.disabled_features = []
-  # config.buttons_on_form_footers = true
+  config.disabled_features = [:global_search]
+  config.buttons_on_form_footers = true
   # config.field_wrapper_layout = true
   # config.resource_parent_controller = "Avo::ResourcesController"
   # config.first_sorting_option = :desc # :desc or :asc
   # config.exclude_from_status = []
 
   ## == Branding ==
-  # config.branding = {
-  #   colors: {
-  #     background: "248 246 242",
-  #     100 => "#CEE7F8",
-  #     400 => "#399EE5",
-  #     500 => "#0886DE",
-  #     600 => "#066BB2",
-  #   },
-  #   chart_colors: ["#0B8AE2", "#34C683", "#2AB1EE", "#34C6A8"],
-  #   logo: "/avo-assets/logo.png",
-  #   logomark: "/avo-assets/logomark.png",
-  #   placeholder: "/avo-assets/placeholder.svg",
-  #   favicon: "/avo-assets/favicon.ico"
-  # }
+  config.branding = {
+    colors: {
+      background: '248 246 242',
+      100 => '#CEE7F8',
+      400 => '#399EE5',
+      500 => '#0886DE',
+      600 => '#066BB2'
+    },
+    chart_colors: ['#0B8AE2', '#34C683', '#2AB1EE', '#34C6A8'],
+    logo: '/avo-assets/logo.png',
+    logomark: '/avo-assets/logomark.png',
+    placeholder: '/avo-assets/placeholder.svg',
+    favicon: '/avo-assets/favicon.ico'
+  }
 
+  config.turbo = lambda {
+    {
+      instant_click: true
+    }
+  }
   ## == Breadcrumbs ==
   # config.display_breadcrumbs = true
   # config.set_initial_breadcrumbs do
