@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_07_120613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -20,6 +20,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "machine_products", force: :cascade do |t|
+    t.bigint "vending_machine_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "stock", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_machine_products_on_product_id"
+    t.index ["vending_machine_id", "product_id"], name: "index_machine_products_on_vending_machine_id_and_product_id", unique: true
+    t.index ["vending_machine_id"], name: "index_machine_products_on_vending_machine_id"
   end
 
   create_table "machine_statuses", force: :cascade do |t|
@@ -72,6 +83,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "is_active", default: true
+    t.jsonb "images"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_active"], name: "index_products_on_is_active"
+    t.index ["name"], name: "index_products_on_name"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -161,6 +183,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "machine_products", "products"
+  add_foreign_key "machine_products", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"
