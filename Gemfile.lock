@@ -127,7 +127,7 @@ GEM
       activesupport (>= 6.0)
     autoprefixer-rails (10.4.19.0)
       execjs (~> 2)
-    avo (3.18.1)
+    avo (3.19.2)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
@@ -615,7 +615,7 @@ GEM
     redis-client (0.24.0)
       connection_pool
     regexp_parser (2.10.0)
-    reline (0.6.0)
+    reline (0.6.1)
       io-console (~> 0.5)
     representable (3.2.0)
       declarative (< 0.1.0)
