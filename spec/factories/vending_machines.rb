@@ -2,15 +2,15 @@
 
 FactoryBot.define do
   factory :vending_machine do
-    manufacturer_id { 'MyString' }
-    name { 'MyString' }
-    category { nil }
-    vendor { nil }
-    location_name { 'MyString' }
-    latitude { '9.99' }
-    longitude { '9.99' }
-    status { 'MyString' }
-    installed_at { '2025-03-13 02:53:52' }
-    last_service_date { '2025-03-13 02:53:52' }
+    sequence(:manufacturer_id) { |n| "MAN#{n.to_s.rjust(4, '0')}" }
+    sequence(:name) { |n| "Vending Machine #{n}" }
+    association :category, factory: :machine_category
+    association :vendor
+    location_name { 'Test Location' }
+    status { 'active' }
+    installed_at { Time.current }
+    last_service_date { Time.current }
+    location { 'POINT(1.234 5.678)' }
+    location_updated_at { Time.current }
   end
 end

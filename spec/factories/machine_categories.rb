@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :machine_category do
-    name { 'MyString' }
-    description { 'MyText' }
+    sequence(:name) { |n| "Category #{n}" }
+    description { 'Test category description' }
   end
 end

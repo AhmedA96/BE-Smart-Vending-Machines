@@ -2,10 +2,10 @@
 
 FactoryBot.define do
   factory :vendor do
-    name { 'MyString' }
-    contact_person { 'MyString' }
-    phone_number { 'MyString' }
-    email { 'MyString' }
-    address { 'MyText' }
+    sequence(:name) { |n| "Vendor #{n}" }
+    sequence(:contact_person) { |n| "Contact Person #{n}" }
+    sequence(:phone_number) { |n| "+1234567890#{n}" }
+    sequence(:email) { |n| "vendor#{n}@example.com" }
+    address { '123 Test Street, Test City' }
   end
 end
