@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_07_120613) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_07_131739) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -83,6 +83,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_120613) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "price_list_items", force: :cascade do |t|
+    t.bigint "price_list_id", null: false
+    t.bigint "product_id", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["price_list_id"], name: "index_price_list_items_on_price_list_id"
+    t.index ["product_id"], name: "index_price_list_items_on_product_id"
+  end
+
+  create_table "price_lists", force: :cascade do |t|
+    t.bigint "vending_machine_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["vending_machine_id"], name: "index_price_lists_on_vending_machine_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -187,6 +205,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_07_120613) do
   add_foreign_key "machine_products", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "price_list_items", "price_lists"
+  add_foreign_key "price_list_items", "products"
+  add_foreign_key "price_lists", "vending_machines"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"
   add_foreign_key "vending_machines", "vendors"
 end

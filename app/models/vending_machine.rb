@@ -33,7 +33,11 @@
 class VendingMachine < ApplicationRecord
   belongs_to :vendor
   belongs_to :category, class_name: 'MachineCategory'
+  belongs_to :price_list, optional: true
+
   has_many :machine_statuses
+  has_many :machine_products
+  has_many :products, through: :machine_products
 
   validates :manufacturer_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[active inactive maintenance retired] }, allow_nil: true
