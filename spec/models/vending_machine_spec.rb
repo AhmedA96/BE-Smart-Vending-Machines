@@ -3,5 +3,73 @@
 require 'rails_helper'
 
 RSpec.describe VendingMachine, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { should belong_to(:vendor) }
+    it { should belong_to(:category).class_name('MachineCategory') }
+    it { should have_many(:machine_statuses) }
+  end
+
+  describe 'validations' do
+    subject { build(:vending_machine) }
+
+    it { should validate_presence_of(:manufacturer_id) }
+    it { should validate_uniqueness_of(:manufacturer_id) }
+
+    it 'validates status inclusion' do
+      should validate_inclusion_of(:status)
+        .in_array(%w[active inactive maintenance retired])
+        .allow_nil
+    end
+  end
+
+  describe 'scopes' do
+    let!(:active_machine) { create(:vending_machine, status: 'active') }
+    let!(:inactive_machine) { create(:vending_machine, status: 'inactive') }
+
+    describe '.active' do
+      it 'returns only active machines' do
+        expect(described_class.active).to include(active_machine)
+        expect(described_class.active).not_to include(inactive_machine)
+      end
+    end
+  end
+
+  describe '.nearby' do
+    let!(:close_machine) do
+      create(:vending_machine,
+             status: 'active',
+             location: 'POINT(100.5 13.7)')
+    end
+
+    let!(:far_machine) do
+      create(:vending_machine,
+             status: 'active',
+             location: 'POINT(104.5 15.7)')
+    end
+
+    it 'returns machines within specified radius' do
+      result = described_class.nearby(
+        latitude: 13.7,
+        longitude: 100.5,
+        radius_in_meters: 1000
+      )
+
+      expect(result).to include(close_machine)
+      expect(result).not_to include(far_machine)
+    end
+
+    it 'orders results by distance' do
+      create(:vending_machine,
+             status: 'active',
+             location: 'POINT(100.51 13.71)')
+
+      results = described_class.nearby(
+        latitude: 13.7,
+        longitude: 100.5,
+        radius_in_meters: 5000
+      )
+
+      expect(results.first).to eq(close_machine)
+    end
+  end
 end

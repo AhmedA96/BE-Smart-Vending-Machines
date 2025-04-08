@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_08_100446) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -20,6 +20,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "machine_products", force: :cascade do |t|
+    t.bigint "vending_machine_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "stock", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_machine_products_on_product_id"
+    t.index ["vending_machine_id", "product_id"], name: "index_machine_products_on_vending_machine_id_and_product_id", unique: true
+    t.index ["vending_machine_id"], name: "index_machine_products_on_vending_machine_id"
   end
 
   create_table "machine_statuses", force: :cascade do |t|
@@ -72,6 +83,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "price_list_items", force: :cascade do |t|
+    t.bigint "price_list_id", null: false
+    t.bigint "product_id", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["price_list_id"], name: "index_price_list_items_on_price_list_id"
+    t.index ["product_id"], name: "index_price_list_items_on_product_id"
+  end
+
+  create_table "price_lists", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "is_active", default: true
+    t.jsonb "images"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_active"], name: "index_products_on_is_active"
+    t.index ["name"], name: "index_products_on_name"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -145,9 +183,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.datetime "updated_at", null: false
     t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "location_updated_at"
+    t.bigint "price_list_id"
     t.index ["category_id"], name: "index_vending_machines_on_category_id"
     t.index ["location"], name: "index_vending_machines_on_location", using: :gist
     t.index ["manufacturer_id"], name: "index_vending_machines_on_manufacturer_id", unique: true
+    t.index ["price_list_id"], name: "index_vending_machines_on_price_list_id"
     t.index ["vendor_id"], name: "index_vending_machines_on_vendor_id"
   end
 
@@ -161,8 +201,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012053) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "machine_products", "products"
+  add_foreign_key "machine_products", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "price_list_items", "price_lists"
+  add_foreign_key "price_list_items", "products"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"
+  add_foreign_key "vending_machines", "price_lists"
   add_foreign_key "vending_machines", "vendors"
 end
