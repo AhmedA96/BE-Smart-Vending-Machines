@@ -16,6 +16,7 @@
 #  updated_at          :datetime         not null
 #  category_id         :bigint           not null
 #  manufacturer_id     :string
+#  price_list_id       :bigint
 #  vendor_id           :bigint           not null
 #
 # Indexes
@@ -23,11 +24,13 @@
 #  index_vending_machines_on_category_id      (category_id)
 #  index_vending_machines_on_location         (location) USING gist
 #  index_vending_machines_on_manufacturer_id  (manufacturer_id) UNIQUE
+#  index_vending_machines_on_price_list_id    (price_list_id)
 #  index_vending_machines_on_vendor_id        (vendor_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (category_id => machine_categories.id)
+#  fk_rails_...  (price_list_id => price_lists.id)
 #  fk_rails_...  (vendor_id => vendors.id)
 #
 class VendingMachine < ApplicationRecord
