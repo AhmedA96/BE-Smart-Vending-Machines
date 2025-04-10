@@ -4,25 +4,32 @@
 #
 # Table name: products
 #
-#  id          :bigint           not null, primary key
-#  description :text
-#  images      :jsonb
-#  is_active   :boolean          default(TRUE)
-#  name        :string           not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  id                     :bigint           not null, primary key
+#  deleted_at             :datetime
+#  description            :string
+#  max_orderable_quantity :integer
+#  name                   :string           not null
+#  slug                   :string
+#  sorting                :integer          default(1)
+#  status                 :string
+#  total_rate             :float
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 # Indexes
 #
-#  index_products_on_is_active  (is_active)
-#  index_products_on_name       (name)
+#  index_products_on_created_at  (created_at)
+#  index_products_on_deleted_at  (deleted_at)
+#  index_products_on_name        (name)
+#  index_products_on_sorting     (sorting)
 #
 class Product < ApplicationRecord
+  acts_as_paranoid
   has_many :machine_products, dependent: :destroy
   has_many :vending_machines, through: :machine_products
 
-  validates :name, presence: true
-  validates :images, presence: true
-
-  scope :active, -> { where(is_active: true) }
+  validates :name, :slug, presence: true
+  validates :status, presence: true, inclusion: { in: %w[Active Inactive] }
+  validates :max_orderable_quantity, numericality: { greater_than: 0, allow_nil: true }
+  validates :sorting, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 end

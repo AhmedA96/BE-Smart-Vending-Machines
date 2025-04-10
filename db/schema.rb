@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_08_100446) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_120345) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -103,13 +103,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_08_100446) do
 
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
-    t.text "description"
-    t.boolean "is_active", default: true
-    t.jsonb "images"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["is_active"], name: "index_products_on_is_active"
+    t.string "status"
+    t.string "slug"
+    t.datetime "deleted_at"
+    t.float "total_rate"
+    t.integer "max_orderable_quantity"
+    t.integer "sorting", default: 1
+    t.index ["created_at"], name: "index_products_on_created_at"
+    t.index ["deleted_at"], name: "index_products_on_deleted_at"
     t.index ["name"], name: "index_products_on_name"
+    t.index ["sorting"], name: "index_products_on_sorting"
   end
 
   create_table "roles", force: :cascade do |t|
