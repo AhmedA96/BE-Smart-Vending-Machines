@@ -6,6 +6,7 @@ RSpec.describe Product, type: :model do
   describe 'associations' do
     it { should have_many(:machine_products).dependent(:destroy) }
     it { should have_many(:vending_machines).through(:machine_products) }
+    it { should have_many(:variants).dependent(:destroy) }
   end
 
   describe 'validations' do
