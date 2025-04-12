@@ -28,8 +28,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_125113) do
     t.integer "stock", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "variant_id"
     t.index ["product_id"], name: "index_machine_products_on_product_id"
-    t.index ["vending_machine_id", "product_id"], name: "index_machine_products_on_vending_machine_id_and_product_id", unique: true
+    t.index ["variant_id"], name: "index_machine_products_on_variant_id"
+    t.index ["vending_machine_id", "product_id", "variant_id"], name: "index_machine_products_on_vm_product_variant", unique: true
     t.index ["vending_machine_id"], name: "index_machine_products_on_vending_machine_id"
   end
 
@@ -228,6 +230,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_125113) do
   end
 
   add_foreign_key "machine_products", "products"
+  add_foreign_key "machine_products", "variants"
   add_foreign_key "machine_products", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
