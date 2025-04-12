@@ -8,7 +8,7 @@ class AddVariantToMachineProducts < ActiveRecord::Migration[8.0]
     remove_index :machine_products, %i[vending_machine_id product_id]
 
     # Add new unique index including variant_id
-    add_index :machine_products, %i[vending_machine_id product_id variant_id], unique: true,
-                                                                               name: 'index_machine_products_on_vm_product_variant'
+    add_index :machine_products, %i[vending_machine_id product_id variant_id],
+              unique: true, name: 'index_machine_products_on_vm_product_variant'
   end
 end
