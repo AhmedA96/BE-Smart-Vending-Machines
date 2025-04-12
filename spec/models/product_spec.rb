@@ -10,18 +10,11 @@ RSpec.describe Product, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:images) }
-  end
-
-  describe 'scopes' do
-    let!(:active_product) { create(:product, is_active: true) }
-    let!(:inactive_product) { create(:product, is_active: false) }
-
-    describe '.active' do
-      it 'returns only active products' do
-        expect(described_class.active).to include(active_product)
-        expect(described_class.active).not_to include(inactive_product)
-      end
-    end
+    it { should validate_presence_of(:slug) }
+    it { should validate_presence_of(:status) }
+    it { should validate_inclusion_of(:status).in_array(%w[Active Inactive]) }
+    it { should validate_numericality_of(:max_orderable_quantity).is_greater_than(0).allow_nil }
+    it { should validate_presence_of(:sorting) }
+    it { should validate_numericality_of(:sorting).only_integer.is_greater_than_or_equal_to(1) }
   end
 end
