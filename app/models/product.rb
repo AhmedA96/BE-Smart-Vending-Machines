@@ -25,9 +25,12 @@
 #
 class Product < ApplicationRecord
   acts_as_paranoid
+
   has_many :machine_products, dependent: :destroy
   has_many :vending_machines, through: :machine_products
   has_many :variants, dependent: :destroy
+  has_many :product_categories, dependent: :destroy
+  has_many :categories, through: :product_categories
 
   validates :name, :slug, presence: true
   validates :status, presence: true, inclusion: { in: %w[Active Inactive] }

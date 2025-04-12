@@ -22,5 +22,12 @@
 #  fk_rails_...  (parent_category_id => categories.id)
 #
 class Category < ApplicationRecord
+  belongs_to :parent_category, class_name: 'Category', optional: true, inverse_of: :subcategories
+  has_many :subcategories, class_name: 'Category', foreign_key: :parent_category_id, dependent: :destroy,
+                           inverse_of: :parent_category
+
+  has_many :product_categories, dependent: :destroy
+  has_many :products, through: :product_categories
+
   validates :name, :presentation, presence: true
 end
