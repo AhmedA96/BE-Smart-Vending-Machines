@@ -127,7 +127,7 @@ GEM
       activesupport (>= 6.0)
     autoprefixer-rails (10.4.19.0)
       execjs (~> 2)
-    avo (3.19.2)
+    avo (3.19.3)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
