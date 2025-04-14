@@ -26,7 +26,7 @@
 #  fk_rails_...  (vending_machine_id => vending_machines.id)
 #
 class MachineProduct < ApplicationRecord
-  belongs_to :product, -> { with_deleted }, inverse_of: :machine_products
+  belongs_to :product
   belongs_to :vending_machine
   belongs_to :variant, optional: true
 
