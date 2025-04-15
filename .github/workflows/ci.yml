@@ -86,7 +86,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: "postgis://postgres:root@localhost:5432/vndgme_test"
+          DATABASE_URL: "postgis://postgres:postgres@localhost:5432/vndgme_test"
         run: bundle exec rspec
 
       - name: Keep screenshots from failed system tests
