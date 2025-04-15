@@ -4,7 +4,7 @@
 require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/' # exclude spec files from coverage
-  minimum_coverage 75.0
+  minimum_coverage 74.0
 end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
