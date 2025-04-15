@@ -205,7 +205,7 @@ vending_machines = [
     vendor: vendor_records[1],
     location_name: 'Downtown Mall',
     location: 'POINT(31.2357 30.0444)',
-    status: 'active',
+    status: 'Active',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago
   },
@@ -216,7 +216,7 @@ vending_machines = [
     vendor: vendor_records[0],
     location_name: 'Tech Park',
     location: 'POINT(31.2333 30.0333)',
-    status: 'maintenance',
+    status: 'Maintenance',
     installed_at: 1.year.ago,
     last_service_date: 2.months.ago
   },
@@ -227,7 +227,7 @@ vending_machines = [
     vendor: vendor_records[0],
     location_name: 'Shopping Center',
     location: 'POINT(31.2400 30.0500)',
-    status: 'active',
+    status: 'Active',
     installed_at: 3.months.ago,
     last_service_date: 1.week.ago
   },
@@ -238,7 +238,7 @@ vending_machines = [
     vendor: vendor_records[1],
     location_name: 'University Campus',
     location: 'POINT(31.2800 30.0600)',
-    status: 'inactive',
+    status: 'Inactive',
     installed_at: 8.months.ago,
     last_service_date: 3.months.ago
   }
@@ -286,13 +286,13 @@ Rails.logger.debug 'Creating Machine Statuses...'
 machine_statuses = [
   {
     vending_machine: vending_machine_records[0],
-    status: 'active',
+    status: 'Active',
     changed_at: 1.day.ago,
     notes: 'Checked and fully operational'
   },
   {
     vending_machine: vending_machine_records[1],
-    status: 'maintenance',
+    status: 'Maintenance',
     changed_at: 2.days.ago,
     notes: 'Reported minor issues with coin acceptor'
   }

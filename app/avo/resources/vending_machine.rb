@@ -24,7 +24,7 @@ module Avo
                   description: record&.status
                 }
               },
-        help: -> { 'Search by Machine' }
+        help: -> { 'Search by Machine name' }
       }
 
       def self.name
