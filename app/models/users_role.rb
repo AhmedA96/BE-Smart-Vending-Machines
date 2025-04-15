@@ -17,6 +17,8 @@ class UsersRole < ApplicationRecord
   belongs_to :user, optional: false
   belongs_to :role, optional: false
 
+  validates :user_id, uniqueness: { scope: :role_id }
+
   def name
     "#{role&.name&.humanize} - #{role&.resource&.name}"
   end
