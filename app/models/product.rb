@@ -26,6 +26,8 @@
 class Product < ApplicationRecord
   acts_as_paranoid
 
+  has_many_attached :images, dependent: :destroy
+
   has_many :machine_products, dependent: :destroy
   has_many :vending_machines, through: :machine_products
   has_many :variants, dependent: :destroy
