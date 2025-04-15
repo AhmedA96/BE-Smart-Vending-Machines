@@ -96,4 +96,8 @@ class User < ApplicationRecord
   def load_role(role)
     role?(role)
   end
+
+  def resource_title
+    name.presence || email || "User/#{id}"
+  end
 end
