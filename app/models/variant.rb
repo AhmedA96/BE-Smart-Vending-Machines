@@ -37,4 +37,11 @@ class Variant < ApplicationRecord
   validates :sorting, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   belongs_to :product, optional: false
+
+  has_many :price_list_items
+  has_many :price_lists, through: :price_list_items
+
+  def full_name
+    "#{product.name} - #{product&.name == name ? '' : name} [#{sku}]"
+  end
 end

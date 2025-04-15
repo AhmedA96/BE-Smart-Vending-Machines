@@ -61,10 +61,17 @@ module Avo
         field :slug, as: :text
         field :total_rate, as: :number, hide_on: %i[index show]
         field :max_orderable_quantity, as: :number, hide_on: %i[index]
-
         field :sorting, as: :number, hide_on: %i[index]
         field :start_date, as: :date
         field :end_date, as: :date
+
+        many_relation_tabs
+      end
+
+      def many_relation_tabs
+        tabs id: :many_relations_tabs do
+          field :variants, as: :has_many, reloadable: true, linkable: true, searchable: true
+        end
       end
     end
   end
