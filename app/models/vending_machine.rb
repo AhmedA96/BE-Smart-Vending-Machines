@@ -45,7 +45,7 @@ class VendingMachine < ApplicationRecord
   validates :manufacturer_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
 
-  scope :active, -> { where(status: 'active') }
+  scope :active, -> { where(status: 'Active') }
 
   def self.nearby(latitude:, longitude:, radius_in_meters: 5000)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'

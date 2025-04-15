@@ -17,14 +17,14 @@ RSpec.describe VendingMachine, type: :model do
 
     it 'validates status inclusion' do
       should validate_inclusion_of(:status)
-        .in_array(%w[active inactive maintenance retired])
+        .in_array(%w[Active Inactive Maintenance Retired])
         .allow_nil
     end
   end
 
   describe 'scopes' do
-    let!(:active_machine) { create(:vending_machine, status: 'active') }
-    let!(:inactive_machine) { create(:vending_machine, status: 'inactive') }
+    let!(:active_machine) { create(:vending_machine, status: 'Active') }
+    let!(:inactive_machine) { create(:vending_machine, status: 'Inactive') }
 
     describe '.active' do
       it 'returns only active machines' do
@@ -37,13 +37,13 @@ RSpec.describe VendingMachine, type: :model do
   describe '.nearby' do
     let!(:close_machine) do
       create(:vending_machine,
-             status: 'active',
+             status: 'Active',
              location: 'POINT(100.5 13.7)')
     end
 
     let!(:far_machine) do
       create(:vending_machine,
-             status: 'active',
+             status: 'Active',
              location: 'POINT(104.5 15.7)')
     end
 
@@ -60,7 +60,7 @@ RSpec.describe VendingMachine, type: :model do
 
     it 'orders results by distance' do
       create(:vending_machine,
-             status: 'active',
+             status: 'Active',
              location: 'POINT(100.51 13.71)')
 
       results = described_class.nearby(
