@@ -62,7 +62,11 @@ jobs:
         ports:
           - 5432:5432
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: vndgme_test
+          ALLOW_IP_RANGE: 0.0.0.0/0
+          POSTGRES_HOST: localhost
         options: --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
 
 
@@ -82,7 +86,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          # REDIS_URL: redis://localhost:6379/0
+          DATABASE_URL: "postgis://postgres:root@localhost:5432/vndgme_test"
         run: bundle exec rspec
 
       - name: Keep screenshots from failed system tests
