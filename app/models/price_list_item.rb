@@ -22,7 +22,8 @@
 #  fk_rails_...  (product_id => products.id)
 #
 class PriceListItem < ApplicationRecord
-  belongs_to :price_list
+  belongs_to :price_list, optional: false
+  belongs_to :variant
   belongs_to :product
 
   validates :price, presence: true, numericality: { greater_than: 0 }
