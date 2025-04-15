@@ -23,7 +23,7 @@
 class MachineStatus < ApplicationRecord
   belongs_to :vending_machine
 
-  validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }
+  validates :status, presence: true, inclusion: { in: %w[Active Inactive Maintenance Retired] }
 
   after_create :update_vending_machine_status
 

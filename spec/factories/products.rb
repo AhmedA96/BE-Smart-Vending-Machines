@@ -10,5 +10,9 @@ FactoryBot.define do
     max_orderable_quantity { rand(1..100) }
     sorting { 1 }
     deleted_at { nil }
+
+    after(:create) do |product|
+      create_list(:variant, 3, product: product)
+    end
   end
 end

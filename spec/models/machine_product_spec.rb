@@ -16,7 +16,7 @@ RSpec.describe MachineProduct, type: :model do
 
     it 'validates uniqueness of product_id scoped to vending_machine_id' do
       create(:machine_product)
-      should validate_uniqueness_of(:product_id).scoped_to(:vending_machine_id)
+      should validate_uniqueness_of(:product_id).scoped_to(:vending_machine_id, :variant_id)
     end
   end
 end

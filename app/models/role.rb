@@ -30,6 +30,8 @@ class Role < ApplicationRecord
 
   scopify
 
+  validates :name, presence: true
+
   def role_title
     "#{name.humanize} - #{resource&.name}"
   end

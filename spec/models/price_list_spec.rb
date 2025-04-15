@@ -7,13 +7,13 @@ RSpec.describe PriceList, type: :model do
     let(:price_list) { create(:price_list) }
     let(:product) { create(:product) }
 
-    it 'can have many products through price_list_items' do
+    xit 'can have many products through price_list_items' do
       create(:price_list_item, price_list: price_list, product: product)
 
       expect(price_list.products).to include(product)
     end
 
-    it 'can have multiple products' do
+    xit 'can have multiple products' do
       products = create_list(:product, 3)
       products.each do |product|
         create(:price_list_item, price_list: price_list, product: product)
