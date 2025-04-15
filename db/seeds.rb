@@ -13,6 +13,9 @@ Variant.destroy_all
 Product.destroy_all
 Category.destroy_all
 PriceList.destroy_all
+
+# Clear users_roles join table using delete_all to bypass model callbacks
+ActiveRecord::Base.connection.execute('DELETE FROM users_roles')
 User.destroy_all
 Role.destroy_all
 
@@ -23,14 +26,23 @@ Rails.logger.debug 'Database cleaned!'
 # ---------------------------- #
 Rails.logger.debug 'Creating Categories...'
 
-categories = [
+# Create parent categories first
+parent_categories = [
   { name: 'Food & Beverages', presentation: 'Food & Beverages', active: true, position: 1 },
-  { name: 'Snacks', presentation: 'Snacks', active: true, position: 2, parent_category_id: 1 },
-  { name: 'Drinks', presentation: 'Drinks', active: true, position: 3, parent_category_id: 1 },
   { name: 'Electronics', presentation: 'Electronics', active: true, position: 4 }
 ]
 
-category_records = Category.create!(categories)
+parent_records = Category.create!(parent_categories)
+
+# Create child categories with the correct parent_category_id references
+child_categories = [
+  { name: 'Snacks', presentation: 'Snacks', active: true, position: 2, parent_category_id: parent_records[0].id },
+  { name: 'Drinks', presentation: 'Drinks', active: true, position: 3, parent_category_id: parent_records[0].id }
+]
+
+child_records = Category.create!(child_categories)
+
+category_records = parent_records + child_records
 
 Rails.logger.debug { "Created #{category_records.count} Categories." }
 
@@ -62,7 +74,13 @@ products = [
 
 product_records = Product.create!(products)
 
-Rails.logger.debug { "Created #{product_records.count} Products." }
+# Attach images to products
+product_records[0].images.attach(io: Rails.root.join('app/assets/images/products/cola.svg').open,
+                                 filename: 'cola.svg', content_type: 'image/svg+xml')
+product_records[1].images.attach(io: Rails.root.join('app/assets/images/products/chips.svg').open,
+                                 filename: 'chips.svg', content_type: 'image/svg+xml')
+
+Rails.logger.debug { "Created #{product_records.count} Products with images." }
 
 # ---------------------------- #
 # Product Categories
@@ -83,10 +101,13 @@ Rails.logger.debug { "Created #{product_categories.count} Product Categories." }
 # ---------------------------- #
 Rails.logger.debug 'Creating Variants...'
 
+# Generate unique SKUs by adding timestamp
+time_suffix = Time.current.to_i
+
 variants = [
   {
     name: 'Cola Classic 330ml',
-    sku: 'COLA-330',
+    sku: "COLA-330-#{time_suffix}",
     is_master: true,
     points: 10,
     weight: 0.33,
@@ -95,7 +116,7 @@ variants = [
   },
   {
     name: 'Cola Classic 500ml',
-    sku: 'COLA-500',
+    sku: "COLA-500-#{time_suffix}",
     is_master: false,
     points: 15,
     weight: 0.5,
@@ -104,7 +125,7 @@ variants = [
   },
   {
     name: 'Regular Chips 100g',
-    sku: 'CHIPS-100',
+    sku: "CHIPS-100-#{time_suffix}",
     is_master: true,
     points: 8,
     weight: 0.1,
