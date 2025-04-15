@@ -43,7 +43,7 @@ class VendingMachine < ApplicationRecord
   has_many :products, through: :machine_products
 
   validates :manufacturer_id, presence: true, uniqueness: true
-  validates :status, inclusion: { in: %w[active inactive maintenance retired] }, allow_nil: true
+  validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
 
   scope :active, -> { where(status: 'active') }
 
