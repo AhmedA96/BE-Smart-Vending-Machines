@@ -4,14 +4,14 @@
 #
 # Table name: users_roles
 #
+#  key     :bigint           not null, primary key
 #  role_id :bigint
 #  user_id :bigint
 #
 # Indexes
 #
-#  index_users_roles_on_role_id              (role_id)
-#  index_users_roles_on_user_id              (user_id)
-#  index_users_roles_on_user_id_and_role_id  (user_id,role_id)
+#  index_unique_user_role        (user_id,role_id) UNIQUE
+#  index_users_roles_on_role_id  (role_id)
 #
 class UsersRole < ApplicationRecord
   belongs_to :user, optional: false
