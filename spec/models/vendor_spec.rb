@@ -12,5 +12,7 @@ RSpec.describe Vendor, type: :model do
 
     it { should validate_presence_of(:name) }
     it { should validate_length_of(:address).is_at_most(255) }
+    it { should allow_value('test@example.com').for(:email) }
+    it { should_not allow_value('invalid_email').for(:email) }
   end
 end
