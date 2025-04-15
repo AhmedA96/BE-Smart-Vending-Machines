@@ -4,13 +4,141 @@
 Rails.logger.debug 'Cleaning database...'
 
 MachineStatus.destroy_all
+MachineProduct.destroy_all
 VendingMachine.destroy_all
 Vendor.destroy_all
 MachineCategory.destroy_all
+ProductCategory.destroy_all
+Variant.destroy_all
+Product.destroy_all
+Category.destroy_all
+PriceList.destroy_all
 User.destroy_all
 Role.destroy_all
 
 Rails.logger.debug 'Database cleaned!'
+
+# ---------------------------- #
+# Categories
+# ---------------------------- #
+Rails.logger.debug 'Creating Categories...'
+
+categories = [
+  { name: 'Food & Beverages', presentation: 'Food & Beverages', active: true, position: 1 },
+  { name: 'Snacks', presentation: 'Snacks', active: true, position: 2, parent_category_id: 1 },
+  { name: 'Drinks', presentation: 'Drinks', active: true, position: 3, parent_category_id: 1 },
+  { name: 'Electronics', presentation: 'Electronics', active: true, position: 4 }
+]
+
+category_records = Category.create!(categories)
+
+Rails.logger.debug { "Created #{category_records.count} Categories." }
+
+# ---------------------------- #
+# Products
+# ---------------------------- #
+Rails.logger.debug 'Creating Products...'
+
+products = [
+  {
+    name: 'Cola Classic',
+    description: 'Refreshing cola drink',
+    status: 'Active',
+    slug: 'cola-classic',
+    total_rate: 4.5,
+    max_orderable_quantity: 5,
+    sorting: 1
+  },
+  {
+    name: 'Potato Chips',
+    description: 'Crispy salted chips',
+    status: 'Active',
+    slug: 'potato-chips',
+    total_rate: 4.0,
+    max_orderable_quantity: 3,
+    sorting: 2
+  }
+]
+
+product_records = Product.create!(products)
+
+Rails.logger.debug { "Created #{product_records.count} Products." }
+
+# ---------------------------- #
+# Product Categories
+# ---------------------------- #
+Rails.logger.debug 'Creating Product Categories...'
+
+product_categories = [
+  { product: product_records[0], category: category_records[2] },
+  { product: product_records[1], category: category_records[1] }
+]
+
+ProductCategory.create!(product_categories)
+
+Rails.logger.debug { "Created #{product_categories.count} Product Categories." }
+
+# ---------------------------- #
+# Variants
+# ---------------------------- #
+Rails.logger.debug 'Creating Variants...'
+
+variants = [
+  {
+    name: 'Cola Classic 330ml',
+    sku: 'COLA-330',
+    is_master: true,
+    points: 10,
+    weight: 0.33,
+    product: product_records[0],
+    sorting: 1
+  },
+  {
+    name: 'Cola Classic 500ml',
+    sku: 'COLA-500',
+    is_master: false,
+    points: 15,
+    weight: 0.5,
+    product: product_records[0],
+    sorting: 2
+  },
+  {
+    name: 'Regular Chips 100g',
+    sku: 'CHIPS-100',
+    is_master: true,
+    points: 8,
+    weight: 0.1,
+    product: product_records[1],
+    sorting: 1
+  }
+]
+
+variant_records = Variant.create!(variants)
+
+Rails.logger.debug { "Created #{variant_records.count} Variants." }
+
+# ---------------------------- #
+# Price Lists
+# ---------------------------- #
+Rails.logger.debug 'Creating Price Lists...'
+
+price_lists = [
+  { name: 'Standard Prices' },
+  { name: 'Premium Locations' }
+]
+
+price_list_records = PriceList.create!(price_lists)
+
+price_list_items = [
+  { price_list: price_list_records[0], product: product_records[0], price: 2.50 },
+  { price_list: price_list_records[0], product: product_records[1], price: 1.50 },
+  { price_list: price_list_records[1], product: product_records[0], price: 3.00 },
+  { price_list: price_list_records[1], product: product_records[1], price: 2.00 }
+]
+
+PriceListItem.create!(price_list_items)
+
+Rails.logger.debug { "Created #{price_list_records.count} Price Lists with #{price_list_items.count} items." }
 
 # ---------------------------- #
 # Machine Categories
@@ -98,6 +226,36 @@ vending_machines = [
 vending_machine_records = VendingMachine.create!(vending_machines)
 
 Rails.logger.debug { "Created #{vending_machine_records.count} Vending Machines." }
+
+# ---------------------------- #
+# Machine Products
+# ---------------------------- #
+Rails.logger.debug 'Creating Machine Products...'
+
+machine_products = [
+  {
+    vending_machine: vending_machine_records[0],
+    product: product_records[0],
+    variant: variant_records[0],
+    stock: 20
+  },
+  {
+    vending_machine: vending_machine_records[0],
+    product: product_records[1],
+    variant: variant_records[2],
+    stock: 15
+  },
+  {
+    vending_machine: vending_machine_records[1],
+    product: product_records[0],
+    variant: variant_records[1],
+    stock: 25
+  }
+]
+
+machine_product_records = MachineProduct.create!(machine_products)
+
+Rails.logger.debug { "Created #{machine_product_records.count} Machine Products." }
 
 # ---------------------------- #
 # Machine Statuses

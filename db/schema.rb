@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_10_120345) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_12_225207) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.boolean "active", default: true, null: false
+    t.bigint "parent_category_id"
+    t.string "presentation"
+    t.integer "position", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
+  end
 
   create_table "machine_categories", force: :cascade do |t|
     t.string "name"
@@ -28,8 +39,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_120345) do
     t.integer "stock", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "variant_id"
     t.index ["product_id"], name: "index_machine_products_on_product_id"
-    t.index ["vending_machine_id", "product_id"], name: "index_machine_products_on_vending_machine_id_and_product_id", unique: true
+    t.index ["variant_id"], name: "index_machine_products_on_variant_id"
+    t.index ["vending_machine_id", "product_id", "variant_id"], name: "index_machine_products_on_vm_product_variant", unique: true
     t.index ["vending_machine_id"], name: "index_machine_products_on_vending_machine_id"
   end
 
@@ -99,6 +112,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_120345) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "product_categories", force: :cascade do |t|
+    t.bigint "product_id"
+    t.bigint "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_product_categories_on_category_id"
+    t.index ["product_id", "category_id"], name: "index_product_categories_uniqueness", unique: true
+    t.index ["product_id"], name: "index_product_categories_on_product_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -176,6 +199,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_120345) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "variants", force: :cascade do |t|
+    t.string "sku", null: false
+    t.string "name"
+    t.integer "points"
+    t.float "weight", default: 0.0
+    t.boolean "is_master", default: false, null: false
+    t.boolean "active", default: true
+    t.integer "sorting", default: 1
+    t.integer "product_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_variants_on_active"
+    t.index ["created_at"], name: "index_variants_on_created_at"
+    t.index ["deleted_at"], name: "index_variants_on_deleted_at"
+    t.index ["product_id"], name: "index_variants_on_product_id"
+    t.index ["sku"], name: "index_variants_on_sku", unique: true
+    t.index ["sorting"], name: "index_variants_on_sorting"
+  end
+
   create_table "vending_machines", force: :cascade do |t|
     t.string "manufacturer_id"
     t.string "name"
@@ -207,12 +250,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_120345) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "categories", "categories", column: "parent_category_id"
   add_foreign_key "machine_products", "products"
+  add_foreign_key "machine_products", "variants"
   add_foreign_key "machine_products", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "price_list_items", "price_lists"
   add_foreign_key "price_list_items", "products"
+  add_foreign_key "product_categories", "categories"
+  add_foreign_key "product_categories", "products"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"
   add_foreign_key "vending_machines", "price_lists"
   add_foreign_key "vending_machines", "vendors"
