@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_112856) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_220124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -52,6 +52,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_112856) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "city"
+    t.string "landmark"
+    t.string "state"
+    t.string "zip_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "machine_categories", force: :cascade do |t|
@@ -254,7 +265,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_112856) do
     t.string "name"
     t.bigint "category_id", null: false
     t.bigint "vendor_id", null: false
-    t.string "location_name"
     t.string "status"
     t.datetime "installed_at"
     t.datetime "last_service_date"
@@ -263,8 +273,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_112856) do
     t.geography "location", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "location_updated_at"
     t.bigint "price_list_id"
+    t.bigint "location_id"
     t.index ["category_id"], name: "index_vending_machines_on_category_id"
     t.index ["location"], name: "index_vending_machines_on_location", using: :gist
+    t.index ["location_id"], name: "index_vending_machines_on_location_id"
     t.index ["manufacturer_id"], name: "index_vending_machines_on_manufacturer_id", unique: true
     t.index ["price_list_id"], name: "index_vending_machines_on_price_list_id"
     t.index ["vendor_id"], name: "index_vending_machines_on_vendor_id"
@@ -293,6 +305,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_112856) do
   add_foreign_key "price_list_items", "variants"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
+  add_foreign_key "vending_machines", "locations"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"
   add_foreign_key "vending_machines", "price_lists"
   add_foreign_key "vending_machines", "vendors"

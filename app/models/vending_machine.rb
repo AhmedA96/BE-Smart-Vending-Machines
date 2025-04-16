@@ -8,13 +8,13 @@
 #  installed_at        :datetime
 #  last_service_date   :datetime
 #  location            :geography        point, 4326
-#  location_name       :string
 #  location_updated_at :datetime
 #  name                :string
 #  status              :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  category_id         :bigint           not null
+#  location_id         :bigint
 #  manufacturer_id     :string
 #  price_list_id       :bigint
 #  vendor_id           :bigint           not null
@@ -23,6 +23,7 @@
 #
 #  index_vending_machines_on_category_id      (category_id)
 #  index_vending_machines_on_location         (location) USING gist
+#  index_vending_machines_on_location_id      (location_id)
 #  index_vending_machines_on_manufacturer_id  (manufacturer_id) UNIQUE
 #  index_vending_machines_on_price_list_id    (price_list_id)
 #  index_vending_machines_on_vendor_id        (vendor_id)
@@ -30,6 +31,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (category_id => machine_categories.id)
+#  fk_rails_...  (location_id => locations.id)
 #  fk_rails_...  (price_list_id => price_lists.id)
 #  fk_rails_...  (vendor_id => vendors.id)
 #
@@ -37,6 +39,7 @@ class VendingMachine < ApplicationRecord
   belongs_to :vendor
   belongs_to :category, class_name: 'MachineCategory'
   belongs_to :price_list, optional: true
+  belongs_to :location
 
   has_many :machine_statuses
   has_many :machine_products
