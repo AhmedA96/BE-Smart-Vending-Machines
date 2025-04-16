@@ -10,9 +10,5 @@ json.vending_machines @vending_machines do |machine|
 end
 
 json.pagination do
-  json.current_page @vending_machines.current_page
-  json.total_pages @vending_machines.total_pages
-  json.total_count @vending_machines.total_count
-  json.next_page @vending_machines.next_page
-  json.prev_page @vending_machines.prev_page
+  json.partial! 'api/v1/shared/pagination', collection: @vending_machines
 end
