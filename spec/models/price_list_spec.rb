@@ -4,8 +4,11 @@ require 'rails_helper'
 
 RSpec.describe PriceList, type: :model do
   describe 'associations' do
+    it { should have_many(:price_list_items) }
+
     let(:price_list) { create(:price_list) }
     let(:product) { create(:product) }
+    let(:variant) { create(:variant, product: product) }
 
     it 'can have many products through price_list_items' do
       create(:price_list_item, price_list: price_list, product: product)
@@ -16,7 +19,8 @@ RSpec.describe PriceList, type: :model do
     it 'can have multiple products' do
       products = create_list(:product, 3)
       products.each do |product|
-        create(:price_list_item, price_list: price_list, product: product)
+        variant = create(:variant, product: product)
+        create(:price_list_item, price_list: price_list, product: product, variant: variant)
       end
 
       expect(price_list.products.count).to eq(3)
