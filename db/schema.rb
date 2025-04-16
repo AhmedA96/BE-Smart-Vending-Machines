@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_15_101221) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_112856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -132,8 +132,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_101221) do
     t.decimal "price", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "variant_id"
+    t.index ["price_list_id", "variant_id"], name: "index_price_list_items_on_price_list_id_and_variant_id", unique: true
     t.index ["price_list_id"], name: "index_price_list_items_on_price_list_id"
     t.index ["product_id"], name: "index_price_list_items_on_product_id"
+    t.index ["variant_id"], name: "index_price_list_items_on_variant_id"
   end
 
   create_table "price_lists", force: :cascade do |t|
@@ -287,6 +290,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_15_101221) do
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "price_list_items", "price_lists"
   add_foreign_key "price_list_items", "products"
+  add_foreign_key "price_list_items", "variants"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
   add_foreign_key "vending_machines", "machine_categories", column: "category_id"

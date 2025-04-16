@@ -5,7 +5,7 @@ module Avo
     class VendingMachine < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[machine_statuses]
+      self.includes = %i[machine_statuses machine_products]
       self.record_selector = true
       self.attachments = []
 
@@ -45,6 +45,14 @@ module Avo
         field :manufacturer_id, as: :text, hide_on: %i[index]
         field :installed_at, as: :date_time, hide_on: %i[index]
         field :last_service_date, as: :date_time, hide_on: %i[index]
+
+        many_relations
+      end
+
+      def many_relations
+        tabs id: :many_relation_tabs do
+          field :machine_products, as: :has_many, reloadable: true, name: 'Machine Products'
+        end
       end
     end
   end
