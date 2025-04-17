@@ -14,8 +14,8 @@ module Avo
         field :id, as: :id
         field :name, as: :text, required: true
         field :description, as: :textarea
-        field :created_at, as: :date_time, readonly: true, hide_on: %i[index]
-        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index]
+        field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
+        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
 
         many_relation_tabs
       end

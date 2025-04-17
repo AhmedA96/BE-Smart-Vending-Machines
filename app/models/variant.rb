@@ -38,6 +38,8 @@ class Variant < ApplicationRecord
 
   belongs_to :product, optional: false
 
+  has_many :machine_products
+  has_many :machines, through: :machine_products
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
 

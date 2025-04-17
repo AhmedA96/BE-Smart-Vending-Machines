@@ -17,8 +17,8 @@ module Avo
         field :status, as: :select, enum: status, hide_on: %i[show], summarizable: true
         field :changed_at, as: :date_time, required: true
         field :notes, as: :textarea
-        field :created_at, as: :date_time, readonly: true, hide_on: %i[index]
-        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index]
+        field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
+        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
       end
     end
   end

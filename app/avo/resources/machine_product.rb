@@ -19,8 +19,8 @@ module Avo
         field :vending_machine, as: :belongs_to, searchable: true
         field :variant, as: :belongs_to, searchable: true
         field :stock, as: :number, required: true, min: 0
-        field :created_at, as: :date_time, readonly: true, hide_on: %i[index]
-        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index]
+        field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
+        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
       end
     end
   end

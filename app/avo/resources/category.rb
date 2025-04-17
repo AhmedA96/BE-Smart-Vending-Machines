@@ -16,8 +16,8 @@ module Avo
         field :position, as: :number, default: 0
         field :active, as: :boolean, default: true
         field :parent_category, as: :belongs_to, searchable: true
-        field :created_at, as: :date_time, readonly: true
-        field :updated_at, as: :date_time, readonly: true
+        field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
+        field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
       end
     end
   end

@@ -5,26 +5,26 @@ require 'rails_helper'
 RSpec.describe PriceList, type: :model do
   describe 'associations' do
     it { should have_many(:price_list_items) }
+    it { should have_many(:variants).through(:price_list_items) }
+    it { should have_many(:locations) }
 
     let(:price_list) { create(:price_list) }
-    let(:product) { create(:product) }
-    let(:variant) { create(:variant, product: product) }
+    let(:variant) { create(:variant) }
 
-    xit 'can have many products through price_list_items' do
-      create(:price_list_item, price_list: price_list, product: product)
+    it 'can have many variants through price_list_items' do
+      create(:price_list_item, price_list: price_list, variant: variant)
 
-      expect(price_list.products).to include(product)
+      expect(price_list.variants).to include(variant)
     end
 
-    xit 'can have multiple products' do
-      products = create_list(:product, 3)
-      products.each do |product|
-        variant = create(:variant, product: product)
-        create(:price_list_item, price_list: price_list, product: product, variant: variant)
+    it 'can have multiple variants' do
+      variants = create_list(:variant, 3)
+      variants.each do |variant|
+        create(:price_list_item, price_list: price_list, variant: variant)
       end
 
-      expect(price_list.products.count).to eq(3)
-      expect(price_list.products).to match_array(products)
+      expect(price_list.variants.count).to eq(3)
+      expect(price_list.variants).to match_array(variants)
     end
   end
 end

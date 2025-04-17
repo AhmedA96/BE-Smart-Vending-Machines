@@ -6,7 +6,11 @@ RSpec.describe VendingMachine, type: :model do
   describe 'associations' do
     it { should belong_to(:vendor) }
     it { should belong_to(:category).class_name('MachineCategory') }
+    it { should belong_to(:location) }
+    it { should have_one(:price_list).through(:location) }
     it { should have_many(:machine_statuses) }
+    it { should have_many(:machine_products) }
+    it { should have_many(:variants).through(:machine_products) }
   end
 
   describe 'validations' do
@@ -38,13 +42,13 @@ RSpec.describe VendingMachine, type: :model do
     let!(:close_machine) do
       create(:vending_machine,
              status: 'Active',
-             location: 'POINT(100.5 13.7)')
+             coordinates: 'POINT(100.5 13.7)')
     end
 
     let!(:far_machine) do
       create(:vending_machine,
              status: 'Active',
-             location: 'POINT(104.5 15.7)')
+             coordinates: 'POINT(104.5 15.7)')
     end
 
     it 'returns machines within specified radius' do
@@ -61,7 +65,7 @@ RSpec.describe VendingMachine, type: :model do
     it 'orders results by distance' do
       create(:vending_machine,
              status: 'Active',
-             location: 'POINT(100.51 13.71)')
+             coordinates: 'POINT(100.51 13.71)')
 
       results = described_class.nearby(
         latitude: 13.7,

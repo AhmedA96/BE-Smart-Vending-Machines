@@ -13,6 +13,7 @@ Variant.destroy_all
 Product.destroy_all
 Category.destroy_all
 PriceList.destroy_all
+Location.destroy_all
 
 # Clear users_roles join table using delete_all to bypass model callbacks
 ActiveRecord::Base.connection.execute('DELETE FROM users_roles')
@@ -151,15 +152,63 @@ price_lists = [
 price_list_records = PriceList.create!(price_lists)
 
 price_list_items = [
-  { price_list: price_list_records[0], product: product_records[0], price: 2.50 },
-  { price_list: price_list_records[0], product: product_records[1], price: 1.50 },
-  { price_list: price_list_records[1], product: product_records[0], price: 3.00 },
-  { price_list: price_list_records[1], product: product_records[1], price: 2.00 }
+  { price_list: price_list_records[0], variant: variant_records[0], price: 2.50 },
+  { price_list: price_list_records[0], variant: variant_records[2], price: 1.50 },
+  { price_list: price_list_records[1], variant: variant_records[1], price: 3.00 },
+  { price_list: price_list_records[1], variant: variant_records[2], price: 2.00 }
 ]
 
 PriceListItem.create!(price_list_items)
 
 Rails.logger.debug { "Created #{price_list_records.count} Price Lists with #{price_list_items.count} items." }
+
+# ---------------------------- #
+# Locations
+# ---------------------------- #
+Rails.logger.debug 'Creating Locations...'
+
+locations = [
+  {
+    name: 'Downtown Mall',
+    address: '123 Mall Street',
+    city: 'Cairo',
+    state: 'Cairo Governorate',
+    zip_code: '11511',
+    landmark: 'Near Central Square',
+    price_list: price_list_records[1]
+  },
+  {
+    name: 'Tech Park',
+    address: '456 Innovation Avenue',
+    city: 'Giza',
+    state: 'Giza Governorate',
+    zip_code: '12511',
+    landmark: 'Next to Science Museum',
+    price_list: price_list_records[0]
+  },
+  {
+    name: 'Shopping Center',
+    address: '789 Retail Boulevard',
+    city: 'Alexandria',
+    state: 'Alexandria Governorate',
+    zip_code: '21511',
+    landmark: 'Opposite Central Park',
+    price_list: price_list_records[1]
+  },
+  {
+    name: 'University Campus',
+    address: '321 Education Road',
+    city: 'Cairo',
+    state: 'Cairo Governorate',
+    zip_code: '11522',
+    landmark: 'Main Campus Gate',
+    price_list: price_list_records[0]
+  }
+]
+
+location_records = Location.create!(locations)
+
+Rails.logger.debug { "Created #{location_records.count} Locations." }
 
 # ---------------------------- #
 # Machine Categories
@@ -203,8 +252,8 @@ vending_machines = [
     name: 'Snack Machine Alpha',
     category: machine_categories[0],
     vendor: vendor_records[1],
-    location_name: 'Downtown Mall',
-    location: 'POINT(31.2357 30.0444)',
+    location: location_records[0],
+    price_list: location_records[0].price_list,
     status: 'Active',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago
@@ -214,8 +263,8 @@ vending_machines = [
     name: 'Drink Machine Beta',
     category: machine_categories[1],
     vendor: vendor_records[0],
-    location_name: 'Tech Park',
-    location: 'POINT(31.2333 30.0333)',
+    location: location_records[1],
+    price_list: location_records[1].price_list,
     status: 'Maintenance',
     installed_at: 1.year.ago,
     last_service_date: 2.months.ago
@@ -225,8 +274,8 @@ vending_machines = [
     name: 'Electronics Vendor Gamma',
     category: machine_categories[2],
     vendor: vendor_records[0],
-    location_name: 'Shopping Center',
-    location: 'POINT(31.2400 30.0500)',
+    location: location_records[2],
+    price_list: location_records[2].price_list,
     status: 'Active',
     installed_at: 3.months.ago,
     last_service_date: 1.week.ago
@@ -236,8 +285,8 @@ vending_machines = [
     name: 'Snack Machine Delta',
     category: machine_categories[0],
     vendor: vendor_records[1],
-    location_name: 'University Campus',
-    location: 'POINT(31.2800 30.0600)',
+    location: location_records[3],
+    price_list: location_records[3].price_list,
     status: 'Inactive',
     installed_at: 8.months.ago,
     last_service_date: 3.months.ago
@@ -256,19 +305,16 @@ Rails.logger.debug 'Creating Machine Products...'
 machine_products = [
   {
     vending_machine: vending_machine_records[0],
-    product: product_records[0],
     variant: variant_records[0],
     stock: 20
   },
   {
     vending_machine: vending_machine_records[0],
-    product: product_records[1],
     variant: variant_records[2],
     stock: 15
   },
   {
     vending_machine: vending_machine_records[1],
-    product: product_records[0],
     variant: variant_records[1],
     stock: 25
   }
@@ -367,9 +413,15 @@ Rails.logger.debug { "Created #{user_records.count} Users." }
 # Summary
 # ---------------------------- #
 Rails.logger.debug '✅ Seeding completed successfully!'
+Rails.logger.debug { "Categories: #{Category.count}" }
+Rails.logger.debug { "Products: #{Product.count}" }
+Rails.logger.debug { "Variants: #{Variant.count}" }
+Rails.logger.debug { "Price Lists: #{PriceList.count}" }
+Rails.logger.debug { "Locations: #{Location.count}" }
 Rails.logger.debug { "Machine Categories: #{MachineCategory.count}" }
 Rails.logger.debug { "Vendors: #{Vendor.count}" }
 Rails.logger.debug { "Vending Machines: #{VendingMachine.count}" }
+Rails.logger.debug { "Machine Products: #{MachineProduct.count}" }
 Rails.logger.debug { "Machine Statuses: #{MachineStatus.count}" }
 Rails.logger.debug { "Roles: #{Role.count}" }
 Rails.logger.debug { "Users: #{User.count}" }
