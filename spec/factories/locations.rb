@@ -8,5 +8,6 @@ FactoryBot.define do
     state { 'Test State' }
     zip_code { '12345' }
     landmark { 'Test Landmark' }
+    association :price_list
   end
 end

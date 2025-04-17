@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :price_list_item do
     association :price_list
-    association :product
+    association :variant
     price { 100 }
   end
 end
