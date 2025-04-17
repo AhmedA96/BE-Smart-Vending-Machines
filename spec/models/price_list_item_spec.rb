@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe PriceListItem, type: :model do
   describe 'associations' do
     it { should belong_to(:price_list) }
-    it { should belong_to(:product) }
+    it { should belong_to(:variant) }
   end
 
   describe 'validations' do
