@@ -11,5 +11,6 @@
 #
 class PriceList < ApplicationRecord
   has_many :price_list_items, dependent: :destroy
-  has_many :products, through: :price_list_items
+  has_many :variants, through: :price_list_items
+  has_many :locations, dependent: :destroy
 end
