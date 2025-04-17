@@ -3,11 +3,11 @@
 module Avo
   module Resources
     class Location < Avo::BaseResource
+      include ResourceHelpers
       self.title = :name
       self.includes = %i[vending_machines]
-      self.attachments = %i[images]
+      self.attachments = []
       self.record_selector = true
-      self.default_view_type = :grid
 
       self.search = {
         results_count: 5,
