@@ -28,8 +28,6 @@ class Product < ApplicationRecord
 
   has_many_attached :images, dependent: :destroy
 
-  has_many :machine_products, dependent: :destroy
-  has_many :vending_machines, through: :machine_products
   has_many :variants, dependent: :destroy
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
