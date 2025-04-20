@@ -3,7 +3,7 @@
 json.vending_machines @vending_machines do |machine|
   json.id machine.id
   json.name machine.name
-  json.location_name machine.location_name
+  json.location machine.location&.name
   json.distance machine.distance.round(2)
   json.status machine.status
   json.category machine.category.name

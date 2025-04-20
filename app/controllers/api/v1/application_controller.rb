@@ -5,6 +5,7 @@ module Api
     class ApplicationController < ActionController::Base
       include ErrorHandling
       include Localization
+      include Pagy::Backend
     end
   end
 end

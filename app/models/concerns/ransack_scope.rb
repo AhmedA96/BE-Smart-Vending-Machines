@@ -10,10 +10,8 @@ module RansackScope
       q.sorts = params[:sorts] if params[:sorts]
 
       results = q.result.uniq(&:id)
-      page = params[:page] || 1
-      per_page = params[:per_page] || Kaminari.config.default_per_page
-
-      Kaminari.paginate_array(results).page(page).per(per_page)
+      items_per_page = params[:per_page] || Pagy::DEFAULT[:items]
+      pagy_array(results, page: params[:page], items: items_per_page)
     }
   end
 end

@@ -86,10 +86,10 @@ gem "auto_increment"
 gem "chartkick"
 gem "groupdate"
 gem 'httparty'
-gem 'kaminari'
 gem "kmeans-clusterer"
 gem 'money'
 gem 'ostruct'
+gem 'pagy'
 gem 'phonelib'
 gem 'timecop'
 gem 'tod'
