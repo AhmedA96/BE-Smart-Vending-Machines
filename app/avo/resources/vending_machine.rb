@@ -36,7 +36,7 @@ module Avo
         field :id, as: :id
         field :name, as: :text
         field :vendor, as: :belongs_to
-        field :location_name, as: :text
+        field :location, as: :belongs_to
         field :status, as: :select, enum: status, hide_on: %i[show], summarizable: true
         field :status, as: :badge, enum: status, only_on: %i[index show],
                        options: { danger: %i[Inactive], success: %i[Active],
