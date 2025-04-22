@@ -54,7 +54,7 @@ gem 'puma', '>= 6.4.2'
 gem 'rack', '>= 3.1.10'
 
 # Frontend & Assets
-gem 'bootstrap', '~> 5.3.1'
+gem 'bootstrap', '~> 5.3.5'
 gem 'importmap-rails'
 gem "sassc-rails"
 gem 'sprockets-rails'

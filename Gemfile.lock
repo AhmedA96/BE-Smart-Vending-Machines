@@ -125,8 +125,6 @@ GEM
     auto_increment (1.6.2)
       activerecord (>= 6.0)
       activesupport (>= 6.0)
-    autoprefixer-rails (10.4.19.0)
-      execjs (~> 2)
     avo (3.19.3)
       actionview (>= 6.1)
       active_link_to
@@ -177,8 +175,7 @@ GEM
       debug_inspector (>= 1.2.0)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    bootstrap (5.3.3)
-      autoprefixer-rails (>= 9.1.0)
+    bootstrap (5.3.5)
       popper_js (>= 2.11.8, < 3)
     brakeman (7.0.2)
       racc
@@ -280,7 +277,6 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
-    execjs (2.10.0)
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.4.4)
@@ -825,7 +821,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootsnap
-  bootstrap (~> 5.3.1)
+  bootstrap (~> 5.3.5)
   brakeman
   bundle-audit
   byebug
