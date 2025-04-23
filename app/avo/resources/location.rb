@@ -31,6 +31,7 @@ module Avo
         field :landmark, as: :text, hide_on: %i[index]
         field :state, as: :text
         field :zip_code, as: :text
+        field :price_list, as: :belongs_to
 
         many_relation_tabs
       end
