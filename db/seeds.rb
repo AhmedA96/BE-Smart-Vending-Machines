@@ -255,6 +255,7 @@ vending_machines = [
     location: location_records[0],
     price_list: location_records[0].price_list,
     status: 'Active',
+    coordinates: 'POINT(31.2357 30.0444)',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago
   },
@@ -266,6 +267,7 @@ vending_machines = [
     location: location_records[1],
     price_list: location_records[1].price_list,
     status: 'Maintenance',
+    coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 1.year.ago,
     last_service_date: 2.months.ago
   },
@@ -277,6 +279,7 @@ vending_machines = [
     location: location_records[2],
     price_list: location_records[2].price_list,
     status: 'Active',
+    coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 3.months.ago,
     last_service_date: 1.week.ago
   },
@@ -288,6 +291,7 @@ vending_machines = [
     location: location_records[3],
     price_list: location_records[3].price_list,
     status: 'Inactive',
+    coordinates: 'POINT(31.2646 30.0355)',
     installed_at: 8.months.ago,
     last_service_date: 3.months.ago
   }
