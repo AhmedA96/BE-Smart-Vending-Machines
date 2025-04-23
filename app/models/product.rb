@@ -15,13 +15,19 @@
 #  total_rate             :float
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  brand_id               :bigint
 #
 # Indexes
 #
+#  index_products_on_brand_id    (brand_id)
 #  index_products_on_created_at  (created_at)
 #  index_products_on_deleted_at  (deleted_at)
 #  index_products_on_name        (name)
 #  index_products_on_sorting     (sorting)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (brand_id => brands.id)
 #
 class Product < ApplicationRecord
   acts_as_paranoid
@@ -31,6 +37,8 @@ class Product < ApplicationRecord
   has_many :variants, dependent: :destroy
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
+
+  belongs_to :brand, optional: true
 
   validates :name, :slug, presence: true
   validates :status, presence: true, inclusion: { in: %w[Active Inactive] }
