@@ -26,11 +26,11 @@ module Avo
       def fields
         field :id, as: :id
         field :name, as: :text
-        field :address, as: :text, hide_on: %i[index]
-        field :city, as: :text, only_on: :index
+        field :address, as: :text
+        field :city, as: :text, hide_on: :index
         field :landmark, as: :text, hide_on: %i[index]
-        field :state, as: :text
-        field :zip_code, as: :text
+        field :state, as: :text, hide_on: :index
+        field :zip_code, as: :text, hide_on: :index
         field :price_list, as: :belongs_to
 
         many_relation_tabs
