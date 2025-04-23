@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_17_010524) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_22_165555) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -80,6 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_010524) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "variant_id", null: false
+    t.integer "line_number"
     t.index ["variant_id"], name: "index_machine_products_on_variant_id"
     t.index ["vending_machine_id", "variant_id"], name: "index_machine_products_on_vending_machine_id_and_variant_id", unique: true
     t.index ["vending_machine_id"], name: "index_machine_products_on_vending_machine_id"
@@ -250,6 +251,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_010524) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "cost_price", precision: 10, scale: 2, default: "0.0"
     t.index ["active"], name: "index_variants_on_active"
     t.index ["created_at"], name: "index_variants_on_created_at"
     t.index ["deleted_at"], name: "index_variants_on_deleted_at"
