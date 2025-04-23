@@ -40,8 +40,8 @@ class VendingMachine < ApplicationRecord
   has_one :price_list, through: :location
 
   has_many :machine_statuses
-  has_many :machine_products
-  has_many :variants, through: :machine_products
+  has_many :machine_items
+  has_many :variants, through: :machine_items
 
   validates :manufacturer_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
