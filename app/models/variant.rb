@@ -6,6 +6,7 @@
 #
 #  id         :bigint           not null, primary key
 #  active     :boolean          default(TRUE)
+#  cost_price :decimal(10, 2)   default(0.0)
 #  deleted_at :datetime
 #  is_master  :boolean          default(FALSE), not null
 #  name       :string
@@ -38,8 +39,8 @@ class Variant < ApplicationRecord
 
   belongs_to :product, optional: false
 
-  has_many :machine_products
-  has_many :machines, through: :machine_products
+  has_many :machine_items
+  has_many :machines, through: :machine_items
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
 

@@ -9,8 +9,8 @@ RSpec.describe VendingMachine, type: :model do
     it { should belong_to(:location) }
     it { should have_one(:price_list).through(:location) }
     it { should have_many(:machine_statuses) }
-    it { should have_many(:machine_products) }
-    it { should have_many(:variants).through(:machine_products) }
+    it { should have_many(:machine_items) }
+    it { should have_many(:variants).through(:machine_items) }
   end
 
   describe 'validations' do

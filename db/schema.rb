@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_22_165555) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_22_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -74,16 +74,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_165555) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "machine_products", force: :cascade do |t|
+  create_table "machine_items", force: :cascade do |t|
     t.bigint "vending_machine_id", null: false
     t.integer "stock", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "variant_id", null: false
     t.integer "line_number"
-    t.index ["variant_id"], name: "index_machine_products_on_variant_id"
-    t.index ["vending_machine_id", "variant_id"], name: "index_machine_products_on_vending_machine_id_and_variant_id", unique: true
-    t.index ["vending_machine_id"], name: "index_machine_products_on_vending_machine_id"
+    t.index ["variant_id"], name: "index_machine_items_on_variant_id"
+    t.index ["vending_machine_id", "variant_id"], name: "index_machine_items_on_vending_machine_id_and_variant_id", unique: true
+    t.index ["vending_machine_id"], name: "index_machine_items_on_vending_machine_id"
   end
 
   create_table "machine_statuses", force: :cascade do |t|
@@ -294,8 +294,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_165555) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "categories", column: "parent_category_id"
   add_foreign_key "locations", "price_lists"
-  add_foreign_key "machine_products", "variants"
-  add_foreign_key "machine_products", "vending_machines"
+  add_foreign_key "machine_items", "variants"
+  add_foreign_key "machine_items", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "price_list_items", "price_lists"

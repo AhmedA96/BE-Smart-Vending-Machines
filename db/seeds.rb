@@ -4,7 +4,7 @@
 Rails.logger.debug 'Cleaning database...'
 
 MachineStatus.destroy_all
-MachineProduct.destroy_all
+MachineItem.destroy_all
 VendingMachine.destroy_all
 Vendor.destroy_all
 MachineCategory.destroy_all
@@ -255,6 +255,7 @@ vending_machines = [
     location: location_records[0],
     price_list: location_records[0].price_list,
     status: 'Active',
+    coordinates: 'POINT(31.2357 30.0444)',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago
   },
@@ -266,6 +267,7 @@ vending_machines = [
     location: location_records[1],
     price_list: location_records[1].price_list,
     status: 'Maintenance',
+    coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 1.year.ago,
     last_service_date: 2.months.ago
   },
@@ -277,6 +279,7 @@ vending_machines = [
     location: location_records[2],
     price_list: location_records[2].price_list,
     status: 'Active',
+    coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 3.months.ago,
     last_service_date: 1.week.ago
   },
@@ -288,6 +291,7 @@ vending_machines = [
     location: location_records[3],
     price_list: location_records[3].price_list,
     status: 'Inactive',
+    coordinates: 'POINT(31.2646 30.0355)',
     installed_at: 8.months.ago,
     last_service_date: 3.months.ago
   }
@@ -298,11 +302,11 @@ vending_machine_records = VendingMachine.create!(vending_machines)
 Rails.logger.debug { "Created #{vending_machine_records.count} Vending Machines." }
 
 # ---------------------------- #
-# Machine Products
+# Machine Items
 # ---------------------------- #
-Rails.logger.debug 'Creating Machine Products...'
+Rails.logger.debug 'Creating Machine Items...'
 
-machine_products = [
+machine_items = [
   {
     vending_machine: vending_machine_records[0],
     variant: variant_records[0],
@@ -320,9 +324,9 @@ machine_products = [
   }
 ]
 
-machine_product_records = MachineProduct.create!(machine_products)
+machine_item_records = MachineItem.create!(machine_items)
 
-Rails.logger.debug { "Created #{machine_product_records.count} Machine Products." }
+Rails.logger.debug { "Created #{machine_item_records.count} Machine Items." }
 
 # ---------------------------- #
 # Machine Statuses
@@ -421,7 +425,7 @@ Rails.logger.debug { "Locations: #{Location.count}" }
 Rails.logger.debug { "Machine Categories: #{MachineCategory.count}" }
 Rails.logger.debug { "Vendors: #{Vendor.count}" }
 Rails.logger.debug { "Vending Machines: #{VendingMachine.count}" }
-Rails.logger.debug { "Machine Products: #{MachineProduct.count}" }
+Rails.logger.debug { "Machine Items: #{MachineItem.count}" }
 Rails.logger.debug { "Machine Statuses: #{MachineStatus.count}" }
 Rails.logger.debug { "Roles: #{Role.count}" }
 Rails.logger.debug { "Users: #{User.count}" }

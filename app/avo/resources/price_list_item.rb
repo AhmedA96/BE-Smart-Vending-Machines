@@ -12,9 +12,8 @@ module Avo
                         m: 'or').result(distinct: false)
         },
         item: lambda {
-                record.owner.class.name
                 {
-                  title: "#{record&.product&.name} #{record&.name == record&.product&.name ? '' : record&.name} [#{record.owner.sku}]", # rubocop:disable Layout/LineLength
+                  title: record&.variant&.name.to_s,
                   description: "#{record.price} - #{record&.price_list}"
                 }
               },
@@ -24,6 +23,7 @@ module Avo
       def fields
         field :id, as: :id
         field :price, as: :number
+        field :variant, as: :belongs_to
         limited_field :price_list, as: :belongs_to, searchable: true
       end
     end

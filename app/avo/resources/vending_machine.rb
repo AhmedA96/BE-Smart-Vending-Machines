@@ -5,7 +5,7 @@ module Avo
     class VendingMachine < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[machine_statuses machine_products]
+      self.includes = %i[machine_statuses machine_items]
       self.record_selector = true
       self.attachments = []
 
@@ -43,6 +43,8 @@ module Avo
                                   warning: %i[Maintenance], neutral: %i[Retired] }
         field :category, as: :belongs_to, hide_on: %i[index]
         field :manufacturer_id, as: :text, hide_on: %i[index]
+        field :coordinates, as: :text, hide_on: %i[index],
+                            help: 'Enter coordinates in format: POINT (40.7128 74.0060)'
         field :installed_at, as: :date_time, hide_on: %i[index]
         field :last_service_date, as: :date_time, hide_on: %i[index]
 
@@ -51,7 +53,7 @@ module Avo
 
       def many_relations
         tabs id: :many_relation_tabs do
-          field :machine_products, as: :has_many, reloadable: true, name: 'Machine Products'
+          field :machine_items, as: :has_many, reloadable: true, name: 'Machine Items'
         end
       end
     end

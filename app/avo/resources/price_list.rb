@@ -20,6 +20,7 @@ module Avo
       def many_relation_tabs
         tabs id: :many_relation do
           field :price_list_items, as: :has_many, reloadable: true, searchable: true, linkable: true
+          field :locations, as: :has_many, reloadable: true, searchable: true, linkable: true
         end
       end
     end
