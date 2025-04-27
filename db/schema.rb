@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_23_140342) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_094605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -145,6 +145,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_140342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "number", null: false
+    t.decimal "total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "items_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_tax", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_discounts", precision: 10, scale: 2, default: "0.0"
+    t.string "payment_method"
+    t.string "status"
+    t.string "dispense_status"
+    t.jsonb "machine_response"
+    t.datetime "completed_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "price_list_items", force: :cascade do |t|
