@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_23_140342) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_105205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -61,6 +61,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_140342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
+  end
+
+  create_table "line_items", force: :cascade do |t|
+    t.integer "quantity", null: false
+    t.decimal "price", precision: 10, scale: 2, default: "0.0"
+    t.boolean "processed", default: false, null: false
+    t.decimal "price_after_discount", precision: 10, scale: 2
+    t.decimal "buyx_gety_discount", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "variant_id"
+    t.bigint "order_id"
+    t.index ["order_id"], name: "index_line_items_on_order_id"
+    t.index ["variant_id"], name: "index_line_items_on_variant_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -145,6 +159,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_140342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "number", null: false
+    t.decimal "total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "items_total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_tax", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_discounts", precision: 10, scale: 2, default: "0.0"
+    t.string "payment_method"
+    t.string "status"
+    t.string "dispense_status"
+    t.jsonb "machine_response"
+    t.datetime "completed_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "vending_machine_id", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
+    t.index ["vending_machine_id"], name: "index_orders_on_vending_machine_id"
   end
 
   create_table "price_list_items", force: :cascade do |t|
@@ -312,11 +346,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_23_140342) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "categories", column: "parent_category_id"
+  add_foreign_key "line_items", "orders"
+  add_foreign_key "line_items", "variants"
   add_foreign_key "locations", "price_lists"
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_items", "vending_machines"
   add_foreign_key "machine_statuses", "vending_machines"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "orders", "users"
+  add_foreign_key "orders", "vending_machines"
   add_foreign_key "price_list_items", "price_lists"
   add_foreign_key "price_list_items", "variants"
   add_foreign_key "product_categories", "categories"
