@@ -5,7 +5,7 @@ module Avo
     class Vendor < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[vending_machines]
+      self.includes = %i[machines]
       self.record_selector = true
       self.attachments = []
 
@@ -42,7 +42,7 @@ module Avo
 
       def many_relations
         tabs id: :many_relation_tabs do
-          field :vending_machines, as: :has_many, reloadable: true, name: 'Vending Machines'
+          field :machines, as: :has_many, reloadable: true
         end
       end
     end

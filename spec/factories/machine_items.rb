@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :machine_item do
     association :variant
-    association :vending_machine
+    association :machine
     stock { 10 }
   end
 end

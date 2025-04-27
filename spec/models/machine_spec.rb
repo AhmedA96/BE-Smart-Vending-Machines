@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe VendingMachine, type: :model do
+RSpec.describe Machine, type: :model do
   describe 'associations' do
     it { should belong_to(:vendor) }
     it { should belong_to(:category).class_name('MachineCategory') }
@@ -14,10 +14,10 @@ RSpec.describe VendingMachine, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:vending_machine) }
+    subject { build(:machine) }
 
-    it { should validate_presence_of(:manufacturer_id) }
-    it { should validate_uniqueness_of(:manufacturer_id) }
+    it { should validate_presence_of(:external_machine_id) }
+    it { should validate_uniqueness_of(:external_machine_id) }
 
     it 'validates status inclusion' do
       should validate_inclusion_of(:status)
@@ -27,8 +27,8 @@ RSpec.describe VendingMachine, type: :model do
   end
 
   describe 'scopes' do
-    let!(:active_machine) { create(:vending_machine, status: 'Active') }
-    let!(:inactive_machine) { create(:vending_machine, status: 'Inactive') }
+    let!(:active_machine) { create(:machine, status: 'Active') }
+    let!(:inactive_machine) { create(:machine, status: 'Inactive') }
 
     describe '.active' do
       it 'returns only active machines' do
@@ -40,13 +40,13 @@ RSpec.describe VendingMachine, type: :model do
 
   describe '.nearby' do
     let!(:close_machine) do
-      create(:vending_machine,
+      create(:machine,
              status: 'Active',
              coordinates: 'POINT(100.5 13.7)')
     end
 
     let!(:far_machine) do
-      create(:vending_machine,
+      create(:machine,
              status: 'Active',
              coordinates: 'POINT(104.5 15.7)')
     end
@@ -63,7 +63,7 @@ RSpec.describe VendingMachine, type: :model do
     end
 
     it 'orders results by distance' do
-      create(:vending_machine,
+      create(:machine,
              status: 'Active',
              coordinates: 'POINT(100.51 13.71)')
 

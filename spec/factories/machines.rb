@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :vending_machine do
-    sequence(:manufacturer_id) { |n| "MAN#{n.to_s.rjust(4, '0')}" }
-    sequence(:name) { |n| "Vending Machine #{n}" }
+  factory :machine do
+    sequence(:external_machine_id) { |n| "MAN#{n.to_s.rjust(4, '0')}" }
+    sequence(:name) { |n| "Machine #{n}" }
     association :category, factory: :machine_category
     association :vendor
     association :location

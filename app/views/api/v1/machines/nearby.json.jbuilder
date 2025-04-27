@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-json.vending_machines @vending_machines do |machine|
+json.machines @machines do |machine|
   json.id machine.id
   json.name machine.name
   json.location machine.location&.name
@@ -10,5 +10,5 @@ json.vending_machines @vending_machines do |machine|
 end
 
 json.pagination do
-  json.partial! 'api/v1/shared/pagination', collection: @vending_machines
+  json.partial! 'api/v1/shared/pagination', collection: @machines
 end

@@ -17,7 +17,7 @@ module Avo
       def fields
         field :id, as: :id
         field :product, as: :belongs_to, searchable: true, only_on: %i[edit new]
-        field :vending_machine, as: :belongs_to, searchable: true
+        field :machine, as: :belongs_to, searchable: true
         field :variant, as: :belongs_to, searchable: true
         field :stock, as: :number, required: true, min: 0
         field :line_number, as: :number, required: true, hide_on: :index

@@ -25,5 +25,5 @@
 #
 class Location < ApplicationRecord
   belongs_to :price_list
-  has_many :vending_machines
+  has_many :machines
 end

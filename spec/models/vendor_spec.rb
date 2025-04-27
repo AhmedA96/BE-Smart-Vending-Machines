@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Vendor, type: :model do
   describe 'associations' do
-    it { should have_many(:vending_machines) }
+    it { should have_many(:machines) }
   end
 
   describe 'validations' do

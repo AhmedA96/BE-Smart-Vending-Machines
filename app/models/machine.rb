@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: vending_machines
+# Table name: machines
 #
 #  id                  :bigint           not null, primary key
 #  coordinates         :geography        point, 4326
@@ -14,17 +14,17 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  category_id         :bigint           not null
+#  external_machine_id :string
 #  location_id         :bigint
-#  manufacturer_id     :string
 #  vendor_id           :bigint           not null
 #
 # Indexes
 #
-#  index_vending_machines_on_category_id      (category_id)
-#  index_vending_machines_on_coordinates      (coordinates) USING gist
-#  index_vending_machines_on_location_id      (location_id)
-#  index_vending_machines_on_manufacturer_id  (manufacturer_id) UNIQUE
-#  index_vending_machines_on_vendor_id        (vendor_id)
+#  index_machines_on_category_id          (category_id)
+#  index_machines_on_coordinates          (coordinates) USING gist
+#  index_machines_on_external_machine_id  (external_machine_id) UNIQUE
+#  index_machines_on_location_id          (location_id)
+#  index_machines_on_vendor_id            (vendor_id)
 #
 # Foreign Keys
 #
@@ -32,7 +32,7 @@
 #  fk_rails_...  (location_id => locations.id)
 #  fk_rails_...  (vendor_id => vendors.id)
 #
-class VendingMachine < ApplicationRecord
+class Machine < ApplicationRecord
   belongs_to :vendor
   belongs_to :category, class_name: 'MachineCategory'
   belongs_to :location
@@ -43,7 +43,7 @@ class VendingMachine < ApplicationRecord
   has_many :machine_items
   has_many :variants, through: :machine_items
 
-  validates :manufacturer_id, presence: true, uniqueness: true
+  validates :external_machine_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
 
   scope :active, -> { where(status: 'Active') }
