@@ -10,6 +10,15 @@
 #  quantity             :integer          not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  variant_id           :bigint
+#
+# Indexes
+#
+#  index_line_items_on_variant_id  (variant_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (variant_id => variants.id)
 #
 class LineItem < ApplicationRecord
 end

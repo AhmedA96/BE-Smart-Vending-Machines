@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_102106) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_102945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -71,6 +71,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_102106) do
     t.decimal "buyx_gety_discount", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "variant_id"
+    t.index ["variant_id"], name: "index_line_items_on_variant_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -342,6 +344,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_102106) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "categories", column: "parent_category_id"
+  add_foreign_key "line_items", "variants"
   add_foreign_key "locations", "price_lists"
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_items", "vending_machines"
