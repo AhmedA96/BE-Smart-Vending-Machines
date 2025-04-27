@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_100933) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_102106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -61,6 +61,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_100933) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
+  end
+
+  create_table "line_items", force: :cascade do |t|
+    t.integer "quantity", null: false
+    t.decimal "price", precision: 10, scale: 2, default: "0.0"
+    t.boolean "processed", default: false, null: false
+    t.decimal "price_after_discount", precision: 10, scale: 2
+    t.decimal "buyx_gety_discount", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "locations", force: :cascade do |t|
