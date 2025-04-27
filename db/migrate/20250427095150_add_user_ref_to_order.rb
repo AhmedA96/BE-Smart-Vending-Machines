@@ -2,6 +2,6 @@
 
 class AddUserRefToOrder < ActiveRecord::Migration[8.0]
   def change
-    add_reference :orders, :user, null: false, foreign_key: true, default: 0
+    add_reference :orders, :user, null: false, foreign_key: true # rubocop:disable Rails/NotNullColumn
   end
 end

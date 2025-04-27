@@ -3,7 +3,7 @@
 module Avo
   module Resources
     class Order < Avo::BaseResource
-      self.includes = %i[user]
+      self.includes = %i[user vending_machine]
       self.attachments = []
       self.search = {
         query: lambda {

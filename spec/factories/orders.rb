@@ -6,7 +6,7 @@ FactoryBot.define do
     sequence(:order_number) { |n| "ORDER#{n}" }
     status { 'pending' }
     total_amount { 99.99 }
-    
+
     association :user
   end
 end
