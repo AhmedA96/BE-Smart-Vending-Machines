@@ -44,4 +44,58 @@ class Product < ApplicationRecord
   validates :status, presence: true, inclusion: { in: %w[Active Inactive] }
   validates :max_orderable_quantity, numericality: { greater_than: 0, allow_nil: true }
   validates :sorting, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+
+  scope :filtered_by_machine, lambda { |machine_id|
+    joins(variants: :machine_items)
+      .where(machine_items: { machine_id: machine_id })
+      .includes(:variants)
+      .distinct
+      .order_by_sorting
+  }
+
+  scope :order_by_sorting, -> { order(sorting: :asc) }
+
+  scope :by_category, lambda { |category_id|
+    return all if category_id.blank?
+
+    joins(:product_categories).where(product_categories: { category_id: }).order_by_sorting
+  }
+
+  scope :by_price_range_for_price_list, lambda { |price_list_id, min_price, max_price|
+    joins(variants: :price_list_items)
+      .where(price_list_items: { price_list_id: })
+      .where(price_list_items: { price: min_price.. })
+      .where(price_list_items: { price: ..max_price })
+  }
+
+  scope :sort_by_price, lambda { |price_list_id, sort_direction|
+    joins(variants: :price_list_items)
+      .where(price_list_items: { price_list_id: price_list_id })
+      .reorder(price_list_items: { price: sort_direction })
+  }
+  scope :with_stock_availability, lambda { |machine_id, min_quantity = 1|
+    joins(variants: :machine_items)
+      .where(machine_items: { machine_id: machine_id })
+      .where(machine_items: { stock: min_quantity.. })
+      .distinct
+  }
+
+  scope :alternatives, lambda { |category_id, product_id|
+    joins(:product_categories)
+      .where(product_categories: { category_id: category_id })
+      .where.not(id: product_id)
+      .joins(:variants)
+      .order_by_sorting
+      .distinct
+  }
+
+  scope :with_price_list, lambda { |price_list_id|
+    joins(variants: :price_list_items).where(price_list_items: { price_list_id: })
+  }
+
+  scope :active, -> { where(status: 'Active') }
+
+  def master
+    variants.find_by(is_master: true)
+  end
 end
