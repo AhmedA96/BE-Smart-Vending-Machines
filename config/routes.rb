@@ -26,7 +26,7 @@ Rails.application.routes.draw do
                            }
       end
 
-      resources :vending_machines, only: [] do
+      resources :machines, only: [] do
         collection do
           get :nearby
         end

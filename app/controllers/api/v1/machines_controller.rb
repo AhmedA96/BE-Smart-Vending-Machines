@@ -2,12 +2,12 @@
 
 module Api
   module V1
-    class VendingMachinesController < ApplicationController
+    class MachinesController < ApplicationController
       include Paginable
 
       def nearby
-        @vending_machines = paginate(
-          VendingMachine.nearby(
+        @machines = paginate(
+          Machine.nearby(
             latitude: params[:latitude],
             longitude: params[:longitude]
           )

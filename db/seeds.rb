@@ -5,7 +5,7 @@ Rails.logger.debug 'Cleaning database...'
 
 MachineStatus.destroy_all
 MachineItem.destroy_all
-VendingMachine.destroy_all
+Machine.destroy_all
 Vendor.destroy_all
 MachineCategory.destroy_all
 ProductCategory.destroy_all
@@ -234,8 +234,8 @@ Rails.logger.debug 'Creating Machine Categories...'
 
 categories = [
   { name: 'Snacks', description: 'Snack dispensing machines.' },
-  { name: 'Beverages', description: 'Hot and cold drink vending machines.' },
-  { name: 'Electronics', description: 'Small electronics vending machines.' }
+  { name: 'Beverages', description: 'Hot and cold drink machines.' },
+  { name: 'Electronics', description: 'Small electronics machines.' }
 ]
 
 machine_categories = MachineCategory.create!(categories)
@@ -259,13 +259,13 @@ vendor_records = Vendor.create!(vendors)
 Rails.logger.debug { "Created #{vendor_records.count} Vendors." }
 
 # ---------------------------- #
-# Vending Machines
+# Machines
 # ---------------------------- #
-Rails.logger.debug 'Creating Vending Machines...'
+Rails.logger.debug 'Creating Machines...'
 
-vending_machines = [
+machines = [
   {
-    manufacturer_id: 'SNACK-001',
+    external_machine_id: 'SNACK-001',
     name: 'Snack Machine Alpha',
     category: machine_categories[0],
     vendor: vendor_records[1],
@@ -277,7 +277,7 @@ vending_machines = [
     last_service_date: 1.month.ago
   },
   {
-    manufacturer_id: 'BEV-101',
+    external_machine_id: 'BEV-101',
     name: 'Drink Machine Beta',
     category: machine_categories[1],
     vendor: vendor_records[0],
@@ -289,7 +289,7 @@ vending_machines = [
     last_service_date: 2.months.ago
   },
   {
-    manufacturer_id: 'ELEC-201',
+    external_machine_id: 'ELEC-201',
     name: 'Electronics Vendor Gamma',
     category: machine_categories[2],
     vendor: vendor_records[0],
@@ -301,7 +301,7 @@ vending_machines = [
     last_service_date: 1.week.ago
   },
   {
-    manufacturer_id: 'SNACK-002',
+    external_machine_id: 'SNACK-002',
     name: 'Snack Machine Delta',
     category: machine_categories[0],
     vendor: vendor_records[1],
@@ -314,9 +314,9 @@ vending_machines = [
   }
 ]
 
-vending_machine_records = VendingMachine.create!(vending_machines)
+machine_records = Machine.create!(machines)
 
-Rails.logger.debug { "Created #{vending_machine_records.count} Vending Machines." }
+Rails.logger.debug { "Created #{machine_records.count} Machines." }
 
 # ---------------------------- #
 # Machine Items
@@ -325,17 +325,17 @@ Rails.logger.debug 'Creating Machine Items...'
 
 machine_items = [
   {
-    vending_machine: vending_machine_records[0],
+    machine: machine_records[0],
     variant: variant_records[0],
     stock: 20
   },
   {
-    vending_machine: vending_machine_records[0],
+    machine: machine_records[0],
     variant: variant_records[2],
     stock: 15
   },
   {
-    vending_machine: vending_machine_records[1],
+    machine: machine_records[1],
     variant: variant_records[1],
     stock: 25
   }
@@ -352,13 +352,13 @@ Rails.logger.debug 'Creating Machine Statuses...'
 
 machine_statuses = [
   {
-    vending_machine: vending_machine_records[0],
+    machine: machine_records[0],
     status: 'Active',
     changed_at: 1.day.ago,
     notes: 'Checked and fully operational'
   },
   {
-    vending_machine: vending_machine_records[1],
+    machine: machine_records[1],
     status: 'Maintenance',
     changed_at: 2.days.ago,
     notes: 'Reported minor issues with coin acceptor'
@@ -441,7 +441,7 @@ Rails.logger.debug { "Price Lists: #{PriceList.count}" }
 Rails.logger.debug { "Locations: #{Location.count}" }
 Rails.logger.debug { "Machine Categories: #{MachineCategory.count}" }
 Rails.logger.debug { "Vendors: #{Vendor.count}" }
-Rails.logger.debug { "Vending Machines: #{VendingMachine.count}" }
+Rails.logger.debug { "Machines: #{Machine.count}" }
 Rails.logger.debug { "Machine Items: #{MachineItem.count}" }
 Rails.logger.debug { "Machine Statuses: #{MachineStatus.count}" }
 Rails.logger.debug { "Roles: #{Role.count}" }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_105205) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_27_152640) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -98,25 +98,45 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_105205) do
   end
 
   create_table "machine_items", force: :cascade do |t|
-    t.bigint "vending_machine_id", null: false
+    t.bigint "machine_id", null: false
     t.integer "stock", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "variant_id", null: false
     t.integer "line_number"
+    t.index ["machine_id", "variant_id"], name: "index_machine_items_on_machine_id_and_variant_id", unique: true
+    t.index ["machine_id"], name: "index_machine_items_on_machine_id"
     t.index ["variant_id"], name: "index_machine_items_on_variant_id"
-    t.index ["vending_machine_id", "variant_id"], name: "index_machine_items_on_vending_machine_id_and_variant_id", unique: true
-    t.index ["vending_machine_id"], name: "index_machine_items_on_vending_machine_id"
   end
 
   create_table "machine_statuses", force: :cascade do |t|
-    t.bigint "vending_machine_id", null: false
+    t.bigint "machine_id", null: false
     t.string "status"
     t.datetime "changed_at"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["vending_machine_id"], name: "index_machine_statuses_on_vending_machine_id"
+    t.index ["machine_id"], name: "index_machine_statuses_on_machine_id"
+  end
+
+  create_table "machines", force: :cascade do |t|
+    t.string "external_machine_id"
+    t.string "name"
+    t.bigint "category_id", null: false
+    t.bigint "vendor_id", null: false
+    t.string "status"
+    t.datetime "installed_at"
+    t.datetime "last_service_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.datetime "location_updated_at"
+    t.bigint "location_id"
+    t.index ["category_id"], name: "index_machines_on_category_id"
+    t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
+    t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
+    t.index ["location_id"], name: "index_machines_on_location_id"
+    t.index ["vendor_id"], name: "index_machines_on_vendor_id"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -176,9 +196,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_105205) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.bigint "vending_machine_id", null: false
+    t.bigint "machine_id", null: false
+    t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
-    t.index ["vending_machine_id"], name: "index_orders_on_vending_machine_id"
   end
 
   create_table "price_list_items", force: :cascade do |t|
@@ -313,26 +333,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_105205) do
     t.index ["sorting"], name: "index_variants_on_sorting"
   end
 
-  create_table "vending_machines", force: :cascade do |t|
-    t.string "manufacturer_id"
-    t.string "name"
-    t.bigint "category_id", null: false
-    t.bigint "vendor_id", null: false
-    t.string "status"
-    t.datetime "installed_at"
-    t.datetime "last_service_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
-    t.datetime "location_updated_at"
-    t.bigint "location_id"
-    t.index ["category_id"], name: "index_vending_machines_on_category_id"
-    t.index ["coordinates"], name: "index_vending_machines_on_coordinates", using: :gist
-    t.index ["location_id"], name: "index_vending_machines_on_location_id"
-    t.index ["manufacturer_id"], name: "index_vending_machines_on_manufacturer_id", unique: true
-    t.index ["vendor_id"], name: "index_vending_machines_on_vendor_id"
-  end
-
   create_table "vendors", force: :cascade do |t|
     t.string "name"
     t.string "contact_person"
@@ -349,18 +349,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_105205) do
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "locations", "price_lists"
+  add_foreign_key "machine_items", "machines"
   add_foreign_key "machine_items", "variants"
-  add_foreign_key "machine_items", "vending_machines"
-  add_foreign_key "machine_statuses", "vending_machines"
+  add_foreign_key "machine_statuses", "machines"
+  add_foreign_key "machines", "locations"
+  add_foreign_key "machines", "machine_categories", column: "category_id"
+  add_foreign_key "machines", "vendors"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "orders", "machines"
   add_foreign_key "orders", "users"
-  add_foreign_key "orders", "vending_machines"
   add_foreign_key "price_list_items", "price_lists"
   add_foreign_key "price_list_items", "variants"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
   add_foreign_key "products", "brands"
-  add_foreign_key "vending_machines", "locations"
-  add_foreign_key "vending_machines", "machine_categories", column: "category_id"
-  add_foreign_key "vending_machines", "vendors"
 end

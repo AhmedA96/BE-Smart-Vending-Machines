@@ -11,6 +11,6 @@ FactoryBot.define do
     total_discounts { 0.0 }
 
     association :user
-    association :vending_machine
+    association :machine
   end
 end

@@ -14,7 +14,7 @@
 #  updated_at     :datetime         not null
 #
 class Vendor < ApplicationRecord
-  has_many :vending_machines
+  has_many :machines
 
   validates :name, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true

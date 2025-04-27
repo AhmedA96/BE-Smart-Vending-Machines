@@ -13,7 +13,7 @@ ar:
         name: "حالة الماكينة"
         plural: "حالات الماكينات"
         fields:
-          vending_machine: "ماكينة البيع"
+          machine: "ماكينة البيع"
           status: "الحالة"
           changed_at: "تاريخ التغيير"
           notes: "ملاحظات"
@@ -50,11 +50,11 @@ ar:
           provider: "مزود الخدمة"
           profile: "الملف الشخصي"
 
-      vending_machine:
+      machine:
         name: "ماكينة البيع"
         plural: "ماكينات البيع"
         fields:
-          manufacturer_id: "معرف المصنع"
+          external_machine_id: "معرف المصنع"
           name: "الاسم"
           category: "الفئة"
           vendor: "المورد"

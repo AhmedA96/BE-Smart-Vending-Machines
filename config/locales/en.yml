@@ -41,16 +41,16 @@ en:
         name: Machine Status
         plural: Machine Statuses
         fields:
-          vending_machine: Vending Machine
+          machine: Machine
           status: Status
           changed_at: Changed At
           notes: Notes
 
-      vending_machine:
-        name: Vending Machine
-        plural: Vending Machines
+      machine:
+        name: Machine
+        plural: Machines
         fields:
-          manufacturer_id: Manufacturer ID
+          external_machine_id: Manufacturer ID
           name: Name
           category: Category
           vendor: Vendor

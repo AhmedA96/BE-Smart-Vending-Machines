@@ -2,7 +2,7 @@
 
 module Avo
   module Resources
-    class VendingMachine < Avo::BaseResource
+    class Machine < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
       self.includes = %i[machine_statuses machine_items]
@@ -27,10 +27,6 @@ module Avo
         help: -> { 'Search by Machine name' }
       }
 
-      def self.name
-        'Machines'
-      end
-
       def fields
         status = %w[Active Inactive Maintenance Retired]
         field :id, as: :id
@@ -42,7 +38,7 @@ module Avo
                        options: { danger: %i[Inactive], success: %i[Active],
                                   warning: %i[Maintenance], neutral: %i[Retired] }
         field :category, as: :belongs_to, hide_on: %i[index]
-        field :manufacturer_id, as: :text, hide_on: %i[index]
+        field :external_machine_id, as: :text, hide_on: %i[index]
         field :coordinates, as: :text, hide_on: %i[index],
                             help: 'Enter coordinates in format: POINT (40.7128 74.0060)'
         field :installed_at, as: :date_time, hide_on: %i[index]
