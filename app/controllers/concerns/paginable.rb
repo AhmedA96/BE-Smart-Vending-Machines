@@ -6,7 +6,7 @@ module Paginable
   private
 
   def paginate(collection)
-    @pagy, records = pagy(collection, items: params[:per_page] || Pagy::DEFAULT[:items])
+    @pagy, records = pagy(collection, limit: params[:per_page] || Pagy::DEFAULT[:limit])
     records
   end
 end

@@ -6,6 +6,7 @@ module Api
       include ErrorHandling
       include Localization
       include Pagy::Backend
+      include Paginable
     end
   end
 end

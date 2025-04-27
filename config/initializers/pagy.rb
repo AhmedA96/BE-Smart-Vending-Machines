@@ -4,8 +4,8 @@
 # See https://ddnexus.github.io/pagy/api/pagy#configuration
 
 # Default variables
-Pagy::DEFAULT[:items] = 10
-Pagy::DEFAULT[:page] = 1
+Pagy::DEFAULT[:limit] = 10
+Pagy::DEFAULT[:size] = 1
 
 # Enable backend methods
 require 'pagy/extras/array'
