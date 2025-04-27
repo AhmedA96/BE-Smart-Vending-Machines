@@ -32,6 +32,10 @@
 #  fk_rails_...  (vending_machine_id => vending_machines.id)
 #
 class Order < ApplicationRecord
-  validates :number, :status, presence: true
   belongs_to :user
+  belongs_to :vending_machine
+  has_many :line_items, dependent: :nullify
+  has_many :variants, through: :line_items
+
+  validates :number, presence: true
 end
