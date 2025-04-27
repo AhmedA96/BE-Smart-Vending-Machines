@@ -43,6 +43,7 @@ class Variant < ApplicationRecord
   has_many :machines, through: :machine_items
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
+  has_many :line_items, dependent: :nullify
 
   def full_name
     "#{product.name} - #{product&.name == name ? '' : name} [#{sku}]"
