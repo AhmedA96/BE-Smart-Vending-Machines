@@ -10,7 +10,9 @@ Vendor.destroy_all
 MachineCategory.destroy_all
 ProductCategory.destroy_all
 Variant.destroy_all
+Product.update_all(brand_id: nil) # rubocop:disable Rails/SkipsModelValidations
 Product.destroy_all
+Brand.destroy_all
 Category.destroy_all
 PriceList.destroy_all
 Location.destroy_all
@@ -48,6 +50,19 @@ category_records = parent_records + child_records
 Rails.logger.debug { "Created #{category_records.count} Categories." }
 
 # ---------------------------- #
+# Brands
+# ---------------------------- #
+Rails.logger.debug 'Creating Brands...'
+
+brands = [
+  { name: 'Coca-Cola', description: 'The world\'s leading beverage company' },
+  { name: 'Frito-Lay', description: 'A subsidiary of PepsiCo that manufactures snack foods' }
+]
+
+brand_records = Brand.create!(brands)
+Rails.logger.debug { "Created #{brand_records.count} Brands with logos." }
+
+# ---------------------------- #
 # Products
 # ---------------------------- #
 Rails.logger.debug 'Creating Products...'
@@ -60,7 +75,8 @@ products = [
     slug: 'cola-classic',
     total_rate: 4.5,
     max_orderable_quantity: 5,
-    sorting: 1
+    sorting: 1,
+    brand: brand_records[0]
   },
   {
     name: 'Potato Chips',
@@ -69,7 +85,8 @@ products = [
     slug: 'potato-chips',
     total_rate: 4.0,
     max_orderable_quantity: 3,
-    sorting: 2
+    sorting: 2,
+    brand: brand_records[1]
   }
 ]
 

@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: brands
+#
+#  id          :bigint           not null, primary key
+#  background  :string
+#  description :text
+#  logo        :string
+#  name        :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+class Brand < ApplicationRecord
+  has_one_attached :logo, dependent: :destroy
+  has_one_attached :cover, dependent: :destroy
+
+  has_many :products, dependent: :nullify
+
+  validates :name, presence: true
+end
