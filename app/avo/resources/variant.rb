@@ -28,7 +28,7 @@ module Avo
         field :is_master, as: :boolean
         field :points, as: :number, only_on: %i[index show]
         field :weight, as: :number
-        field :sorting, as: :number
+        field :position, as: :number
         field :active, as: :boolean, readonly: -> { resource.record.is_master? }, filterable: true
         limited_field :product, as: :belongs_to, searchable: true
       end

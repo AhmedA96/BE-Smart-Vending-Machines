@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_110246) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_28_112029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -319,7 +319,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_110246) do
     t.float "weight", default: 0.0
     t.boolean "is_master", default: false, null: false
     t.boolean "active", default: true
-    t.integer "sorting", default: 1
+    t.integer "position", default: 1
     t.integer "product_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -328,9 +328,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_110246) do
     t.index ["active"], name: "index_variants_on_active"
     t.index ["created_at"], name: "index_variants_on_created_at"
     t.index ["deleted_at"], name: "index_variants_on_deleted_at"
+    t.index ["position"], name: "index_variants_on_position"
     t.index ["product_id"], name: "index_variants_on_product_id"
     t.index ["sku"], name: "index_variants_on_sku", unique: true
-    t.index ["sorting"], name: "index_variants_on_sorting"
   end
 
   create_table "vendors", force: :cascade do |t|
