@@ -3,7 +3,7 @@
 module Api
   module V1
     class MachinesController < ApplicationController
-      include Paginable
+      before_action :set_machine, only: %i[show]
 
       def nearby
         @machines = paginate(
@@ -12,6 +12,14 @@ module Api
             longitude: params[:longitude]
           )
         )
+      end
+
+      def show; end
+
+      private
+
+      def set_machine
+        @machine = Machine.find(params[:id])
       end
     end
   end
