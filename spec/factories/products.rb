@@ -8,7 +8,7 @@ FactoryBot.define do
     status { 'Active' }
     total_rate { rand(0.0..5.0).round(1) }
     max_orderable_quantity { rand(1..100) }
-    sorting { 1 }
+    position { 1 }
     deleted_at { nil }
 
     after(:create) do |product|

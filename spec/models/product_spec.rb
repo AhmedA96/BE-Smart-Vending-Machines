@@ -16,14 +16,14 @@ RSpec.describe Product, type: :model do
     it { should validate_presence_of(:status) }
     it { should validate_inclusion_of(:status).in_array(%w[Active Inactive]) }
     it { should validate_numericality_of(:max_orderable_quantity).is_greater_than(0).allow_nil }
-    it { should validate_presence_of(:sorting) }
-    it { should validate_numericality_of(:sorting).only_integer.is_greater_than_or_equal_to(1) }
+    it { should validate_presence_of(:position) }
+    it { should validate_numericality_of(:position).only_integer.is_greater_than_or_equal_to(1) }
   end
 
   describe 'scopes' do
     let(:brand) { create(:brand) }
     let(:category) { create(:category) }
-    let(:product) { create(:product, brand: brand, status: 'Active', sorting: 2) }
+    let(:product) { create(:product, brand: brand, status: 'Active', position: 2) }
     let(:variant) { create(:variant, product: product, is_master: true) }
 
     describe '.filtered_by_machine' do
@@ -35,11 +35,11 @@ RSpec.describe Product, type: :model do
       end
     end
 
-    describe '.order_by_sorting' do
-      it 'orders products by sorting' do
-        product1 = create(:product, sorting: 1)
-        product2 = create(:product, sorting: 2)
-        expect(Product.order_by_sorting).to eq([product1, product2])
+    describe '.order_by_position' do
+      it 'orders products by position' do
+        product1 = create(:product, position: 1)
+        product2 = create(:product, position: 2)
+        expect(Product.order_by_position).to eq([product1, product2])
       end
     end
 
