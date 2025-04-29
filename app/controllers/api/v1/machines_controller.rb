@@ -10,7 +10,7 @@ module Api
           Machine.nearby(
             latitude: params[:latitude],
             longitude: params[:longitude]
-          )
+          ).includes(:category).includes(:location)
         )
       end
 
