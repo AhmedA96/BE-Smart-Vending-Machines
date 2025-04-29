@@ -1,0 +1,5 @@
+class AddFloorNoToMachines < ActiveRecord::Migration[8.0]
+  def change
+    add_column :machines, :floor_no, :integer
+  end
+end
