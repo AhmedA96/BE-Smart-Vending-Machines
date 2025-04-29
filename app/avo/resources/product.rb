@@ -61,7 +61,7 @@ module Avo
         field :slug, as: :text
         field :total_rate, as: :number, hide_on: %i[index show]
         field :max_orderable_quantity, as: :number, hide_on: %i[index]
-        field :sorting, as: :number, hide_on: %i[index]
+        field :position, as: :number, hide_on: %i[index]
         field :start_date, as: :date
         field :end_date, as: :date
 

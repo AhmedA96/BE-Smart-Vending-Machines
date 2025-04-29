@@ -11,8 +11,8 @@
 #  is_master  :boolean          default(FALSE), not null
 #  name       :string
 #  points     :integer
+#  position   :integer          default(1)
 #  sku        :string           not null
-#  sorting    :integer          default(1)
 #  weight     :float            default(0.0)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -23,9 +23,9 @@
 #  index_variants_on_active      (active)
 #  index_variants_on_created_at  (created_at)
 #  index_variants_on_deleted_at  (deleted_at)
+#  index_variants_on_position    (position)
 #  index_variants_on_product_id  (product_id)
 #  index_variants_on_sku         (sku) UNIQUE
-#  index_variants_on_sorting     (sorting)
 #
 class Variant < ApplicationRecord
   acts_as_paranoid
@@ -35,7 +35,7 @@ class Variant < ApplicationRecord
 
   validates :sku, presence: true
   validates :sku, uniqueness: { case_sensitive: false }
-  validates :sorting, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+  validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   belongs_to :product, optional: false
 
@@ -43,6 +43,7 @@ class Variant < ApplicationRecord
   has_many :machines, through: :machine_items
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
+  has_many :line_items, dependent: :nullify
 
   def full_name
     "#{product.name} - #{product&.name == name ? '' : name} [#{sku}]"
