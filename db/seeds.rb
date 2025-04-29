@@ -75,7 +75,7 @@ products = [
     slug: 'cola-classic',
     total_rate: 4.5,
     max_orderable_quantity: 5,
-    sorting: 1,
+    position: 1,
     brand: brand_records[0]
   },
   {
@@ -85,7 +85,7 @@ products = [
     slug: 'potato-chips',
     total_rate: 4.0,
     max_orderable_quantity: 3,
-    sorting: 2,
+    position: 2,
     brand: brand_records[1]
   }
 ]
@@ -130,7 +130,7 @@ variants = [
     points: 10,
     weight: 0.33,
     product: product_records[0],
-    sorting: 1
+    position: 1
   },
   {
     name: 'Cola Classic 500ml',
@@ -139,7 +139,7 @@ variants = [
     points: 15,
     weight: 0.5,
     product: product_records[0],
-    sorting: 2
+    position: 2
   },
   {
     name: 'Regular Chips 100g',
@@ -148,7 +148,7 @@ variants = [
     points: 8,
     weight: 0.1,
     product: product_records[1],
-    sorting: 1
+    position: 1
   }
 ]
 

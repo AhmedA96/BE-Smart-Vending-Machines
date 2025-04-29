@@ -9,8 +9,8 @@
 #  description            :string
 #  max_orderable_quantity :integer
 #  name                   :string           not null
+#  position               :integer          default(1)
 #  slug                   :string
-#  sorting                :integer          default(1)
 #  status                 :string
 #  total_rate             :float
 #  created_at             :datetime         not null
@@ -23,7 +23,7 @@
 #  index_products_on_created_at  (created_at)
 #  index_products_on_deleted_at  (deleted_at)
 #  index_products_on_name        (name)
-#  index_products_on_sorting     (sorting)
+#  index_products_on_position    (position)
 #
 # Foreign Keys
 #
@@ -43,29 +43,28 @@ class Product < ApplicationRecord
   validates :name, :slug, presence: true
   validates :status, presence: true, inclusion: { in: %w[Active Inactive] }
   validates :max_orderable_quantity, numericality: { greater_than: 0, allow_nil: true }
-  validates :sorting, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+  validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   scope :filtered_by_machine, lambda { |machine_id|
     joins(variants: :machine_items)
       .where(machine_items: { machine_id: machine_id })
       .includes(:variants)
       .distinct
-      .order_by_sorting
+      .order_by_position
   }
 
-  scope :order_by_sorting, -> { order(sorting: :asc) }
+  scope :order_by_position, -> { order(position: :asc) }
 
   scope :by_category, lambda { |category_id|
     return all if category_id.blank?
 
-    joins(:product_categories).where(product_categories: { category_id: }).order_by_sorting
+    joins(:product_categories).where(product_categories: { category_id: }).order_by_position.distinct
   }
 
   scope :by_price_range_for_price_list, lambda { |price_list_id, min_price, max_price|
     joins(variants: :price_list_items)
       .where(price_list_items: { price_list_id: })
-      .where(price_list_items: { price: min_price.. })
-      .where(price_list_items: { price: ..max_price })
+      .where(price_list_items: { price: min_price..max_price })
   }
 
   scope :sort_by_price, lambda { |price_list_id, sort_direction|
@@ -85,7 +84,7 @@ class Product < ApplicationRecord
       .where(product_categories: { category_id: category_id })
       .where.not(id: product_id)
       .joins(:variants)
-      .order_by_sorting
+      .order_by_position
       .distinct
   }
 

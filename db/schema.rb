@@ -239,13 +239,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
     t.datetime "deleted_at"
     t.float "total_rate"
     t.integer "max_orderable_quantity"
-    t.integer "sorting", default: 1
+    t.integer "position", default: 1
     t.bigint "brand_id"
     t.index ["brand_id"], name: "index_products_on_brand_id"
     t.index ["created_at"], name: "index_products_on_created_at"
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
     t.index ["name"], name: "index_products_on_name"
-    t.index ["sorting"], name: "index_products_on_sorting"
+    t.index ["position"], name: "index_products_on_position"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -320,7 +320,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
     t.float "weight", default: 0.0
     t.boolean "is_master", default: false, null: false
     t.boolean "active", default: true
-    t.integer "sorting", default: 1
+    t.integer "position", default: 1
     t.integer "product_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -329,9 +329,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
     t.index ["active"], name: "index_variants_on_active"
     t.index ["created_at"], name: "index_variants_on_created_at"
     t.index ["deleted_at"], name: "index_variants_on_deleted_at"
+    t.index ["position"], name: "index_variants_on_position"
     t.index ["product_id"], name: "index_variants_on_product_id"
     t.index ["sku"], name: "index_variants_on_sku", unique: true
-    t.index ["sorting"], name: "index_variants_on_sorting"
   end
 
   create_table "vendors", force: :cascade do |t|
@@ -346,7 +346,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "categories", "categories", column: "parent_category_id"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "locations", "price_lists"
