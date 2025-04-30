@@ -6,6 +6,7 @@
 #
 #  id                  :bigint           not null, primary key
 #  coordinates         :geography        point, 4326
+#  floor_no            :integer
 #  installed_at        :datetime
 #  last_service_date   :datetime
 #  location_updated_at :datetime

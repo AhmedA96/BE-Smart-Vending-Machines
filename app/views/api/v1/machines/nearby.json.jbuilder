@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-json.machines @machines do |machine|
-  json.id machine.id
-  json.name machine.name
-  json.location machine.location&.name
-  json.distance machine.distance.round(2)
-  json.status machine.status
-  json.category machine.category.name
+json.machines do
+  json.array! @machines do |machine|
+    json.partial! 'machine', machine: machine
+    json.distance machine.distance.round(2)
+  end
 end
 
 json.pagination do

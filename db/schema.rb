@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_112029) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -132,6 +132,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_112029) do
     t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "location_updated_at"
     t.bigint "location_id"
+    t.integer "floor_no"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true

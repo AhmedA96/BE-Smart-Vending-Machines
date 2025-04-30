@@ -26,11 +26,15 @@ Rails.application.routes.draw do
                            }
       end
 
-      resources :machines, only: [] do
+      resources :machines do
         collection do
           get :nearby
         end
       end
+
+      resources :categories
+
+      resources :products
     end
   end
 end
