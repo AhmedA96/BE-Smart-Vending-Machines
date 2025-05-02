@@ -5,7 +5,7 @@ module Api
     class ProductsController < ApplicationController
       before_action :set_product, only: %i[show]
       def index
-        @products = paginate(Product.all)
+        @products = paginate(Products::FilterService.new(params).call.includes(:variants))
       end
 
       def show; end

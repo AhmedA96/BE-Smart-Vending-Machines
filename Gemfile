@@ -114,6 +114,7 @@ group :development do
   gem 'annotaterb'
   gem 'better_errors'
   gem "binding_of_caller"
+  gem 'bullet'
   gem 'memory_profiler'
   gem "pg_query"
   gem 'rack-mini-profiler'
