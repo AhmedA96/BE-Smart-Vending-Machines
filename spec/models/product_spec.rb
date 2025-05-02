@@ -8,6 +8,9 @@ RSpec.describe Product, type: :model do
     it { should have_many(:product_categories).dependent(:destroy) }
     it { should have_many(:categories).through(:product_categories) }
     it { should have_many(:variants).dependent(:destroy) }
+    it { should have_many(:product_translations).dependent(:destroy) }
+
+    it { should belong_to(:brand).optional }
   end
 
   describe 'validations' do
@@ -83,8 +86,12 @@ RSpec.describe Product, type: :model do
     describe '.alternatives' do
       it 'returns alternative products in the same category' do
         product.product_categories.create!(category: category)
+        create(:variant, product: product)
+
         other_product = create(:product)
+        create(:variant, product: other_product)
         other_product.product_categories.create!(category: category)
+
         expect(Product.alternatives(category.id, product.id)).to include(other_product)
         expect(Product.alternatives(category.id, product.id)).not_to include(product)
       end

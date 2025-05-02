@@ -10,6 +10,7 @@
 #  max_orderable_quantity :integer
 #  name                   :string           not null
 #  position               :integer          default(1)
+#  presentation           :string
 #  slug                   :string
 #  status                 :string
 #  total_rate             :float
@@ -30,13 +31,16 @@
 #  fk_rails_...  (brand_id => brands.id)
 #
 class Product < ApplicationRecord
-  acts_as_paranoid
+  extend Mobility
 
+  acts_as_paranoid
+  translates :presentation, :description
   has_many_attached :images, dependent: :destroy
 
   has_many :variants, dependent: :destroy
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
+  has_many :product_translations, dependent: :destroy
 
   belongs_to :brand, optional: true
 
