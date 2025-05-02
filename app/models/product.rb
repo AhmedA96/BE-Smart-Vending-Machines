@@ -94,6 +94,17 @@ class Product < ApplicationRecord
 
   scope :active, -> { where(status: 'Active') }
 
+  scope :search, lambda { |term|
+    return all if term.blank?
+
+    term = "%#{sanitize_sql_like(term)}%"
+    joins(:brand, :categories)
+      .where(
+        'products.name ILIKE :term OR brands.name ILIKE :term OR categories.name ILIKE :term',
+        term: term
+      ).distinct
+  }
+
   def master
     variants.find_by(is_master: true)
   end
