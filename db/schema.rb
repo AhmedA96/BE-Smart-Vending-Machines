@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -55,12 +55,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.boolean "active", default: true, null: false
-    t.bigint "parent_category_id"
     t.string "presentation"
     t.integer "position", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -353,7 +351,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_statuses", "machines"
   add_foreign_key "machines", "locations"
-  add_foreign_key "machines", "machine_categories", column: "category_id"
   add_foreign_key "machines", "vendors"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "orders", "machines"
