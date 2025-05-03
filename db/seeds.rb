@@ -29,23 +29,15 @@ Rails.logger.debug 'Database cleaned!'
 # ---------------------------- #
 Rails.logger.debug 'Creating Categories...'
 
-# Create parent categories first
-parent_categories = [
+# Create categories
+categories = [
   { name: 'Food & Beverages', presentation: 'Food & Beverages', active: true, position: 1 },
+  { name: 'Snacks', presentation: 'Snacks', active: true, position: 2 },
+  { name: 'Drinks', presentation: 'Drinks', active: true, position: 3 },
   { name: 'Electronics', presentation: 'Electronics', active: true, position: 4 }
 ]
 
-parent_records = Category.create!(parent_categories)
-
-# Create child categories with the correct parent_category_id references
-child_categories = [
-  { name: 'Snacks', presentation: 'Snacks', active: true, position: 2, parent_category_id: parent_records[0].id },
-  { name: 'Drinks', presentation: 'Drinks', active: true, position: 3, parent_category_id: parent_records[0].id }
-]
-
-child_records = Category.create!(child_categories)
-
-category_records = parent_records + child_records
+category_records = Category.create!(categories)
 
 Rails.logger.debug { "Created #{category_records.count} Categories." }
 
