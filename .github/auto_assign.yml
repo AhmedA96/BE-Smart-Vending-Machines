@@ -15,4 +15,4 @@ reviewers:
 # Uses numberOfReviewers if unset.
 numberOfAssignees: 0
 
-numberOfReviewers: 6
+numberOfReviewers: 3
