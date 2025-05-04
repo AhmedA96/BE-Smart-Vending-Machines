@@ -4,6 +4,7 @@ module Api
   module V1
     class ProductsController < ApplicationController
       include Products::Filterable
+      include Products::PriceListFindable
       include Products::Sortable
 
       before_action :set_product, only: %i[show]
@@ -11,6 +12,7 @@ module Api
       def index
         products = main_products.includes(:variants).includes(:translations)
         products = apply_filters(products)
+        products.ransack_filter(filtered_params)
         @products = paginate(products)
       end
 

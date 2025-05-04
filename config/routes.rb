@@ -34,7 +34,11 @@ Rails.application.routes.draw do
 
       resources :categories
 
-      resources :products
+      resources :products do
+        collection do
+          get 'machine_products'
+        end
+      end
     end
   end
 end
