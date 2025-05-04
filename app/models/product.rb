@@ -80,7 +80,6 @@ class Product < ApplicationRecord
     joins(variants: :machine_items)
       .where(machine_items: { machine_id: machine.id })
       .where('machine_items.stock > ?', quantity)
-      .distinct
   }
 
   scope :alternatives, lambda { |category_id, product_id|

@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   get '/', to: redirect('/admin')
-  authenticate :user, ->(u) { u.admin } do
+  authenticate :user, ->(u) { u.admin? } do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
   end
