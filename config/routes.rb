@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :machine_categories
       resources :categories
 
       resources :products
