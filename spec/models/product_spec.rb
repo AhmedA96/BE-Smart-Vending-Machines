@@ -69,7 +69,7 @@ RSpec.describe Product, type: :model do
         variant2 = create(:variant, product: create(:product))
         create(:price_list_item, price_list: price_list, variant: variant1, price: 10)
         create(:price_list_item, price_list: price_list, variant: variant2, price: 5)
-        sorted = Product.sort_by_price(price_list.id, :asc)
+        sorted = Product.sort_by_price(:asc)
         expect(sorted.first).to eq(variant2.product)
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe Product, type: :model do
         machine = create(:machine)
         variant = create(:variant, product: product)
         create(:machine_item, machine: machine, variant: variant, stock: 5)
-        expect(Product.with_stock_availability(machine.id, 1)).to include(product)
+        expect(Product.with_stock_availability(machine, 1)).to include(product)
       end
     end
 

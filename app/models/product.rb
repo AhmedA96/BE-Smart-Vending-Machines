@@ -71,15 +71,15 @@ class Product < ApplicationRecord
       .where(price_list_items: { price: min_price..max_price })
   }
 
-  scope :sort_by_price, lambda { |price_list_id, sort_direction|
+  scope :sort_by_price, lambda { |sort_direction|
     joins(variants: :price_list_items)
-      .where(price_list_items: { price_list_id: price_list_id })
       .reorder(price_list_items: { price: sort_direction })
   }
-  scope :with_stock_availability, lambda { |machine_id, min_quantity = 1|
+
+  scope :with_stock_availability, lambda { |machine, quantity|
     joins(variants: :machine_items)
-      .where(machine_items: { machine_id: machine_id })
-      .where(machine_items: { stock: min_quantity.. })
+      .where(machine_items: { machine_id: machine.id })
+      .where('machine_items.stock > ?', quantity)
       .distinct
   }
 
@@ -97,17 +97,6 @@ class Product < ApplicationRecord
   }
 
   scope :active, -> { where(status: 'Active') }
-
-  scope :search, lambda { |term|
-    return all if term.blank?
-
-    term = "%#{sanitize_sql_like(term)}%"
-    joins(:brand, :categories)
-      .where(
-        'products.name ILIKE :term OR brands.name ILIKE :term OR categories.name ILIKE :term',
-        term: term
-      ).distinct
-  }
 
   def master
     variants.find_by(is_master: true)
