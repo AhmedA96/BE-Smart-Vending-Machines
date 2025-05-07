@@ -9,9 +9,7 @@ module RansackScope
 
       q.sorts = params[:sorts] if params[:sorts]
 
-      results = q.result.uniq(&:id)
-      items_per_page = params[:per_page] || Pagy::DEFAULT[:items]
-      pagy_array(results, page: params[:page], items: items_per_page)
+      q.result.uniq(&:id)
     }
   end
 end

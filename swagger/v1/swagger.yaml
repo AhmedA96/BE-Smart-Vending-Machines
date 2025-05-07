@@ -4,37 +4,52 @@ info:
   title: API V1
   version: v1
 paths:
-  "/api/v1/users/signup":
+  /api/v1/users/signup:
     post:
-      summary: Register a new user
       tags:
-      - Users
-      parameters: []
-      responses:
-        '201':
-          description: user created
-        '422':
-          description: email already taken
+        - Users
+      summary: Register a new user
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                email:
-                  type: string
-                  example: user@example.com
-                password:
-                  type: string
-                  example: Password@!123
-                mobile_number:
-                  type: string
-                  example: "+201234567890"
-              required:
-              - email
-              - password
-              - mobile_number
-  "/api/v1/users/login":
+                user:
+                  type: object
+                  required:
+                    - email
+                    - password
+                    - mobile_number
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                      example: user@example.com
+                    password:
+                      type: string
+                      format: password
+                      minLength: 8
+                      example: Password@123
+                    mobile_number:
+                      type: string
+                      example: "+201234567890"
+      responses:
+        '200':
+          description: User created successfully
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+  /api/v1/users/login:
     post:
       summary: User login
       tags:
@@ -60,7 +75,7 @@ paths:
               required:
               - email
               - password
-  "/oauth/token":
+  /oauth/token:
     post:
       summary: Generate or refresh access token
       tags:
@@ -132,7 +147,7 @@ paths:
                 properties:
                   grant_type:
                     enum: [refresh_token]
-  "/oauth/revoke":
+  /oauth/revoke:
     post:
       summary: Revoke token
       tags:
@@ -152,8 +167,375 @@ paths:
                   example: valid_token
               required:
               - token
-servers:
-- url: http://{defaultHost}
-  variables:
-    defaultHost:
-      default: localhost:3000
+              paths:
+  /api/v1/machines/nearby:
+    get:
+      tags:
+        - Machines
+      summary: Find machines nearby
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+            example: 30.0444
+        - name: longitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+            example: 31.2357
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of nearby machines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Machine'
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          page:
+                            type: integer
+                          per_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          total_count:
+                            type: integer
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+
+  /api/v1/machines/{id}:
+    get:
+      tags:
+        - Machines
+      summary: Get machine details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Machine details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Machine'
+        '404':
+          description: Machine not found
+
+  /api/v1/products:
+    get:
+      tags:
+        - Products
+      summary: List all products for a specific machine
+      parameters:
+        - name: machine_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 9
+          description: ID of the machine to list products for
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+        - name: q[product_translations_presentation_cont]
+          in: query
+          schema:
+            type: string
+            description: Filter by product presentation
+        - name: q[product_translations_description_cont]
+          in: query
+          schema:
+            type: string
+            description: Filter by product description
+        - name: q[brand_id_eq]
+          in: query
+          schema:
+            type: integer
+            description: Filter by brand ID
+        - name: q[price_for_price_list_gteq]
+          in: query
+          schema:
+            type: number
+            format: float
+            description: Minimum price
+        - name: q[price_for_price_list_lteq]
+          in: query
+          schema:
+            type: number
+            format: float
+            description: Maximum price
+        - name: q[stock_availability]
+          in: query
+          schema:
+            type: integer
+            description: Filter by stock availability
+        - name: sort_price
+          in: query
+          schema:
+            type: string
+            description: Sort order for products
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          page:
+                            type: integer
+                          per_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          total_count:
+                            type: integer
+
+  /api/v1/products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product details
+      parameters:
+        - name: machine_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          
+  /api/v1/products/machine_products:
+    get:
+      tags:
+        - Products
+      summary: List products available for a specific machine
+      parameters:
+        - name: machine_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of machine-specific products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    type: object
+                    properties:
+                      pagination:
+                        type: object
+                        properties:
+                          page:
+                            type: integer
+                          per_page:
+                            type: integer
+                          total_pages:
+                            type: integer
+                          total_count:
+                            type: integer
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        presentation:
+          type: string
+        status:
+          type: string
+          enum: [Active, Inactive]
+        max_orderable_quantity:
+          type: integer
+        position:
+          type: integer
+        total_rate:
+          type: number
+          format: float
+        brand_id:
+          type: integer
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              price:
+                type: number
+                format: float
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Machine:
+      type: object
+      properties:
+        id:
+          type: integer
+        external_machine_id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        installed_at:
+          type: string
+          format: date-time
+        last_service_date:
+          type: string
+          format: date-time
+        floor_no:
+          type: integer
+        location_updated_at:
+          type: string
+          format: date-time
+        coordinates:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: float
+            longitude:
+              type: number
+              format: float
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        vendor:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        location:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            address:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

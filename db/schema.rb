@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_012430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -229,6 +229,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
     t.index ["product_id"], name: "index_product_categories_on_product_id"
   end
 
+  create_table "product_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_product_translations_on_locale"
+    t.index ["product_id", "locale"], name: "index_product_translations_on_product_id_and_locale", unique: true
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.string "description"
@@ -241,6 +252,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
     t.integer "max_orderable_quantity"
     t.integer "position", default: 1
     t.bigint "brand_id"
+    t.string "presentation"
     t.index ["brand_id"], name: "index_products_on_brand_id"
     t.index ["created_at"], name: "index_products_on_created_at"
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
@@ -362,5 +374,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_152052) do
   add_foreign_key "price_list_items", "variants"
   add_foreign_key "product_categories", "categories"
   add_foreign_key "product_categories", "products"
+  add_foreign_key "product_translations", "products"
   add_foreign_key "products", "brands"
 end
