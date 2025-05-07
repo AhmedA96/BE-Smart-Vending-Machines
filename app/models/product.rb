@@ -10,6 +10,7 @@
 #  max_orderable_quantity :integer
 #  name                   :string           not null
 #  position               :integer          default(1)
+#  presentation           :string
 #  slug                   :string
 #  status                 :string
 #  total_rate             :float
@@ -30,13 +31,16 @@
 #  fk_rails_...  (brand_id => brands.id)
 #
 class Product < ApplicationRecord
-  acts_as_paranoid
+  extend Mobility
 
+  acts_as_paranoid
+  translates :presentation, :description
   has_many_attached :images, dependent: :destroy
 
   has_many :variants, dependent: :destroy
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
+  has_many :product_translations, dependent: :destroy
 
   belongs_to :brand, optional: true
 
@@ -67,16 +71,15 @@ class Product < ApplicationRecord
       .where(price_list_items: { price: min_price..max_price })
   }
 
-  scope :sort_by_price, lambda { |price_list_id, sort_direction|
+  scope :sort_by_price, lambda { |sort_direction|
     joins(variants: :price_list_items)
-      .where(price_list_items: { price_list_id: price_list_id })
       .reorder(price_list_items: { price: sort_direction })
   }
-  scope :with_stock_availability, lambda { |machine_id, min_quantity = 1|
+
+  scope :with_stock_availability, lambda { |machine, quantity|
     joins(variants: :machine_items)
-      .where(machine_items: { machine_id: machine_id })
-      .where(machine_items: { stock: min_quantity.. })
-      .distinct
+      .where(machine_items: { machine_id: machine.id })
+      .where('machine_items.stock > ?', quantity)
   }
 
   scope :alternatives, lambda { |category_id, product_id|

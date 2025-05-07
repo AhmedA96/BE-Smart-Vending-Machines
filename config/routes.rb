@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   get '/', to: redirect('/admin')
-  authenticate :user, ->(u) { u.admin } do
+  authenticate :user, ->(u) { u.admin? } do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
   end
@@ -35,7 +35,11 @@ Rails.application.routes.draw do
       resources :machine_categories
       resources :categories
 
-      resources :products
+      resources :products do
+        collection do
+          get 'machine_products'
+        end
+      end
     end
   end
 end
