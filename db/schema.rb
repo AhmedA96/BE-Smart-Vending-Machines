@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_08_151945) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_173619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -115,6 +115,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_151945) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "machine_category_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "machine_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_machine_category_translations_on_locale"
+    t.index ["machine_category_id", "locale"], name: "index_mc_translations_on_machine_category_id_and_locale", unique: true
   end
 
   create_table "machine_items", force: :cascade do |t|
@@ -383,6 +394,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_151945) do
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "locations", "price_lists"
+  add_foreign_key "machine_category_translations", "machine_categories"
   add_foreign_key "machine_items", "machines"
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_statuses", "machines"
