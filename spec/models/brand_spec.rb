@@ -8,5 +8,6 @@ RSpec.describe Brand, type: :model do
 
   describe 'associations' do
     it { should have_many(:products).dependent(:nullify) }
+    it { should have_many(:brand_translations).dependent(:destroy) }
   end
 end

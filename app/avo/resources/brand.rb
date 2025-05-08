@@ -23,6 +23,7 @@ module Avo
       def many_relation_tabs
         tabs id: :many_relations_tabs do
           field :products, as: :has_many, reloadable: true, linkable: true, searchable: true
+          field :brand_translations, as: :has_many, reloadable: true, searchable: true, linkable: true
         end
       end
     end
