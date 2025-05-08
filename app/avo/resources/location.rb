@@ -39,6 +39,7 @@ module Avo
       def many_relation_tabs
         tabs id: :many_relations_tabs do
           field :machines, as: :has_many, reloadable: true, linkable: true, searchable: true
+          field :location_translations, as: :has_many, reloadable: true, linkable: true, searchable: true
         end
       end
     end

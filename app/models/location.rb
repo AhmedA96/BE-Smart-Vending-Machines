@@ -24,6 +24,10 @@
 #  fk_rails_...  (price_list_id => price_lists.id)
 #
 class Location < ApplicationRecord
+  extend Mobility
+  translates :name
+
   belongs_to :price_list
   has_many :machines
+  has_many :location_translations, dependent: :destroy
 end
