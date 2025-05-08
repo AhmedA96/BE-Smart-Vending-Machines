@@ -16,7 +16,6 @@ class Brand < ApplicationRecord
   extend Mobility
 
   translates :description, :presentation
-  accepts_nested_attributes_for :translations, allow_destroy: true
 
   has_one_attached :logo, dependent: :destroy
   has_one_attached :cover, dependent: :destroy

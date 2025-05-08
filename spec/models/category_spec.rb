@@ -11,6 +11,7 @@ RSpec.describe Category, type: :model do
   describe 'associations' do
     it { should have_many(:product_categories).dependent(:destroy) }
     it { should have_many(:products).through(:product_categories) }
+    it { should have_many(:category_translations).dependent(:destroy) }
   end
 
   describe 'default values' do

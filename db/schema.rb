@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_08_143048) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_151945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -70,6 +70,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_143048) do
     t.integer "position", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "category_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id", "locale"], name: "index_category_translations_on_category_id_and_locale", unique: true
+    t.index ["locale"], name: "index_category_translations_on_locale"
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -368,6 +379,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_143048) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "brand_translations", "brands"
+  add_foreign_key "category_translations", "categories"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "locations", "price_lists"
