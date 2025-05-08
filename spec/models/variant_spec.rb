@@ -11,6 +11,7 @@ RSpec.describe Variant, type: :model do
     it { should have_many(:price_lists) }
     it { should have_many(:price_lists).through(:price_list_items) }
     it { should have_many(:line_items).dependent(:nullify) }
+    it { should have_many(:variant_translations) }
   end
 
   describe 'validations' do

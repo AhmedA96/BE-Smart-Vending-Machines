@@ -28,7 +28,9 @@
 #  index_variants_on_sku         (sku) UNIQUE
 #
 class Variant < ApplicationRecord
+  extend Mobility
   acts_as_paranoid
+  translates :presentation
 
   delegate :name, to: :product, prefix: true
   delegate :max_orderable_quantity, to: :product
@@ -44,6 +46,7 @@ class Variant < ApplicationRecord
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
   has_many :line_items, dependent: :nullify
+  has_many :variant_translations, dependent: :destroy
 
   def full_name
     "#{product.name} - #{product&.name == name ? '' : name} [#{sku}]"

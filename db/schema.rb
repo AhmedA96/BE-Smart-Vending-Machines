@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_08_183335) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_185727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -376,6 +376,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_183335) do
     t.index ["user_id", "role_id"], name: "index_unique_user_role", unique: true
   end
 
+  create_table "variant_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.string "locale", null: false
+    t.bigint "variant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_variant_translations_on_locale"
+    t.index ["variant_id", "locale"], name: "index_variant_translations_on_variant_id_and_locale", unique: true
+    t.index ["variant_id"], name: "index_variant_translations_on_variant_id"
+  end
+
   create_table "variants", force: :cascade do |t|
     t.string "sku", null: false
     t.string "name"
@@ -431,4 +442,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_08_183335) do
   add_foreign_key "product_categories", "products"
   add_foreign_key "product_translations", "products"
   add_foreign_key "products", "brands"
+  add_foreign_key "variant_translations", "variants"
 end
