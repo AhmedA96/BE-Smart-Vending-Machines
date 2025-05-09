@@ -15,7 +15,6 @@ class MachineCategory < ApplicationRecord
   translates :description, :presentation
   accepts_nested_attributes_for :translations
 
-
   has_many :machines, foreign_key: 'category_id', inverse_of: :category
   has_many :machine_category_translations, dependent: :destroy
 
