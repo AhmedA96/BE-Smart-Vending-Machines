@@ -31,6 +31,7 @@ class Variant < ApplicationRecord
   extend Mobility
   acts_as_paranoid
   translates :presentation
+  accepts_nested_attributes_for :translations
 
   delegate :name, to: :product, prefix: true
   delegate :max_orderable_quantity, to: :product

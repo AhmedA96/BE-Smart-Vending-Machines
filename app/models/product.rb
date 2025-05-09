@@ -35,6 +35,8 @@ class Product < ApplicationRecord
 
   acts_as_paranoid
   translates :presentation, :description
+  accepts_nested_attributes_for :translations
+
   has_many_attached :images, dependent: :destroy
 
   has_many :variants, dependent: :destroy

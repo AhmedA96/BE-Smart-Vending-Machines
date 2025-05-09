@@ -36,6 +36,7 @@ class Machine < ApplicationRecord
   extend Mobility
 
   translates :name
+  accepts_nested_attributes_for :translations
 
   belongs_to :vendor
   belongs_to :category, class_name: 'MachineCategory'
