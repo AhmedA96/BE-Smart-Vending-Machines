@@ -50,6 +50,7 @@ module Avo
       def many_relations
         tabs id: :many_relation_tabs do
           field :machine_items, as: :has_many, reloadable: true, name: 'Machine Items'
+          field :machine_translations, as: :has_many, reloadable: true, name: 'Machine Translations'
         end
       end
     end

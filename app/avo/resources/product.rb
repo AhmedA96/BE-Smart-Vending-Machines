@@ -3,6 +3,7 @@
 module Avo
   module Resources
     class Product < Avo::BaseResource
+      include ResourceHelpers
       self.title = :name
       self.includes = %i[product_categories images_attachments]
       self.attachments = %i[images]
@@ -66,11 +67,26 @@ module Avo
         field :end_date, as: :date
 
         many_relation_tabs
+        one_relation_tabs
       end
 
       def many_relation_tabs
         tabs id: :many_relations_tabs do
-          field :variants, as: :has_many, reloadable: true, linkable: true, searchable: true
+          field :categories, as: :has_many, through: :product_categories, reloadable: true, linkable: true,
+                             searchable: true
+          %i[
+            variants
+            product_categories
+            product_translations
+          ].each do |relation|
+            field relation, as: :has_many, reloadable: true, searchable: true, linkable: true
+          end
+        end
+      end
+
+      def one_relation_tabs
+        tabs id: :one_relation_tabs do
+          limited_field :brand, as: :belongs_to, searchable: true
         end
       end
     end

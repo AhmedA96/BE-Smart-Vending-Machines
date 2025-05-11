@@ -3,6 +3,7 @@
 # Clear existing data to avoid duplication when running seeds multiple times
 Rails.logger.debug 'Cleaning database...'
 
+# Clear main tables first
 MachineStatus.destroy_all
 MachineItem.destroy_all
 Machine.destroy_all
@@ -29,12 +30,44 @@ Rails.logger.debug 'Database cleaned!'
 # ---------------------------- #
 Rails.logger.debug 'Creating Categories...'
 
-# Create categories
+# Create categories with translations
 categories = [
-  { name: 'Food & Beverages', presentation: 'Food & Beverages', active: true, position: 1 },
-  { name: 'Snacks', presentation: 'Snacks', active: true, position: 2 },
-  { name: 'Drinks', presentation: 'Drinks', active: true, position: 3 },
-  { name: 'Electronics', presentation: 'Electronics', active: true, position: 4 }
+  {
+    name: 'Food & Beverages',
+    active: true,
+    position: 1,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Food & Beverages', description: 'Fresh food and beverages' },
+      { locale: 'ar', presentation: 'طعام ومشروبات', description: 'طعام ومشروبات طازجة' }
+    ]
+  },
+  {
+    name: 'Snacks',
+    active: true,
+    position: 2,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Snacks', description: 'Delicious snacks and treats' },
+      { locale: 'ar', presentation: 'وجبات خفيفة', description: 'وجبات خفيفة لذيذة' }
+    ]
+  },
+  {
+    name: 'Drinks',
+    active: true,
+    position: 3,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Drinks', description: 'Refreshing beverages' },
+      { locale: 'ar', presentation: 'مشروبات', description: 'مشروبات منعشة' }
+    ]
+  },
+  {
+    name: 'Electronics',
+    active: true,
+    position: 4,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Electronics', description: 'Electronic accessories' },
+      { locale: 'ar', presentation: 'إلكترونيات', description: 'ملحقات إلكترونية' }
+    ]
+  }
 ]
 
 category_records = Category.create!(categories)
@@ -47,12 +80,24 @@ Rails.logger.debug { "Created #{category_records.count} Categories." }
 Rails.logger.debug 'Creating Brands...'
 
 brands = [
-  { name: 'Coca-Cola', description: 'The world\'s leading beverage company' },
-  { name: 'Frito-Lay', description: 'A subsidiary of PepsiCo that manufactures snack foods' }
+  {
+    name: 'Coca-Cola',
+    translations_attributes: [
+      { locale: 'en', presentation: 'Coca-Cola', description: 'The world\'s leading beverage company' },
+      { locale: 'ar', presentation: 'كوكا كولا', description: 'شركة المشروبات الرائدة في العالم' }
+    ]
+  },
+  {
+    name: 'Frito-Lay',
+    translations_attributes: [
+      { locale: 'en', presentation: 'Frito-Lay', description: 'A subsidiary of PepsiCo that manufactures snack foods' },
+      { locale: 'ar', presentation: 'فريتو لاي', description: 'شركة تابعة لبيبسيكو تصنع الوجبات الخفيفة' }
+    ]
+  }
 ]
 
 brand_records = Brand.create!(brands)
-Rails.logger.debug { "Created #{brand_records.count} Brands with logos." }
+Rails.logger.debug { "Created #{brand_records.count} Brands with translations." }
 
 # ---------------------------- #
 # Products
@@ -62,23 +107,29 @@ Rails.logger.debug 'Creating Products...'
 products = [
   {
     name: 'Cola Classic',
-    description: 'Refreshing cola drink',
     status: 'Active',
     slug: 'cola-classic',
     total_rate: 4.5,
     max_orderable_quantity: 5,
     position: 1,
-    brand: brand_records[0]
+    brand: brand_records[0],
+    translations_attributes: [
+      { locale: 'en', presentation: 'Cola Classic', description: 'Refreshing cola drink' },
+      { locale: 'ar', presentation: 'كولا كلاسيك', description: 'مشروب كولا منعش' }
+    ]
   },
   {
     name: 'Potato Chips',
-    description: 'Crispy salted chips',
     status: 'Active',
     slug: 'potato-chips',
     total_rate: 4.0,
     max_orderable_quantity: 3,
     position: 2,
-    brand: brand_records[1]
+    brand: brand_records[1],
+    translations_attributes: [
+      { locale: 'en', presentation: 'Potato Chips', description: 'Crispy salted chips' },
+      { locale: 'ar', presentation: 'شيبس بطاطس', description: 'رقائق مقرمشة ومملحة' }
+    ]
   }
 ]
 
@@ -90,7 +141,7 @@ product_records[0].images.attach(io: Rails.root.join('app/assets/images/products
 product_records[1].images.attach(io: Rails.root.join('app/assets/images/products/chips.svg').open,
                                  filename: 'chips.svg', content_type: 'image/svg+xml')
 
-Rails.logger.debug { "Created #{product_records.count} Products with images." }
+Rails.logger.debug { "Created #{product_records.count} Products with images and translations." }
 
 # ---------------------------- #
 # Product Categories
@@ -122,7 +173,11 @@ variants = [
     points: 10,
     weight: 0.33,
     product: product_records[0],
-    position: 1
+    position: 1,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Cola Classic 330ml' },
+      { locale: 'ar', presentation: 'كولا كلاسيك ٣٣٠ مل' }
+    ]
   },
   {
     name: 'Cola Classic 500ml',
@@ -131,7 +186,11 @@ variants = [
     points: 15,
     weight: 0.5,
     product: product_records[0],
-    position: 2
+    position: 2,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Cola Classic 500ml' },
+      { locale: 'ar', presentation: 'كولا كلاسيك ٥٠٠ مل' }
+    ]
   },
   {
     name: 'Regular Chips 100g',
@@ -140,13 +199,17 @@ variants = [
     points: 8,
     weight: 0.1,
     product: product_records[1],
-    position: 1
+    position: 1,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Regular Chips 100g' },
+      { locale: 'ar', presentation: 'شيبس عادي ١٠٠ جرام' }
+    ]
   }
 ]
 
 variant_records = Variant.create!(variants)
 
-Rails.logger.debug { "Created #{variant_records.count} Variants." }
+Rails.logger.debug { "Created #{variant_records.count} Variants with translations." }
 
 # ---------------------------- #
 # Price Lists
@@ -178,61 +241,92 @@ Rails.logger.debug 'Creating Locations...'
 
 locations = [
   {
-    name: 'Downtown Mall',
     address: '123 Mall Street',
     city: 'Cairo',
     state: 'Cairo Governorate',
     zip_code: '11511',
     landmark: 'Near Central Square',
-    price_list: price_list_records[1]
+    price_list: price_list_records[1],
+    translations_attributes: [
+      { locale: 'en', name: 'Downtown Mall' },
+      { locale: 'ar', name: 'مول وسط البلد' }
+    ]
   },
   {
-    name: 'Tech Park',
     address: '456 Innovation Avenue',
     city: 'Giza',
     state: 'Giza Governorate',
     zip_code: '12511',
     landmark: 'Next to Science Museum',
-    price_list: price_list_records[0]
+    price_list: price_list_records[0],
+    translations_attributes: [
+      { locale: 'en', name: 'Tech Park' },
+      { locale: 'ar', name: 'حديقة التكنولوجيا' }
+    ]
   },
   {
-    name: 'Shopping Center',
     address: '789 Retail Boulevard',
     city: 'Alexandria',
     state: 'Alexandria Governorate',
     zip_code: '21511',
     landmark: 'Opposite Central Park',
-    price_list: price_list_records[1]
+    price_list: price_list_records[1],
+    translations_attributes: [
+      { locale: 'en', name: 'Shopping Center' },
+      { locale: 'ar', name: 'مركز التسوق' }
+    ]
   },
   {
-    name: 'University Campus',
     address: '321 Education Road',
     city: 'Cairo',
     state: 'Cairo Governorate',
     zip_code: '11522',
     landmark: 'Main Campus Gate',
-    price_list: price_list_records[0]
+    price_list: price_list_records[0],
+    translations_attributes: [
+      { locale: 'en', name: 'University Campus' },
+      { locale: 'ar', name: 'الحرم الجامعي' }
+    ]
   }
 ]
 
 location_records = Location.create!(locations)
 
-Rails.logger.debug { "Created #{location_records.count} Locations." }
+Rails.logger.debug { "Created #{location_records.count} Locations with translations." }
 
 # ---------------------------- #
 # Machine Categories
 # ---------------------------- #
 Rails.logger.debug 'Creating Machine Categories...'
 
-categories = [
-  { name: 'Snacks', description: 'Snack dispensing machines.' },
-  { name: 'Beverages', description: 'Hot and cold drink machines.' },
-  { name: 'Electronics', description: 'Small electronics machines.' }
+machine_category_data = [
+  {
+    name: 'Snacks',
+    translations_attributes: [
+      { locale: 'en', presentation: 'Snacks', description: 'Snack dispensing machines.' },
+      { locale: 'ar', presentation: 'وجبات خفيفة', description: 'آلات بيع الوجبات الخفيفة.' }
+    ]
+  },
+  {
+    name: 'Beverages',
+    translations_attributes: [
+      { locale: 'en', presentation: 'Beverages', description: 'Hot and cold drink machines.' },
+      { locale: 'ar', presentation: 'مشروبات', description: 'آلات المشروبات الساخنة والباردة.' }
+    ]
+  },
+  {
+    name: 'Electronics',
+
+    translations_attributes: [
+      { locale: 'en', presentation: 'Electronics', description: 'Small electronics machines.' },
+      { locale: 'ar', presentation: 'إلكترونيات', description: 'آلات الإلكترونيات الصغيرة.' }
+    ]
+  }
 ]
 
-machine_categories = MachineCategory.create!(categories)
+machine_categories = MachineCategory.create!(machine_category_data)
 
-Rails.logger.debug { "Created #{machine_categories.count} Machine Categories." }
+Rails.logger.debug { "Created #{machine_categories.count} Machine Categories with translations." }
 
 # ---------------------------- #
 # Vendors
@@ -240,10 +334,20 @@ Rails.logger.debug { "Created #{machine_categories.count} Machine Categories." }
 Rails.logger.debug 'Creating Vendors...'
 
 vendors = [
-  { name: 'Cool Drinks Co.', contact_person: 'Alice Johnson', phone_number: '1234567890',
-    email: 'contact@cooldrinks.com', address: '123 Cool St, City' },
-  { name: 'Snack House', contact_person: 'Bob Smith', phone_number: '0987654321', email: 'sales@snackhouse.com',
-    address: '456 Snack Ave, City' }
+  {
+    name: 'Cool Drinks Co.',
+    contact_person: 'Alice Johnson',
+    phone_number: '1234567890',
+    email: 'contact@cooldrinks.com',
+    address: '123 Cool St, City'
+  },
+  {
+    name: 'Snack House',
+    contact_person: 'Bob Smith',
+    phone_number: '0987654321',
+    email: 'sales@snackhouse.com',
+    address: '456 Snack Ave, City'
+  }
 ]
 
 vendor_records = Vendor.create!(vendors)
@@ -258,57 +362,66 @@ Rails.logger.debug 'Creating Machines...'
 machines = [
   {
     external_machine_id: 'SNACK-001',
-    name: 'Snack Machine Alpha',
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[0],
-    price_list: location_records[0].price_list,
     status: 'Active',
     coordinates: 'POINT(31.2357 30.0444)',
     installed_at: 6.months.ago,
-    last_service_date: 1.month.ago
+    last_service_date: 1.month.ago,
+    translations_attributes: [
+      { locale: 'en', name: 'Snack Machine Alpha' },
+      { locale: 'ar', name: 'آلة الوجبات الخفيفة ألفا' }
+    ]
   },
   {
     external_machine_id: 'BEV-101',
-    name: 'Drink Machine Beta',
     category: machine_categories[1],
     vendor: vendor_records[0],
     location: location_records[1],
-    price_list: location_records[1].price_list,
     status: 'Maintenance',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 1.year.ago,
-    last_service_date: 2.months.ago
+    last_service_date: 2.months.ago,
+    translations_attributes: [
+      { locale: 'en', name: 'Drink Machine Beta' },
+      { locale: 'ar', name: 'آلة المشروبات بيتا' }
+    ]
   },
   {
     external_machine_id: 'ELEC-201',
-    name: 'Electronics Vendor Gamma',
     category: machine_categories[2],
     vendor: vendor_records[0],
     location: location_records[2],
-    price_list: location_records[2].price_list,
     status: 'Active',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 3.months.ago,
-    last_service_date: 1.week.ago
+    last_service_date: 1.week.ago,
+    translations_attributes: [
+      { locale: 'en', name: 'Electronics Vendor Gamma' },
+      { locale: 'ar', name: 'آلة الإلكترونيات جاما' }
+    ]
   },
   {
     external_machine_id: 'SNACK-002',
-    name: 'Snack Machine Delta',
+
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[3],
-    price_list: location_records[3].price_list,
     status: 'Inactive',
     coordinates: 'POINT(31.2646 30.0355)',
     installed_at: 8.months.ago,
-    last_service_date: 3.months.ago
+    last_service_date: 3.months.ago,
+    translations_attributes: [
+      { locale: 'en', name: 'Snack Machine Delta' },
+      { locale: 'ar', name: 'آلة الوجبات الخفيفة دلتا' }
+    ]
   }
 ]
 
 machine_records = Machine.create!(machines)
 
-Rails.logger.debug { "Created #{machine_records.count} Machines." }
+Rails.logger.debug { "Created #{machine_records.count} Machines with translations." }
 
 # ---------------------------- #
 # Machine Items
@@ -319,17 +432,20 @@ machine_items = [
   {
     machine: machine_records[0],
     variant: variant_records[0],
-    stock: 20
+    stock: 20,
+    line_number: 1
   },
   {
     machine: machine_records[0],
     variant: variant_records[2],
-    stock: 15
+    stock: 15,
+    line_number: 2
   },
   {
     machine: machine_records[1],
     variant: variant_records[1],
-    stock: 25
+    stock: 25,
+    line_number: 1
   }
 ]
 

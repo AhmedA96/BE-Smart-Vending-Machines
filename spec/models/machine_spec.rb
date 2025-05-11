@@ -11,6 +11,7 @@ RSpec.describe Machine, type: :model do
     it { should have_many(:machine_statuses) }
     it { should have_many(:machine_items) }
     it { should have_many(:variants).through(:machine_items) }
+    it { should have_many(:machine_translations) }
   end
 
   describe 'validations' do

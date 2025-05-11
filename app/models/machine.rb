@@ -29,11 +29,15 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (category_id => machine_categories.id)
 #  fk_rails_...  (location_id => locations.id)
 #  fk_rails_...  (vendor_id => vendors.id)
 #
 class Machine < ApplicationRecord
+  extend Mobility
+
+  translates :name
+  accepts_nested_attributes_for :translations
+
   belongs_to :vendor
   belongs_to :category, class_name: 'MachineCategory'
   belongs_to :location
@@ -43,6 +47,7 @@ class Machine < ApplicationRecord
   has_many :machine_statuses
   has_many :machine_items
   has_many :variants, through: :machine_items
+  has_many :machine_translations, dependent: :destroy
 
   validates :external_machine_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true

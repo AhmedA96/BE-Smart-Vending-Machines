@@ -30,7 +30,15 @@ module Avo
         field :weight, as: :number
         field :position, as: :number
         field :active, as: :boolean, readonly: -> { resource.record.is_master? }, filterable: true
-        limited_field :product, as: :belongs_to, searchable: true
+        limited_field :product, as: :belongs_to, searchable:
+
+        many_relation
+      end
+
+      def many_relation
+        tabs id: :many_relation_tabs do
+          field :variant_translations, as: :has_many, reloadable: true
+        end
       end
     end
   end

@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe MachineCategory, type: :model do
   describe 'associations' do
     it { should have_many(:machines) }
+    it { should have_many(:machine_category_translations) }
   end
 
   describe 'validations' do

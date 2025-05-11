@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_08_185727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -43,6 +43,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "brand_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "brand_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["brand_id", "locale"], name: "index_brand_translations_on_brand_id_and_locale", unique: true
+    t.index ["locale"], name: "index_brand_translations_on_locale"
+  end
+
   create_table "brands", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -61,6 +72,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "category_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id", "locale"], name: "index_category_translations_on_category_id_and_locale", unique: true
+    t.index ["locale"], name: "index_category_translations_on_locale"
+  end
+
   create_table "line_items", force: :cascade do |t|
     t.integer "quantity", null: false
     t.decimal "price", precision: 10, scale: 2, default: "0.0"
@@ -73,6 +95,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
     t.bigint "order_id"
     t.index ["order_id"], name: "index_line_items_on_order_id"
     t.index ["variant_id"], name: "index_line_items_on_variant_id"
+  end
+
+  create_table "location_translations", force: :cascade do |t|
+    t.string "name"
+    t.string "locale", null: false
+    t.bigint "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_location_translations_on_locale"
+    t.index ["location_id", "locale"], name: "index_location_translations_on_location_id_and_locale", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
@@ -95,6 +127,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "machine_category_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "machine_category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_machine_category_translations_on_locale"
+    t.index ["machine_category_id", "locale"], name: "index_mc_translations_on_machine_category_id_and_locale", unique: true
+  end
+
   create_table "machine_items", force: :cascade do |t|
     t.bigint "machine_id", null: false
     t.integer "stock", default: 0
@@ -115,6 +158,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["machine_id"], name: "index_machine_statuses_on_machine_id"
+  end
+
+  create_table "machine_translations", force: :cascade do |t|
+    t.string "name"
+    t.string "locale", null: false
+    t.bigint "machine_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_machine_translations_on_locale"
+    t.index ["machine_id", "locale"], name: "index_machine_translations_on_machine_id_and_locale", unique: true
   end
 
   create_table "machines", force: :cascade do |t|
@@ -323,6 +376,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
     t.index ["user_id", "role_id"], name: "index_unique_user_role", unique: true
   end
 
+  create_table "variant_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.string "locale", null: false
+    t.bigint "variant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_variant_translations_on_locale"
+    t.index ["variant_id", "locale"], name: "index_variant_translations_on_variant_id_and_locale", unique: true
+    t.index ["variant_id"], name: "index_variant_translations_on_variant_id"
+  end
+
   create_table "variants", force: :cascade do |t|
     t.string "sku", null: false
     t.string "name"
@@ -356,12 +420,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "brand_translations", "brands"
+  add_foreign_key "category_translations", "categories"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
+  add_foreign_key "location_translations", "locations"
   add_foreign_key "locations", "price_lists"
+  add_foreign_key "machine_category_translations", "machine_categories"
   add_foreign_key "machine_items", "machines"
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_statuses", "machines"
+  add_foreign_key "machine_translations", "machines"
   add_foreign_key "machines", "locations"
   add_foreign_key "machines", "vendors"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
@@ -373,4 +442,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_205753) do
   add_foreign_key "product_categories", "products"
   add_foreign_key "product_translations", "products"
   add_foreign_key "products", "brands"
+  add_foreign_key "variant_translations", "variants"
 end
