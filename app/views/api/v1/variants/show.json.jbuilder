@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-json.product do
-  json.partial! 'variant', product: @variant
+json.variant do
+  json.partial! 'variant', variant: @variant
 end
