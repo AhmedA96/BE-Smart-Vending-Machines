@@ -7,6 +7,7 @@ module Api
       include Products::PriceListFindable
       include Products::Sortable
 
+      skip_before_action :doorkeeper_authorize!
       before_action :set_product, only: %i[show]
 
       def index

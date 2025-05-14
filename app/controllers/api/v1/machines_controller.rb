@@ -3,6 +3,7 @@
 module Api
   module V1
     class MachinesController < ApplicationController
+      skip_before_action :doorkeeper_authorize!
       before_action :set_machine, only: %i[show]
 
       def nearby
