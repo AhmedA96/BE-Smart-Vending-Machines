@@ -7,7 +7,7 @@ module Api
       before_action :find_variant, only: [:show]
 
       def index
-        @variants = paginate(@product.variants)
+        @variants = paginate(@product.variants.includes(:translations))
       end
 
       def show; end
