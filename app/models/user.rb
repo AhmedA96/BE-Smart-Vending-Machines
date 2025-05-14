@@ -74,6 +74,18 @@ class User < ApplicationRecord
     errors.add(:new_password, I18n.t('errors.messages.password_must_be_different'))
   end
 
+  def email_required?
+    false
+  end
+
+  def will_save_change_to_email?
+    false
+  end
+
+  def email_changed?
+    false
+  end
+
   def self.authenticate(mobile_number, password)
     user = find_by(mobile_number:)
     user if user&.valid_password?(password)
