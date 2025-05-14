@@ -13,7 +13,7 @@
 #  current_sign_in_ip     :string
 #  date_of_birth          :date
 #  deleted_at             :datetime
-#  email                  :string           default(""), not null
+#  email                  :string
 #  email_notification     :boolean          default(TRUE), not null
 #  encrypted_password     :string           default(""), not null
 #  failed_attempts        :integer          default(0), not null
