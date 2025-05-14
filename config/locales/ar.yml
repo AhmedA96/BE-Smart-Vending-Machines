@@ -1,5 +1,9 @@
 ar:
-
+  user:
+    wrong_password: "كلمة مرور خاطئة"
+    change_password: "تغيير كلمة المرور"
+    authentication:
+      invalid_login: "رقم الجوال أو كلمة المرور غير صالحة"
   avo:
     resource_translations:
       machine_category:

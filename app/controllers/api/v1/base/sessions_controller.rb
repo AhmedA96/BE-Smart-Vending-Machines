@@ -14,7 +14,7 @@ module Api
             sign_in(resource)
             head :created
           else
-            render_error('Invalid email or password', :unprocessable_entity)
+            render_error(I18n.t('user.authentication.invalid_login'), :unprocessable_entity)
           end
         end
 
@@ -37,7 +37,7 @@ module Api
         private
 
         def find_resource
-          resource_class.find_by(email: params[:email])
+          resource_class.find_by(mobile_number: params[:mobile_number])
         end
 
         def resource_class
