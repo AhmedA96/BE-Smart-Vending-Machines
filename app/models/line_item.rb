@@ -29,5 +29,5 @@ class LineItem < ApplicationRecord
   belongs_to :order
   belongs_to :variant, optional: false
 
-  validates :quantity, :processed, presence: true
+  validates :quantity, presence: true
 end
