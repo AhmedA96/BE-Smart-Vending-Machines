@@ -40,6 +40,8 @@ Rails.application.routes.draw do
           get 'machine_products'
         end
       end
+
+      resources :orders
     end
   end
 end
