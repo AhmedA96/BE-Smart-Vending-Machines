@@ -32,6 +32,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Order < ApplicationRecord
+  include AASM
+
   belongs_to :user
   belongs_to :machine
   has_many :line_items, dependent: :nullify
@@ -40,6 +42,20 @@ class Order < ApplicationRecord
   delegate :price_list, to: :machine, allow_nil: true
 
   validates :number, presence: true
+
+  aasm column: 'status' do
+    state :initial, initial: true
+    state :pending
+    state :dispended
+
+    event :pending do
+      transitions from: :initial, to: :pending
+    end
+
+    event :dispense do
+      transitions from: :pending, to: :dispended
+    end
+  end
 
   def self.generate_unique_order_number
     loop do
