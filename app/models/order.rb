@@ -37,5 +37,15 @@ class Order < ApplicationRecord
   has_many :line_items, dependent: :nullify
   has_many :variants, through: :line_items
 
+  delegate :price_list, to: :machine, allow_nil: true
+
   validates :number, presence: true
+
+  def self.generate_unique_order_number
+    loop do
+      random_number = SecureRandom.random_number(1...10_000_000_000)
+      order_number = "VNDG#{random_number}"
+      return order_number unless Order.exists?(number: order_number)
+    end
+  end
 end
