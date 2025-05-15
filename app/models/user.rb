@@ -13,7 +13,7 @@
 #  current_sign_in_ip     :string
 #  date_of_birth          :date
 #  deleted_at             :datetime
-#  email                  :string           default(""), not null
+#  email                  :string
 #  email_notification     :boolean          default(TRUE), not null
 #  encrypted_password     :string           default(""), not null
 #  failed_attempts        :integer          default(0), not null
@@ -72,6 +72,18 @@ class User < ApplicationRecord
     return unless encrypted_password_changed? && Devise.secure_compare(encrypted_password, encrypted_password_was)
 
     errors.add(:new_password, I18n.t('errors.messages.password_must_be_different'))
+  end
+
+  def email_required?
+    false
+  end
+
+  def will_save_change_to_email?
+    false
+  end
+
+  def email_changed?
+    false
   end
 
   def self.authenticate(mobile_number, password)

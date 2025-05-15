@@ -28,6 +28,14 @@
 #       enabled: "ON"
 
 en:
+  user:
+    wrong_password: "Wrong password"
+    change_password: "Change password"
+    welcome_email:
+      subject: "Welcome to our app"
+    authentication:
+      invalid_login: "Invalid mobile or password"
+
   avo:
     resource_translations:
       machine_category:

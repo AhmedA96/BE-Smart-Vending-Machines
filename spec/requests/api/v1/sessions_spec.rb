@@ -12,34 +12,34 @@ RSpec.describe 'User Sessions', type: :request do
       parameter name: :credentials, in: :body, schema: {
         type: :object,
         properties: {
-          email: { type: :string, example: 'user@example.com' },
+          mobile_number: { type: :string, example: '+201234567890' },
           password: { type: :string, example: 'Password@123' }
         },
-        required: %w[email password]
+        required: %w[mobile_number password]
       }
 
-      let(:user) { create(:user, email: 'test@example.com', password: 'Password@123') }
+      let(:user) { create(:user, mobile_number: '+201234567890', password: 'Password@123') }
 
       response '201', 'login successful' do
-        let(:credentials) { { email: user.email, password: 'Password@123' } }
+        let(:credentials) { { mobile_number: user.mobile_number, password: 'Password@123' } }
         run_test! do
           expect(response).to have_http_status(:created)
         end
       end
 
       response '422', 'invalid credentials' do
-        let(:credentials) { { email: user.email, password: 'wrongpassword' } }
+        let(:credentials) { { mobile_number: user.mobile_number, password: 'wrongpassword' } }
         run_test! do
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include('Invalid email or password')
+          expect(response.body).to include('Invalid mobile or password')
         end
       end
 
       response '422', 'non-existent user' do
-        let(:credentials) { { email: 'unknown@example.com', password: 'password123' } }
+        let(:credentials) { { mobile_number: '', password: 'password123' } }
         run_test! do
           expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include('Invalid email or password')
+          expect(response.body).to include('Invalid mobile or password')
         end
       end
     end
