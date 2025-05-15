@@ -49,6 +49,34 @@ class Variant < ApplicationRecord
   has_many :line_items, dependent: :nullify
   has_many :variant_translations, dependent: :destroy
 
+  scope :active, -> { where(active: true) }
+
+  scope :filtered_by_category, lambda { |category_ids|
+    joins(product: :categories)
+      .where(categories: { id: category_ids })
+  }
+  def activate!
+    update!(active: true)
+  end
+
+  def deactivate!
+    update!(active: false)
+  end
+
+  def with_price_list(price_list_id)
+    return unless price_list_id
+
+    price_list_items.find_by(price_list_id:)
+  end
+
+  def machine_stock(machine)
+    return unless machine&.id
+
+    MachineItem
+      .where(variant_id: id, machine_id: machine)
+      .pick('machine_items.stock') || 0
+  end
+
   def full_name
     "#{product.name} - #{product&.name == name ? '' : name} [#{sku}]"
   end

@@ -125,7 +125,7 @@ GEM
     auto_increment (1.6.2)
       activerecord (>= 6.0)
       activesupport (>= 6.0)
-    avo (3.20.0)
+    avo (3.20.1)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
@@ -146,17 +146,18 @@ GEM
       rails (>= 6.0.0)
       zeitwerk
     aws-eventstream (1.3.2)
-    aws-partitions (1.1068.0)
-    aws-sdk-core (3.220.1)
+    aws-partitions (1.1103.0)
+    aws-sdk-core (3.224.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
       base64
       jmespath (~> 1, >= 1.6.1)
-    aws-sdk-kms (1.99.0)
+      logger
+    aws-sdk-kms (1.101.0)
       aws-sdk-core (~> 3, >= 3.216.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.182.0)
+    aws-sdk-s3 (1.186.0)
       aws-sdk-core (~> 3, >= 3.216.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -214,7 +215,7 @@ GEM
       tzinfo
       unicode (>= 0.4.4.5)
     csv (3.3.3)
-    database_cleaner-active_record (2.2.0)
+    database_cleaner-active_record (2.2.1)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
@@ -322,7 +323,7 @@ GEM
       mutex_m
       representable (~> 3.0)
       retriable (>= 2.0, < 4.a)
-    google-apis-drive_v3 (0.64.0)
+    google-apis-drive_v3 (0.65.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-cloud-env (2.3.0)
       base64 (~> 0.2)
@@ -380,7 +381,7 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jmespath (1.6.2)
-    json (2.11.3)
+    json (2.12.0)
     json-schema (5.1.1)
       addressable (~> 2.8)
       bigdecimal (~> 3.1)
@@ -406,7 +407,7 @@ GEM
       rexml
     lint_roller (1.1.0)
     logger (1.7.0)
-    loofah (2.24.0)
+    loofah (2.24.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.8.1)
@@ -514,7 +515,7 @@ GEM
       activesupport (>= 6.1)
     pghero (3.6.1)
       activerecord (>= 6.1)
-    phonelib (0.10.8)
+    phonelib (0.10.9)
     popper_js (2.11.8)
     pp (0.6.2)
       prettyprint
@@ -522,7 +523,7 @@ GEM
     prism (1.4.0)
     prop_initializer (0.2.0)
       zeitwerk (>= 2.6.18)
-    psych (5.2.4)
+    psych (5.2.6)
       date
       stringio
     public_suffix (6.0.2)
@@ -709,7 +710,7 @@ GEM
       logger (>= 1.6.2)
       rack (>= 3.1.0)
       redis-client (>= 0.23.2)
-    sidekiq-cron (2.2.0)
+    sidekiq-cron (2.3.0)
       cronex (>= 0.13.0)
       fugit (~> 1.8, >= 1.11.1)
       globalid (>= 1.0.1)
@@ -847,7 +848,7 @@ DEPENDENCIES
   fcm (~> 2.0.0)
   fuubar
   geocoder
-  google-apis-drive_v3 (~> 0.64)
+  google-apis-drive_v3 (~> 0.65)
   googleauth
   groupdate
   httparty
@@ -903,7 +904,7 @@ DEPENDENCIES
   selenium-webdriver
   shoulda-matchers (~> 6.0)
   sidekiq (~> 8.0)
-  sidekiq-cron (~> 2.2)
+  sidekiq-cron (~> 2.3)
   sidekiq-limit_fetch (~> 4.4.1)
   simplecov
   smarter_csv

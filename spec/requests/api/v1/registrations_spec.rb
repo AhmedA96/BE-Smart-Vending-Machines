@@ -12,16 +12,14 @@ RSpec.describe 'User Registration', type: :request do
       parameter name: :user, in: :body, schema: {
         type: :object,
         properties: {
-          email: { type: :string, example: 'user@example.com' },
           password: { type: :string, example: 'Password@!123' },
           mobile_number: { type: :string, example: '+201234567890' }
         },
-        required: %w[email password mobile_number]
+        required: %w[password mobile_number]
       }
-      let(:existing_user) { create(:user, email: 'user@example.com') }
+      let(:existing_user) { create(:user, mobile_number: '+201234567890') }
       let(:valid_attributes) do
         {
-          email: 'user@example.com',
           password: 'Password@!123',
           mobile_number: '+201234567890'
         }
@@ -29,7 +27,7 @@ RSpec.describe 'User Registration', type: :request do
 
       let(:invalid_attributes) do
         {
-          email: '',
+          mobile_number: '',
           password: 'short'
         }
       end
@@ -39,7 +37,7 @@ RSpec.describe 'User Registration', type: :request do
           response '201', 'user created' do
             let(:user) { { user: valid_attributes } }
             run_test! do
-              expect(User.last.email).to eq(valid_attributes[:email])
+              expect(User.last.mobile_number).to eq(valid_attributes[:mobile_number])
             end
           end
         end
@@ -53,13 +51,13 @@ RSpec.describe 'User Registration', type: :request do
           end
         end
 
-        context 'with valid but taken email' do
-          response '422', 'email already taken' do
+        context 'with valid but taken mobile number' do
+          response '422', 'mobile number already taken' do
             before { existing_user }
             let(:user) { { user: valid_attributes } }
             run_test! do
               json_response = response.parsed_body
-              expect(json_response['errors'].first['email']).to include('has already been taken')
+              expect(json_response['errors'].first['mobile_number']).to include('has already been taken')
             end
           end
         end

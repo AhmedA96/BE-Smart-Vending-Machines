@@ -45,7 +45,7 @@ gem 'mini_magick'
 
 # Background Processing
 gem 'sidekiq', '~> 8.0'
-gem 'sidekiq-cron', '~> 2.2'
+gem 'sidekiq-cron', '~> 2.3'
 gem 'sidekiq-limit_fetch', '~> 4.4.1'
 
 # Caching & Performance
@@ -106,7 +106,7 @@ gem 'avo', '>= 3.11'
 # Third Party Services
 gem 'cequens', github: 'AhmedAliIbrahim/cequens', branch: 'main'
 gem 'fcm', '~> 2.0.0'
-gem 'google-apis-drive_v3', '~> 0.64'
+gem 'google-apis-drive_v3', '~> 0.65'
 
 # Development Tools
 group :development do
