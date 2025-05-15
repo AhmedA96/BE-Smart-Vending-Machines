@@ -3,6 +3,7 @@
 module Api
   module V1
     class VariantsController < ApplicationController
+      skip_before_action :doorkeeper_authorize!
       before_action :find_product, only: [:index]
       before_action :find_variant, only: [:show]
 

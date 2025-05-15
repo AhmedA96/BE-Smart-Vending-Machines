@@ -41,10 +41,8 @@ Rails.application.routes.draw do
         end
       end
 
-
       resources :orders
       resources :variants, only: %i[index show]
-
     end
   end
 end
