@@ -12,7 +12,7 @@ module Orders
         create_line_items(order, cart_items, machine)
         order
       end
-    rescue ActiveRecord::RecordInvalid, Stock::StockError => e
+    rescue ActiveRecord::RecordInvalid => e
       raise OrderError, e.message
     end
 

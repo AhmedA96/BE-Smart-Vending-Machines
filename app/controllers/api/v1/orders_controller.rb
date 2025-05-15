@@ -16,8 +16,6 @@ module Api
       def create
         @order = Orders::Create.call(order_params)
         render :show, status: :created
-      rescue Orders::OrderError, Stock::StockError => e
-        render_error(e.message, :unprocessable_entity)
       end
 
       private

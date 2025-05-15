@@ -4,6 +4,8 @@ module ErrorHandling
   extend ActiveSupport::Concern
 
   included do
+    rescue_from Orders::OrderError, with: :handle_unprocessable_entity
+    rescue_from Stock::StockError, with: :handle_unprocessable_entity
     rescue_from ActiveRecord::RecordInvalid, with: :render_invalid
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   end
@@ -16,5 +18,13 @@ module ErrorHandling
 
   def render_invalid(error)
     render_error(error, :unprocessable_entity)
+  end
+
+  def handle_unprocessable_entity(error)
+    render_error(error, :unprocessable_entity)
+  end
+
+  def render_not_found(error)
+    render_error(I18n.t('errors.not_found', model: error.model, id: error.id), :not_found)
   end
 end

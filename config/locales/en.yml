@@ -28,6 +28,8 @@
 #       enabled: "ON"
 
 en:
+  errors:
+    not_found: "%{model} with id %{id} not found"
   avo:
     resource_translations:
       machine_category:
