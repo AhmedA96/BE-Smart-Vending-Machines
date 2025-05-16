@@ -14,7 +14,7 @@ module Stock
       stock_quantity = variant.machine_stock(machine)
       return if stock_quantity.to_i >= quantity.to_i
 
-      raise StockError, 'Insufficient stock for one or more items'
+      raise FailedRequestError, 'Insufficient stock for one or more items'
     end
 
     def self.update_variant_stock(variant, machine, quantity)

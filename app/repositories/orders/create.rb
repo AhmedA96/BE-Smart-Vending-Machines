@@ -12,8 +12,6 @@ module Orders
         create_line_items(order, cart_items, machine)
         order
       end
-    rescue ActiveRecord::RecordInvalid => e
-      raise OrderError, e.message
     end
 
     def self.create_order(machine, user, cart_items)
@@ -39,6 +37,4 @@ module Orders
       end
     end
   end
-
-  class OrderError < StandardError; end
 end
