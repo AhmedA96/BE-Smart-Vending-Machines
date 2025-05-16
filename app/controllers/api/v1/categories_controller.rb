@@ -3,7 +3,6 @@
 module Api
   module V1
     class CategoriesController < ApplicationController
-      skip_before_action :doorkeeper_authorize!
       before_action :set_category, only: %i[show]
       def index
         @categories = paginate(Category.all)
