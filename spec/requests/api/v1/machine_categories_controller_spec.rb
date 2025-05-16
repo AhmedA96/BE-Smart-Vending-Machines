@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::MachineCategoriesController, type: :request do
-  describe 'GET /api/v1/machine_categories' do
-    let!(:machine_category) { create(:machine_category) }
+  let!(:machine_category) { create(:machine_category) }
+  let(:application) { create(:oauth_application) }
+  let(:access_token) { create(:doorkeeper_access_token, application: application, resource_owner_id: nil) }
 
+  describe 'GET /api/v1/machine_categories' do
     it 'returns all machine categories' do
-      get '/api/v1/machine_categories'
+      get '/api/v1/machine_categories', headers: { Authorization: "Bearer #{access_token.token}" }
 
       json_response = response.parsed_body
       expect(response).to have_http_status(:ok)
@@ -17,10 +19,9 @@ RSpec.describe Api::V1::MachineCategoriesController, type: :request do
   end
 
   describe 'GET /api/v1/machine_categories/:id' do
-    let!(:machine_category) { create(:machine_category) }
-
     it 'returns machine category by :id' do
-      get "/api/v1/machine_categories/#{machine_category.id}"
+      get "/api/v1/machine_categories/#{machine_category.id}",
+          headers: { Authorization: "Bearer #{access_token.token}" }
 
       json_response = response.parsed_body
       expect(response).to have_http_status(:ok)
