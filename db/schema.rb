@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_14_045112) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_18_013057) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -184,10 +184,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_045112) do
     t.datetime "location_updated_at"
     t.bigint "location_id"
     t.integer "floor_no"
+    t.bigint "supplier_id"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
     t.index ["location_id"], name: "index_machines_on_location_id"
+    t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
   end
 
@@ -432,6 +434,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_045112) do
   add_foreign_key "machine_statuses", "machines"
   add_foreign_key "machine_translations", "machines"
   add_foreign_key "machines", "locations"
+  add_foreign_key "machines", "suppliers"
   add_foreign_key "machines", "vendors"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "orders", "machines"

@@ -13,4 +13,6 @@
 #
 class Supplier < ApplicationRecord
   validates :name, :app_id, :app_secret, presence: true
+
+  has_many :machines, dependent: :nullify
 end
