@@ -16,7 +16,7 @@
 #  weight     :float            default(0.0)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  product_id :integer          not null
+#  product_id :integer
 #
 # Indexes
 #
@@ -40,7 +40,7 @@ class Variant < ApplicationRecord
   validates :sku, uniqueness: { case_sensitive: false }
   validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
-  belongs_to :product, optional: false
+  belongs_to :product, optional: true
 
   has_many :machine_items
   has_many :machines, through: :machine_items

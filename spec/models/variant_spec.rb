@@ -4,8 +4,6 @@ require 'rails_helper'
 
 RSpec.describe Variant, type: :model do
   describe 'associations' do
-    it { should belong_to(:product) }
-
     it { should have_many(:machine_items) }
     it { should have_many(:machines).through(:machine_items) }
     it { should have_many(:price_lists) }

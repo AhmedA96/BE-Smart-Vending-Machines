@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_18_013328) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_18_021744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -398,7 +398,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_013328) do
     t.boolean "is_master", default: false, null: false
     t.boolean "active", default: true
     t.integer "position", default: 1
-    t.integer "product_id", null: false
+    t.integer "product_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
