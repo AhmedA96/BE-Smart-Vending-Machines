@@ -4,6 +4,7 @@
 Rails.logger.debug 'Cleaning database...'
 
 # Clear main tables first
+Order.destroy_all
 MachineStatus.destroy_all
 MachineItem.destroy_all
 Machine.destroy_all
@@ -17,6 +18,7 @@ Brand.destroy_all
 Category.destroy_all
 PriceList.destroy_all
 Location.destroy_all
+Supplier.destroy_all
 
 # Clear users_roles join table using delete_all to bypass model callbacks
 ActiveRecord::Base.connection.execute('DELETE FROM users_roles')
@@ -24,6 +26,28 @@ User.destroy_all
 Role.destroy_all
 
 Rails.logger.debug 'Database cleaned!'
+
+# ---------------------------- #
+# Suppliers
+# ---------------------------- #
+Rails.logger.debug 'Creating Suppliers...'
+
+suppliers = [
+  {
+    name: 'Reyah',
+    app_id: 'vt_solutions_001',
+    app_secret: 'vt_secret_key_123'
+  },
+  {
+    name: '1Trolley',
+    app_id: 'svs_002',
+    app_secret: 'svs_secret_key_456'
+  }
+]
+
+supplier_records = Supplier.create!(suppliers)
+
+Rails.logger.debug { "Created #{supplier_records.count} Suppliers." }
 
 # ---------------------------- #
 # Categories
@@ -369,6 +393,7 @@ machines = [
     coordinates: 'POINT(31.2357 30.0444)',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago,
+    supplier: supplier_records[1],
     translations_attributes: [
       { locale: 'en', name: 'Snack Machine Alpha' },
       { locale: 'ar', name: 'آلة الوجبات الخفيفة ألفا' }
@@ -383,6 +408,7 @@ machines = [
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 1.year.ago,
     last_service_date: 2.months.ago,
+    supplier: supplier_records[0],
     translations_attributes: [
       { locale: 'en', name: 'Drink Machine Beta' },
       { locale: 'ar', name: 'آلة المشروبات بيتا' }
@@ -397,6 +423,7 @@ machines = [
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 3.months.ago,
     last_service_date: 1.week.ago,
+    supplier: supplier_records[1],
     translations_attributes: [
       { locale: 'en', name: 'Electronics Vendor Gamma' },
       { locale: 'ar', name: 'آلة الإلكترونيات جاما' }
@@ -412,6 +439,7 @@ machines = [
     coordinates: 'POINT(31.2646 30.0355)',
     installed_at: 8.months.ago,
     last_service_date: 3.months.ago,
+    supplier: supplier_records[0],
     translations_attributes: [
       { locale: 'en', name: 'Snack Machine Delta' },
       { locale: 'ar', name: 'آلة الوجبات الخفيفة دلتا' }
