@@ -6,6 +6,7 @@
 #
 #  id         :bigint           not null, primary key
 #  app_secret :string           not null
+#  base_url   :string
 #  name       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
