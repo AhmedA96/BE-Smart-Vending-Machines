@@ -5,7 +5,7 @@ module Api
     module Base
       class RegistrationsController < Devise::RegistrationsController
         respond_to :json
-        skip_before_action :verify_authenticity_token
+        skip_before_action :doorkeeper_authorize!
       end
     end
   end

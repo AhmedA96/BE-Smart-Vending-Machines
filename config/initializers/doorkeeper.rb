@@ -27,7 +27,7 @@ Doorkeeper.configure do
   access_token_expires_in nil
 
   # Enable password grant flow only
-  grant_flows %w[password]
+  grant_flows %w[password client_credentials]
 
   access_token_expires_in nil
 
