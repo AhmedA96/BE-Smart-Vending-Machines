@@ -125,7 +125,7 @@ GEM
     auto_increment (1.6.2)
       activerecord (>= 6.0)
       activesupport (>= 6.0)
-    avo (3.20.1)
+    avo (3.20.2)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
