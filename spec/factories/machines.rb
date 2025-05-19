@@ -7,6 +7,7 @@ FactoryBot.define do
     association :category, factory: :machine_category
     association :vendor
     association :location
+    association :supplier
     status { 'Active' }
     installed_at { Time.current }
     last_service_date { Time.current }
