@@ -106,7 +106,7 @@ gem 'avo', '>= 3.11'
 # Third Party Services
 gem 'cequens', github: 'AhmedAliIbrahim/cequens', branch: 'main'
 gem 'fcm', '~> 2.0.0'
-gem 'google-apis-drive_v3', '~> 0.65'
+gem 'google-apis-drive_v3', '~> 0.66'
 
 # Development Tools
 group :development do
