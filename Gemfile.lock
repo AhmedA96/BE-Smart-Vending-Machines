@@ -539,8 +539,9 @@ GEM
     raabro (1.4.0)
     racc (1.8.1)
     rack (3.1.14)
-    rack-cors (2.0.2)
-      rack (>= 2.0.0)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-mini-profiler (3.3.1)
       rack (>= 1.2.0)
     rack-protection (4.1.1)
@@ -883,7 +884,7 @@ DEPENDENCIES
   pundit
   pundit-matchers
   rack (>= 3.1.10)
-  rack-cors (<= 2.0.2)
+  rack-cors (<= 3.0.1)
   rack-mini-profiler
   rails (~> 8.0)
   rails-controller-testing

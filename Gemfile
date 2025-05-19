@@ -32,7 +32,7 @@ gem 'rolify'
 # API & Serialization
 gem 'activemodel-serializers-xml'
 gem 'jbuilder'
-gem 'rack-cors', '<= 2.0.2'
+gem 'rack-cors', '<= 3.0.1'
 gem 'rswag-api'
 gem 'rswag-ui'
 
