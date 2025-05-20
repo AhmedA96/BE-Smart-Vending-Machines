@@ -25,7 +25,7 @@ module Suppliers
             'Content-Type' => 'application/json'
           },
           body: {
-            machineNo: @supplier.machine_no,
+            machineNo: machine_no,
             shopType: 1,
             machineLineProductId: machine_line_product_id,
             buyNum: 1

@@ -20,11 +20,6 @@ module Suppliers
 
       def update_variant_stock(record)
         variant = Variant.find_by!(sku: record['id'])
-
-        update_machine_stock(variant, record)
-      end
-
-      def update_machine_stock(variant, record)
         machine_item = MachineItem.find_or_initialize_by(machine: @machine, variant: variant)
 
         machine_item.update!(
