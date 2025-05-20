@@ -10,19 +10,27 @@ module Suppliers
 
       def call
         @records.each do |record|
-          update_or_create_variant(record)
+          update_variant_stock(record)
+        rescue ActiveRecord::RecordNotFound
+          next
         end
       end
 
       private
 
-      def update_or_create_variant(record)
-        variant = Variant.find_or_initialize_by(sku: record['id'])
+      def update_variant_stock(record)
+        variant = Variant.find_by!(sku: record['id'])
 
-        variant.update!(
-          name: record['productName'],
-          cost_price: record['productPrice'],
-          active: true
+        update_machine_stock(variant, record)
+      end
+
+      def update_machine_stock(variant, record)
+        machine_item = MachineItem.find_or_initialize_by(machine: @machine, variant: variant)
+
+        machine_item.update!(
+          stock: record['nowStock'].to_i,
+          line_number: record['lineNum'],
+          updated_at: Time.current
         )
       end
     end

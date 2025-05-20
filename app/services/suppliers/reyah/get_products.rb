@@ -5,13 +5,15 @@ module Suppliers
     class GetProducts
       include HTTParty
 
+      delegate :machine_no, :base_url, :auth_token, to: :@supplier
+
       def initialize(supplier)
         @supplier = supplier
       end
 
       def call(page: 1, per_page: 10)
         response = make_request(page, per_page)
-        SyncProducts.new(response, @machine_no).call if response['code'].zero?
+        SyncProducts.new(response, machine_no).call if response['code'].zero?
         response
       end
 
@@ -19,15 +21,15 @@ module Suppliers
 
       def make_request(page, per_page)
         self.class.post(
-          "#{@supplier.base_url}/openInterface/lineProduct/getByPage",
+          "#{base_url}/openInterface/lineProduct/getByPage",
           headers: {
-            'Authorization' => "Basic #{@supplier.auth_token}",
+            'Authorization' => "Basic #{auth_token}",
             'Content-Type' => 'application/json'
           },
           body: {
             currentPage: page,
             pageSize: per_page,
-            machineNo: @supplier.machine_no
+            machineNo: machine_no
           }.to_json
         )
       end
