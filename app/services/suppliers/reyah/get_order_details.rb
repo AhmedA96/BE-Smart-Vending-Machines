@@ -2,7 +2,7 @@
 
 module Suppliers
   module Reyah
-    class GetOrder
+    class GetOrderDetails
       include HTTParty
 
       delegate :machine_no, :base_url, :auth_token, to: :@supplier
