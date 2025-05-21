@@ -28,6 +28,9 @@
 #       enabled: "ON"
 
 en:
+  errors:
+    not_found: "%{model} with id %{id} not found"
+
   user:
     wrong_password: "Wrong password"
     change_password: "Change password"

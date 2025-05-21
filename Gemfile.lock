@@ -125,7 +125,7 @@ GEM
     auto_increment (1.6.2)
       activerecord (>= 6.0)
       activesupport (>= 6.0)
-    avo (3.20.1)
+    avo (3.20.2)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
@@ -323,7 +323,7 @@ GEM
       mutex_m
       representable (~> 3.0)
       retriable (>= 2.0, < 4.a)
-    google-apis-drive_v3 (0.65.0)
+    google-apis-drive_v3 (0.66.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-cloud-env (2.3.0)
       base64 (~> 0.2)
@@ -393,7 +393,7 @@ GEM
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
       redis (>= 4.2, < 6)
-    language_server-protocol (3.17.0.4)
+    language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
@@ -538,9 +538,10 @@ GEM
       rspec-support (~> 3.12)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.14)
-    rack-cors (2.0.2)
-      rack (>= 2.0.0)
+    rack (3.1.15)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-mini-profiler (3.3.1)
       rack (>= 1.2.0)
     rack-protection (4.1.1)
@@ -675,12 +676,12 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.72.1, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
-    rubocop-rails (2.30.3)
+    rubocop-rails (2.32.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
-      rubocop (>= 1.72.1, < 2.0)
-      rubocop-ast (>= 1.38.0, < 2.0)
+      rubocop (>= 1.75.0, < 2.0)
+      rubocop-ast (>= 1.44.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.3)
       ffi (~> 1.12)
@@ -848,7 +849,7 @@ DEPENDENCIES
   fcm (~> 2.0.0)
   fuubar
   geocoder
-  google-apis-drive_v3 (~> 0.65)
+  google-apis-drive_v3 (~> 0.66)
   googleauth
   groupdate
   httparty
@@ -883,7 +884,7 @@ DEPENDENCIES
   pundit
   pundit-matchers
   rack (>= 3.1.10)
-  rack-cors (<= 2.0.2)
+  rack-cors (<= 3.0.1)
   rack-mini-profiler
   rails (~> 8.0)
   rails-controller-testing
