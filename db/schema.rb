@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_18_021744) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_22_095912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -81,6 +81,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_18_021744) do
     t.datetime "updated_at", null: false
     t.index ["category_id", "locale"], name: "index_category_translations_on_category_id_and_locale", unique: true
     t.index ["locale"], name: "index_category_translations_on_locale"
+  end
+
+  create_table "contact_us_requests", force: :cascade do |t|
+    t.string "full_name"
+    t.string "email"
+    t.string "phone_number"
+    t.string "company_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "line_items", force: :cascade do |t|
