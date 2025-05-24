@@ -15,7 +15,7 @@ module ErrorHandling
   extend ActiveSupport::Concern
 
   included do
-    rescue_from ::ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
+    rescue_from ::ActiveRecord::RecordInvalid, with: :render_unprocessable_content_response
     rescue_from ::ActiveRecord::RecordNotFound, with: :render_not_found_response
     rescue_from FailedRequestError, with: :request_error
   end
@@ -26,8 +26,8 @@ module ErrorHandling
     render 'api/v1/shared/error', status:
   end
 
-  def render_unprocessable_entity_response(exception)
-    render_json(:unprocessable_entity, exception.record.errors)
+  def render_unprocessable_content_response(exception)
+    render_json(:unprocessable_content, exception.record.errors)
   end
 
   def render_not_found_response(exception)
