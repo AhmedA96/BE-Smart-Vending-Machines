@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_184759) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -312,6 +312,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_184759) do
     t.string "presentation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "payment_transactions", force: :cascade do |t|
+    t.string "charge_id", null: false
+    t.integer "payment_customer_id"
+    t.integer "payment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["charge_id"], name: "index_payment_transactions_on_charge_id"
+    t.index ["payment_customer_id"], name: "index_payment_transactions_on_payment_customer_id"
+    t.index ["payment_id"], name: "index_payment_transactions_on_payment_id"
   end
 
   create_table "payments", force: :cascade do |t|

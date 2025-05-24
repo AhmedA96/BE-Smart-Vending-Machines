@@ -23,6 +23,8 @@ class Payment < ApplicationRecord
   belongs_to :order, optional: false
   belongs_to :payment_method, optional: false
 
+  has_many :payment_transactions, dependent: :nullify
+
   validates :amount, presence: true
   validates :status, presence: true
 
