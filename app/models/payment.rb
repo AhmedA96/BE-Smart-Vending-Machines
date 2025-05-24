@@ -25,4 +25,20 @@ class Payment < ApplicationRecord
 
   validates :amount, presence: true
   validates :status, presence: true
+
+  aasm column: 'status', whiny_transitions: false do
+    state :pending, initial: true
+    state :completed
+    state :failed
+    state :refunded
+    state :partially_refunded
+
+    event :complete do
+      transitions from: :pending, to: :completed
+    end
+
+    event :failed do
+      transitions from: :pending, to: :failed
+    end
+  end
 end
