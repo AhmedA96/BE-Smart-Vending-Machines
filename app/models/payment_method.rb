@@ -13,5 +13,7 @@
 #  updated_at   :datetime         not null
 #
 class PaymentMethod < ApplicationRecord
+  has_many :machine_payment_methods, dependent: :destroy
+
   validates :name, presence: true, inclusion: { in: PAYMENT_METHODS.values }
 end
