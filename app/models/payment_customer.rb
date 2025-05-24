@@ -17,6 +17,8 @@
 class PaymentCustomer < ApplicationRecord
   belongs_to :user, optional: false
 
+  has_many :payment_cards, dependent: :destroy
+
   validates :payment_customer_number, presence: true
   validates :payment_customer_number, uniqueness: { scope: :user_id }
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_184158) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_24_184759) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -273,6 +273,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_184158) do
     t.bigint "machine_id", null: false
     t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payment_cards", force: :cascade do |t|
+    t.string "brand"
+    t.string "category"
+    t.boolean "default", default: false
+    t.integer "exp_month"
+    t.integer "exp_year"
+    t.string "fingerprint"
+    t.string "first_eight"
+    t.string "first_six"
+    t.string "funding"
+    t.string "last_four"
+    t.string "name"
+    t.string "scheme"
+    t.string "card_id", null: false
+    t.string "payment_agreement_id"
+    t.integer "payment_customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_payment_cards_on_card_id", unique: true
+    t.index ["payment_customer_id"], name: "index_payment_cards_on_payment_customer_id"
   end
 
   create_table "payment_customers", force: :cascade do |t|
