@@ -8,6 +8,7 @@ RSpec.describe Order, type: :model do
     it { should belong_to(:machine) }
     it { should have_many(:line_items) }
     it { should have_many(:variants).through(:line_items) }
+    it { should have_many(:payments) }
   end
 
   describe 'validations' do
