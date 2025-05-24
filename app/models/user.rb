@@ -60,6 +60,8 @@ class User < ApplicationRecord
   validate :password_complexity
   validate :new_and_old_password_must_be_different
 
+  has_one :payment_customer, dependent: :destroy
+
   has_many :orders, dependent: :destroy
   has_many :users_roles, dependent: :destroy
 

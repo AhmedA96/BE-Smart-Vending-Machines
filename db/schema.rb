@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_182539) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_24_184158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -273,6 +273,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_182539) do
     t.bigint "machine_id", null: false
     t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payment_customers", force: :cascade do |t|
+    t.string "payment_customer_number", null: false
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_customer_number", "user_id"], name: "index_payment_customers_on_payment_customer_number_and_user_id", unique: true
   end
 
   create_table "payment_methods", force: :cascade do |t|
