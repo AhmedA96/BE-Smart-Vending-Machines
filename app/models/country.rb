@@ -14,6 +14,10 @@
 #  updated_at     :datetime         not null
 #
 class Country < ApplicationRecord
+  extend Mobility
+
+  translates :presentation, :currency
+
   has_many :machines
 
   enum :name,
