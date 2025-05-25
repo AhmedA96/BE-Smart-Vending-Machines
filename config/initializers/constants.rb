@@ -6,3 +6,4 @@ PAYMENT_METHODS = {
   apple_pay: 'apple pay',
   google_pay: 'google pay'
 }.freeze
+CURRENCIES = %w[SAR AED].freeze

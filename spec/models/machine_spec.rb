@@ -8,6 +8,7 @@ RSpec.describe Machine, type: :model do
     it { should belong_to(:category).class_name('MachineCategory') }
     it { should belong_to(:location) }
     it { should belong_to(:supplier) }
+    it { should belong_to(:country) }
     it { should have_one(:price_list).through(:location) }
     it { should have_many(:machine_statuses) }
     it { should have_many(:machine_items) }
