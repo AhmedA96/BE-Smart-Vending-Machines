@@ -19,6 +19,7 @@ class Country < ApplicationRecord
   translates :presentation, :currency
 
   has_many :machines
+  has_many :country_translations, dependent: :destroy
 
   enum :name,
        { UAE: 'uae', KSA: 'saudi' }
