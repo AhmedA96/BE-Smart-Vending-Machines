@@ -11,7 +11,7 @@ module Avo
 
       def fields
         field :id, as: :id
-        field :name, as: :select, options: PAYMENT_METHODS.values
+        field :name, as: :text
         field :presentation, as: :text
         field :description, as: :text
         field :active, as: :boolean

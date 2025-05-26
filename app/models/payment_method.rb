@@ -16,7 +16,7 @@ class PaymentMethod < ApplicationRecord
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payments, dependent: :nullify
 
-  validates :name, presence: true, inclusion: { in: PAYMENT_METHODS.values }
+  validates :name, presence: true
 
   scope :active_for_machine, lambda {
     joins(:machine_payment_methods)
