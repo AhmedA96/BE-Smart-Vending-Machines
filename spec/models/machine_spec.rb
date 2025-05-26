@@ -13,6 +13,8 @@ RSpec.describe Machine, type: :model do
     it { should have_many(:machine_items) }
     it { should have_many(:variants).through(:machine_items) }
     it { should have_many(:machine_translations) }
+    it { should have_many(:machine_payment_methods) }
+    it { should have_many(:payment_methods).through(:machine_payment_methods) }
   end
 
   describe 'validations' do

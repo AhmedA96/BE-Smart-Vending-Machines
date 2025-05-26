@@ -45,6 +45,8 @@ Rails.application.routes.draw do
       resources :variants, only: %i[index show]
 
       post 'contact-us', to: 'contact_us_requests#create'
+
+      resources :payment_methods, only: %i[index show]
     end
   end
 end

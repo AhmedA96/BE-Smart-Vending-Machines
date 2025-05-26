@@ -36,8 +36,10 @@ class Order < ApplicationRecord
 
   belongs_to :user
   belongs_to :machine
+
   has_many :line_items, dependent: :nullify
   has_many :variants, through: :line_items
+  has_many :payments, dependent: :nullify
 
   delegate :price_list, to: :machine, allow_nil: true
 

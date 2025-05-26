@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_22_095912) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_24_182539) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -159,6 +159,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_095912) do
     t.index ["variant_id"], name: "index_machine_items_on_variant_id"
   end
 
+  create_table "machine_payment_methods", force: :cascade do |t|
+    t.integer "machine_id"
+    t.integer "payment_method_id"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["machine_id", "payment_method_id"], name: "index_mach_pay_methods_on_machine_id_and_payment_method_id", unique: true
+    t.index ["machine_id"], name: "index_machine_payment_methods_on_machine_id"
+    t.index ["payment_method_id"], name: "index_machine_payment_methods_on_payment_method_id"
+  end
+
   create_table "machine_statuses", force: :cascade do |t|
     t.bigint "machine_id", null: false
     t.string "status"
@@ -262,6 +273,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_095912) do
     t.bigint "machine_id", null: false
     t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payment_methods", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "description"
+    t.string "name", null: false
+    t.string "presentation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.datetime "deleted_at"
+    t.string "message"
+    t.string "status", default: "pending", null: false
+    t.integer "card_id"
+    t.integer "order_id"
+    t.integer "payment_method_id"
+    t.string "token_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "price_list_items", force: :cascade do |t|
