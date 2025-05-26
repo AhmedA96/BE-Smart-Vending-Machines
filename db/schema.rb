@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_182539) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -275,6 +275,36 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_182539) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "payment_cards", force: :cascade do |t|
+    t.string "brand"
+    t.string "category"
+    t.boolean "default", default: false
+    t.integer "exp_month"
+    t.integer "exp_year"
+    t.string "fingerprint"
+    t.string "first_eight"
+    t.string "first_six"
+    t.string "funding"
+    t.string "last_four"
+    t.string "name"
+    t.string "scheme"
+    t.string "card_id", null: false
+    t.string "payment_agreement_id"
+    t.integer "payment_customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_payment_cards_on_card_id", unique: true
+    t.index ["payment_customer_id"], name: "index_payment_cards_on_payment_customer_id"
+  end
+
+  create_table "payment_customers", force: :cascade do |t|
+    t.string "payment_customer_number", null: false
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_customer_number", "user_id"], name: "index_payment_customers_on_payment_customer_number_and_user_id", unique: true
+  end
+
   create_table "payment_methods", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "description"
@@ -282,6 +312,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_182539) do
     t.string "presentation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "payment_transactions", force: :cascade do |t|
+    t.string "charge_id", null: false
+    t.integer "payment_customer_id"
+    t.integer "payment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["charge_id"], name: "index_payment_transactions_on_charge_id"
+    t.index ["payment_customer_id"], name: "index_payment_transactions_on_payment_customer_id"
+    t.index ["payment_id"], name: "index_payment_transactions_on_payment_id"
   end
 
   create_table "payments", force: :cascade do |t|
