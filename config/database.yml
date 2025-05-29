@@ -11,6 +11,10 @@ development:
   <<: *default
   database: vndgme_development
 
+staging:
+  <<: *default
+  database: vndgme_staging
+
 test:
   <<: *default
   database: vndgme_test
