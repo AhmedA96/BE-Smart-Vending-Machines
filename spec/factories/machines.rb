@@ -8,6 +8,7 @@ FactoryBot.define do
     association :vendor
     association :location
     association :supplier
+    association :country
     status { 'Active' }
     installed_at { Time.current }
     last_service_date { Time.current }
