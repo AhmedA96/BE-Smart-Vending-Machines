@@ -1,0 +1,35 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="logo-wrapper">
+      <%= image_tag "logo.svg", alt: "Company Logo", class: "img-fluid" %>
+    </div>
+    
+    <h2 class="card-title">Change Password</h2>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= f.hidden_field :reset_password_token %>
+
+      <div class="form-floating mb-3">
+        <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "form-control", placeholder: "New Password" %>
+        <%= f.label :password, "New password" %>
+        <% if @minimum_password_length %>
+          <div class="form-text">
+            Minimum <%= @minimum_password_length %> characters
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-floating mb-3">
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirm New Password" %>
+        <%= f.label :password_confirmation, "Confirm new password" %>
+      </div>
+
+      <%= f.submit "Change Password", class: "btn btn-primary" %>
+
+      <div class="auth-links">
+        <%= render "devise/shared/links" %>
+      </div>
+    <% end %>
+  </div>
+</div>

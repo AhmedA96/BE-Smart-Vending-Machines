@@ -1,0 +1,39 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="logo-wrapper">
+      <%= image_tag "logo.svg", alt: "Company Logo", class: "img-fluid" %>
+    </div>
+    
+    <h2 class="card-title">Create Account</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="form-floating mb-3">
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "name@example.com" %>
+        <%= f.label :email %>
+      </div>
+
+      <div class="form-floating mb-3">
+        <%= f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: "Password" %>
+        <%= f.label :password %>
+        <% if @minimum_password_length %>
+          <div class="form-text">
+            Minimum <%= @minimum_password_length %> characters
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-floating mb-3">
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirm Password" %>
+        <%= f.label :password_confirmation %>
+      </div>
+
+      <%= f.submit "Sign Up", class: "btn btn-primary" %>
+
+      <div class="auth-links">
+        <%= render "devise/shared/links" %>
+      </div>
+    <% end %>
+  </div>
+</div>
