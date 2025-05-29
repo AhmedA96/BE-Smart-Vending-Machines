@@ -20,7 +20,7 @@ RSpec.describe 'ContactUsRequests API', type: :request do
         post '/api/v1/contact-us', params: valid_params
       end.to change(ContactUsRequest, :count).by(1)
 
-      expect(response).to have_http_status(:no_content)
+      expect(response).to have_http_status(:created)
     end
 
     it 'returns error if required fields are missing' do
