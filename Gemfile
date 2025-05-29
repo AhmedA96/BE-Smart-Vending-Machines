@@ -52,6 +52,7 @@ gem 'sidekiq-limit_fetch', '~> 4.4.1'
 gem 'kredis'
 gem 'puma', '>= 6.4.2'
 gem 'rack', '>= 3.1.10'
+gem 'thruster'
 
 # Frontend & Assets
 gem 'bootstrap', '~> 5.3.5'
@@ -159,3 +160,7 @@ group :development, :test do
   gem 'vcr'
   gem 'webmock'
 end
+
+gem "solid_queue", "~> 1.1"
+
+gem "solid_cache", "~> 1.0"
