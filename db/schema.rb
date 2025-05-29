@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_25_000724) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -90,6 +90,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
     t.string "company_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "countries", force: :cascade do |t|
+    t.string "name"
+    t.string "iso2"
+    t.string "currency"
+    t.string "time_zone"
+    t.decimal "vat_percentage", precision: 10, scale: 2, default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "country_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.string "currency"
+    t.string "locale", null: false
+    t.bigint "country_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["country_id", "locale"], name: "index_country_translations_on_country_id_and_locale", unique: true
+    t.index ["locale"], name: "index_country_translations_on_locale"
   end
 
   create_table "line_items", force: :cascade do |t|
@@ -205,8 +226,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
     t.bigint "location_id"
     t.integer "floor_no"
     t.bigint "supplier_id"
+    t.bigint "country_id"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
+    t.index ["country_id"], name: "index_machines_on_country_id"
     t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
     t.index ["location_id"], name: "index_machines_on_location_id"
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
@@ -508,6 +531,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "brand_translations", "brands"
   add_foreign_key "category_translations", "categories"
+  add_foreign_key "country_translations", "countries"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "location_translations", "locations"
@@ -517,6 +541,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_185821) do
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_statuses", "machines"
   add_foreign_key "machine_translations", "machines"
+  add_foreign_key "machines", "countries"
   add_foreign_key "machines", "locations"
   add_foreign_key "machines", "suppliers"
   add_foreign_key "machines", "vendors"

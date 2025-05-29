@@ -49,4 +49,7 @@ Rails.application.routes.draw do
       resources :payment_methods, only: %i[index show]
     end
   end
+
+  # Health check endpoint for deployment monitoring
+  get '/up', to: 'rails/health#show', as: :rails_health_check
 end
