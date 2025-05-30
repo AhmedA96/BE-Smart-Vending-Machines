@@ -6,6 +6,8 @@ module Api
       skip_before_action :doorkeeper_authorize!
       def create
         @contact = ContactUsRequest.create!(contact_params)
+
+        render json: @contact, status: :created
       end
 
       private
