@@ -3,18 +3,18 @@
     <div class="logo-wrapper">
       <%= image_tag "logo.svg", alt: "Company Logo", class: "img-fluid" %>
     </div>
-    
-    <h2 class="card-title">Reset Password</h2>
-    
+
+    <h2 class="card-title"><%= t('devise.passwords.new.title') %></h2>
+
     <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="form-floating mb-3">
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "name@example.com" %>
-        <%= f.label :email %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: t('devise.sessions.new.email') %>
+        <%= f.label :email, t('devise.sessions.new.email') %>
       </div>
 
-      <%= f.submit "Send Reset Instructions", class: "btn btn-primary" %>
+      <%= f.submit t('devise.passwords.new.send_instructions'), class: "btn btn-primary" %>
 
       <div class="auth-links">
         <%= render "devise/shared/links" %>
