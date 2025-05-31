@@ -20,4 +20,12 @@
 #
 class MobileVerification < ApplicationRecord
   belongs_to :user
+
+  before_create :set_expires_at
+
+  private
+
+  def set_expires_at
+    self.expires_at ||= 5.minutes.from_now
+  end
 end
