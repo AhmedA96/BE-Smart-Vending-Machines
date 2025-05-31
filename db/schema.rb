@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_25_000724) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_31_001000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -234,6 +234,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_25_000724) do
     t.index ["location_id"], name: "index_machines_on_location_id"
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
+  end
+
+  create_table "mobile_verifications", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "code"
+    t.boolean "expired", default: false, null: false
+    t.datetime "expires_at"
+    t.string "mobile_number"
+    t.boolean "verified", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_mobile_verifications_on_user_id"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
