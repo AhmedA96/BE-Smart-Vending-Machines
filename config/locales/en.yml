@@ -30,6 +30,8 @@
 en:
   errors:
     not_found: "%{model} with id %{id} not found"
+    contact_us:
+      creation_failed: "Failed to submit contact request. Please check your inputs and try again."
 
   user:
     wrong_password: "Wrong password"
