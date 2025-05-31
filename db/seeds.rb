@@ -319,6 +319,36 @@ location_records = Location.create!(locations)
 Rails.logger.debug { "Created #{location_records.count} Locations with translations." }
 
 # ---------------------------- #
+# Countries
+# ---------------------------- #
+Rails.logger.debug 'Creating Countries...'
+
+countries = [
+  {
+    name: 'UAE',
+    iso2: 'AE',
+    vat_percentage: 5.0,
+    translations_attributes: [
+      { locale: 'en', presentation: 'United Arab Emirates', currency: 'AED' },
+      { locale: 'ar', presentation: 'الإمارات العربية المتحدة', currency: 'د.إ' }
+    ]
+  },
+  {
+    name: 'KSA',
+    iso2: 'SA',
+    vat_percentage: 15.0,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Kingdom of Saudi Arabia', currency: 'SAR' },
+      { locale: 'ar', presentation: 'المملكة العربية السعودية', currency: '﷼' }
+    ]
+  }
+]
+
+country_records = Country.create!(countries)
+
+Rails.logger.debug { "Created #{country_records.count} Countries with translations." }
+
+# ---------------------------- #
 # Machine Categories
 # ---------------------------- #
 Rails.logger.debug 'Creating Machine Categories...'
@@ -389,6 +419,7 @@ machines = [
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[0],
+    country: country_records[0],
     status: 'Active',
     coordinates: 'POINT(31.2357 30.0444)',
     installed_at: 6.months.ago,
@@ -404,6 +435,7 @@ machines = [
     category: machine_categories[1],
     vendor: vendor_records[0],
     location: location_records[1],
+    country: country_records[0],
     status: 'Maintenance',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 1.year.ago,
@@ -419,6 +451,7 @@ machines = [
     category: machine_categories[2],
     vendor: vendor_records[0],
     location: location_records[2],
+    country: country_records[1],
     status: 'Active',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 3.months.ago,
@@ -435,6 +468,7 @@ machines = [
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[3],
+    country: country_records[1],
     status: 'Inactive',
     coordinates: 'POINT(31.2646 30.0355)',
     installed_at: 8.months.ago,
