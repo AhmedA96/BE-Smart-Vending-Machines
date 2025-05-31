@@ -30,6 +30,8 @@
 en:
   errors:
     not_found: "%{model} with id %{id} not found"
+    password_reset:
+      wrong_or_expired_code: "Wrong code or code is expired"
 
   user:
     wrong_password: "Wrong password"
@@ -85,3 +87,7 @@ en:
   doorkeeper:
     errors:
       invalid_credentials: "The entered credentials are incorrect. Please check your mobile number and password."
+  
+  verification:
+    mobile:
+      otp_message: "Your OTP is: %{otp}"

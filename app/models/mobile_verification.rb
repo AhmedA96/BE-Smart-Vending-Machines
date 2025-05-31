@@ -23,6 +23,10 @@ class MobileVerification < ApplicationRecord
 
   before_create :set_expires_at
 
+  def expired?
+    expired || expires_at <= Time.zone.now
+  end
+
   private
 
   def set_expires_at
