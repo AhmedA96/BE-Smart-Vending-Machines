@@ -22,10 +22,7 @@ gem 'scenic'
 gem 'devise', '~> 4.9'
 gem 'devise-bootstrap5', '~> 0.1.3'
 gem "doorkeeper", "~> 5.8"
-gem 'googleauth'
 gem 'omniauth-google-oauth2'
-gem 'pbkdf2'
-gem 'pbkdf2-ruby'
 gem "pundit"
 gem 'rolify'
 
@@ -52,6 +49,8 @@ gem 'sidekiq-limit_fetch', '~> 4.4.1'
 gem 'kredis'
 gem 'puma', '>= 6.4.2'
 gem 'rack', '>= 3.1.10'
+gem "solid_cache", "~> 1.0"
+gem "solid_queue", "~> 1.1"
 gem 'thruster'
 
 # Frontend & Assets
@@ -65,35 +64,23 @@ gem 'view_component', '>= 3.17'
 
 # Data Processing & Import
 gem 'base64'
-gem 'creek'
-gem 'roo'
-gem 'smarter_csv'
 
 # Monitoring & Logging
-gem 'newrelic_rpm', '~> 9.15'
 gem 'paper_trail'
 gem 'status-page'
 
 # Geolocation & Maps
 gem 'geocoder'
-gem 'mapkick'
-gem "mapkick-rb"
 
 # Utilities
 gem 'aasm', '~> 5.0'
 gem "acts_as_list"
 gem 'acts_as_paranoid', github: 'ActsAsParanoid/acts_as_paranoid', branch: 'master'
 gem "auto_increment"
-gem "chartkick"
-gem "groupdate"
 gem 'httparty'
-gem "kmeans-clusterer"
-gem 'money'
 gem 'ostruct'
 gem 'pagy'
 gem 'phonelib'
-gem 'timecop'
-gem 'tod'
 
 # Internationalization
 gem 'mobility', '~> 1.3.0.rc3'
@@ -104,18 +91,12 @@ gem 'rails-i18n'
 gem 'avo', '>= 3.11'
 # gem "avo-advanced", ">= 3.11", source: "https://packager.dev/avo-hq/"
 
-# Third Party Services
-gem 'cequens', github: 'AhmedAliIbrahim/cequens', branch: 'main'
-gem 'fcm', '~> 2.0.0'
-gem 'google-apis-drive_v3', '~> 0.66'
-
 # Development Tools
 group :development do
   gem "actual_db_schema"
   gem 'annotaterb'
   gem 'better_errors'
   gem "binding_of_caller"
-  gem 'bullet'
   gem 'memory_profiler'
   gem "pg_query"
   gem 'rack-mini-profiler'
@@ -160,7 +141,3 @@ group :development, :test do
   gem 'vcr'
   gem 'webmock'
 end
-
-gem "solid_queue", "~> 1.1"
-
-gem "solid_cache", "~> 1.0"
