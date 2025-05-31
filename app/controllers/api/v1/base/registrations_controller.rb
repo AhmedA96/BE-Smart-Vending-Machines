@@ -4,8 +4,11 @@ module Api
   module V1
     module Base
       class RegistrationsController < Devise::RegistrationsController
+        include ErrorHandling
+        include Localization
+
         respond_to :json
-        skip_before_action :doorkeeper_authorize!
+        skip_before_action :verify_authenticity_token
       end
     end
   end
