@@ -156,21 +156,47 @@ Avo.configure do |config|
   #   add_breadcrumb "Home", '/avo'
   # end
 
-  ## == Menus ==
-  # config.main_menu = -> {
-  #   section "Dashboards", icon: "avo/dashboards" do
-  #     all_dashboards
-  #   end
+  config.main_menu = lambda {
+    # Machines & Operations Section
+    section I18n.t('avo.sections.machines_operations'), icon: 'heroicons/outline/cog', collapsable: true,
+                                                        collapsed: true do
+      resource :machine
+      resource :machine_status
+      resource :machine_category
+      resource :machine_payment_method
+    end
 
-  #   section "Resources", icon: "avo/resources" do
-  #     all_resources
-  #   end
+    # Shop & Inventory Section
+    section I18n.t('avo.sections.shop_inventory'), icon: 'heroicons/outline/shopping-cart', collapsable: true,
+                                                   collapsed: true do
+      group I18n.t('avo.groups.products'), collapsable: true, collapsed: true do
+        resource :product
+        resource :variant
+        resource :category
+        resource :brand
+      end
 
-  #   section "Tools", icon: "avo/tools" do
-  #     all_tools
-  #   end
-  # }
-  # config.profile_menu = -> {
-  #   link "Profile", path: "/avo/profile", icon: "heroicons/outline/user-circle"
-  # }
+      group I18n.t('avo.groups.pricing'), collapsable: true, collapsed: true do
+        resource :price_list
+        resource :price_list_item
+        resource :line_item
+      end
+    end
+
+    # Settings Section
+    section I18n.t('avo.sections.settings'), icon: 'heroicons/outline/cog-6-tooth', collapsable: true,
+                                             collapsed: true do
+      group I18n.t('avo.groups.location_management'), collapsable: true, collapsed: true do
+        resource :location
+      end
+
+      group I18n.t('avo.groups.access_control'), collapsable: true, collapsed: true do
+        resource :role
+      end
+
+      group I18n.t('avo.groups.payments'), collapsable: true, collapsed: true do
+        resource :payment
+      end
+    end
+  }
 end

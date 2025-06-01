@@ -3,33 +3,33 @@
     <div class="logo-wrapper">
       <%= image_tag "logo.svg", alt: "Company Logo", class: "img-fluid" %>
     </div>
-    
-    <h2 class="card-title">Create Account</h2>
+
+    <h2 class="card-title"><%= t('devise.registrations.new.title') %></h2>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="form-floating mb-3">
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "name@example.com" %>
-        <%= f.label :email %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: t('devise.registrations.new.email') %>
+        <%= f.label :email, t('devise.registrations.new.email') %>
       </div>
 
       <div class="form-floating mb-3">
-        <%= f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: "Password" %>
-        <%= f.label :password %>
+        <%= f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: t('devise.registrations.new.password') %>
+        <%= f.label :password, t('devise.registrations.new.password') %>
         <% if @minimum_password_length %>
-          <div class="form-text">
-            Minimum <%= @minimum_password_length %> characters
-          </div>
+          <small class="form-text text-muted">
+            <%= t('devise.registrations.new.min_chars', count: @minimum_password_length) %>
+          </small>
         <% end %>
       </div>
 
       <div class="form-floating mb-3">
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirm Password" %>
-        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: t('devise.registrations.new.password_confirmation') %>
+        <%= f.label :password_confirmation, t('devise.registrations.new.password_confirmation') %>
       </div>
 
-      <%= f.submit "Sign Up", class: "btn btn-primary" %>
+      <%= f.submit t('devise.registrations.new.sign_up'), class: "btn btn-primary" %>
 
       <div class="auth-links">
         <%= render "devise/shared/links" %>

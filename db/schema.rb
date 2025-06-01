@@ -90,6 +90,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_31_001000) do
     t.string "company_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "read", default: false, null: false
+    t.index ["read"], name: "index_contact_us_requests_on_read"
   end
 
   create_table "countries", force: :cascade do |t|
