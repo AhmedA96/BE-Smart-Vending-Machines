@@ -9,8 +9,13 @@
 #  email        :string
 #  full_name    :string
 #  phone_number :string
+#  read         :boolean          default(FALSE), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#
+# Indexes
+#
+#  index_contact_us_requests_on_read  (read)
 #
 class ContactUsRequest < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
