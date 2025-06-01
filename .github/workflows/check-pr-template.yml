@@ -1,0 +1,52 @@
+name: Check PR Template
+
+on:
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-pr-template:
+    if: ${{ !startsWith(github.head_ref, 'dependabot/') && github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Check if PR template is used and tasks are completed
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Convert the PR body to lowercase for case-insensitive matching
+          PR_BODY_LOWER=$(echo "$PR_BODY" | tr '[:upper:]' '[:lower:]')
+
+          # Check if the checkbox for running RuboCop is checked
+          if ! echo "$PR_BODY_LOWER" | grep -q "\- \[x\] i have run \`rubocop\` and fixed any issues"; then
+            echo "RuboCop check not marked as completed. Please check the box in the PR template after running RuboCop.";
+            exit 1;
+          fi
+
+          # Check if the checkbox for running Brakeman is checked
+          if ! echo "$PR_BODY_LOWER" | grep -q "\- \[x\] i have run \`brakeman\` and fixed any issues"; then
+            echo "Brakeman check not marked as completed. Please check the box in the PR template after running Brakeman.";
+            exit 1;
+          fi
+
+          # Check if the checkbox for running RSpec is checked
+          if ! echo "$PR_BODY_LOWER" | grep -q "\- \[x\] i have run the test suite (\`rspec\`) and all tests pass"; then
+            echo "RSpec tests not marked as completed. Please check the box in the PR template after running the tests.";
+            exit 1;
+          fi
+
+          # Check if the checkbox for Feature works is checked
+          if ! echo "$PR_BODY_LOWER" | grep -q "\- \[x\] i have added tests that prove my fix is effective or that my feature works"; then
+            echo "Feature works check not marked as completed. Please check the box in the PR template after testing the feature.";
+            exit 1;
+          fi
+
+          # Check if the checkbox for Documentation is checked
+          if ! echo "$PR_BODY_LOWER" | grep -q "\- \[x\] i have added necessary documentation (if appropriate)"; then
+            echo "Documentation check not marked as completed. Please check the box in the PR template after updating the documentation.";
+            exit 1;
+          fi
