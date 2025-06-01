@@ -5,7 +5,7 @@ module Avo
     class Country < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[translations]
+      self.includes = %i[machines translations]
       self.attachments = []
       self.record_selector = false
       self.search = {

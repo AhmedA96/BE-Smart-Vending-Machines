@@ -5,7 +5,7 @@ module Avo
     class Product < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[product_categories images_attachments]
+      self.includes = %i[product_categories images_attachments variants translations]
       self.attachments = %i[images]
       self.record_selector = true
       self.default_view_type = :grid

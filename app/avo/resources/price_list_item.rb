@@ -6,6 +6,7 @@ module Avo
       include ResourceHelpers
 
       self.includes = []
+      self.visible_on_sidebar = false
       self.search = {
         query: lambda {
           query.ransack(variant_sku_or_variant_name_or_variant_product_name_cont: params[:q],

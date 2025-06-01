@@ -4,7 +4,7 @@ module Avo
   module Resources
     class Category < Avo::BaseResource
       self.title = :name
-      self.includes = %i[translations]
+      self.includes = %i[products translations]
       self.default_sort_column = :position
       self.default_sort_direction = :asc
       self.default_view_type = :grid

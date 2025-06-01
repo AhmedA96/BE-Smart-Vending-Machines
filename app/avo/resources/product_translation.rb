@@ -5,7 +5,8 @@ module Avo
     class ProductTranslation < Avo::BaseResource
       include ResourceHelpers
       self.title = :presentation
-      self.includes = [:product]
+      self.visible_on_sidebar = false
+      self.includes = []
       self.search = {
         query: -> { query.ransack(presentation_eq: params[:q], m: 'or').result(distinct: false) }
       }
