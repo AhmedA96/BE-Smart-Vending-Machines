@@ -17,6 +17,7 @@ class Country < ApplicationRecord
   extend Mobility
 
   translates :presentation, :currency
+  accepts_nested_attributes_for :translations
 
   has_many :machines
   has_many :country_translations, dependent: :destroy

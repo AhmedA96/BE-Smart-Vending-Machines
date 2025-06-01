@@ -4,6 +4,9 @@ module Api
   module V1
     module Base
       class SessionsController < Devise::SessionsController
+        include ErrorHandling
+        include Localization
+
         respond_to :json
         skip_before_action :verify_signed_out_user, only: :destroy
 

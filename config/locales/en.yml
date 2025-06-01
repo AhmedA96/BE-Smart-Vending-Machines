@@ -32,6 +32,9 @@ en:
     not_found: "%{model} with id %{id} not found"
     password_reset:
       wrong_or_expired_code: "Wrong code or code is expired"
+    contact_us:
+      creation_failed: "Failed to submit contact request. Please check your inputs and try again."
+
 
   user:
     wrong_password: "Wrong password"
