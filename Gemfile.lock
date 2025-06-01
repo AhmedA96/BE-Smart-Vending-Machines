@@ -16,15 +16,6 @@ GIT
       activerecord (>= 8.0.0.beta1)
       rgeo-activerecord (~> 7.0.0)
 
-GIT
-  remote: https://github.com/AhmedAliIbrahim/cequens.git
-  revision: 0bdb5967829f09764aebf04f9b7df0d22dd27339
-  branch: main
-  specs:
-    cequens (0.1.2)
-      dry-validation (~> 1.6)
-      faraday (>= 2.8)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -120,12 +111,12 @@ GEM
       prism
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    annotaterb (4.14.0)
+    annotaterb (4.15.0)
     ast (2.4.3)
     auto_increment (1.6.2)
       activerecord (>= 6.0)
       activesupport (>= 6.0)
-    avo (3.20.2)
+    avo (3.20.3)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
@@ -146,7 +137,7 @@ GEM
       rails (>= 6.0.0)
       zeitwerk
     aws-eventstream (1.3.2)
-    aws-partitions (1.1108.0)
+    aws-partitions (1.1109.0)
     aws-sdk-core (3.224.1)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -157,20 +148,20 @@ GEM
     aws-sdk-kms (1.101.0)
       aws-sdk-core (~> 3, >= 3.216.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.187.0)
+    aws-sdk-s3 (1.188.0)
       aws-sdk-core (~> 3, >= 3.224.1)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.11.0)
       aws-eventstream (~> 1, >= 1.0.2)
-    base64 (0.2.0)
+    base64 (0.3.0)
     bcrypt (3.1.20)
-    benchmark (0.4.0)
+    benchmark (0.4.1)
     better_errors (2.10.1)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bigdecimal (3.1.9)
+    bigdecimal (3.2.0)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
@@ -181,9 +172,6 @@ GEM
     brakeman (7.0.2)
       racc
     builder (3.3.0)
-    bullet (8.0.7)
-      activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.11)
     bundle-audit (0.1.0)
       bundler-audit
     bundler-audit (0.9.2)
@@ -199,7 +187,6 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    chartkick (5.1.5)
     childprocess (5.1.0)
       logger (~> 1.5)
     concurrent-ruby (1.3.5)
@@ -208,9 +195,6 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    creek (2.6.3)
-      nokogiri (>= 1.10.0)
-      rubyzip (>= 1.0.0)
     cronex (0.15.0)
       tzinfo
       unicode (>= 0.4.4.5)
@@ -224,7 +208,6 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     debug_inspector (1.2.0)
-    declarative (0.0.20)
     devise (4.9.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -243,46 +226,11 @@ GEM
     down (5.4.2)
       addressable (~> 2.8)
     drb (2.2.3)
-    dry-configurable (1.3.0)
-      dry-core (~> 1.1)
-      zeitwerk (~> 2.6)
-    dry-core (1.1.0)
-      concurrent-ruby (~> 1.0)
-      logger
-      zeitwerk (~> 2.6)
-    dry-inflector (1.2.0)
-    dry-initializer (3.2.0)
-    dry-logic (1.6.0)
-      bigdecimal
-      concurrent-ruby (~> 1.0)
-      dry-core (~> 1.1)
-      zeitwerk (~> 2.6)
-    dry-schema (1.14.1)
-      concurrent-ruby (~> 1.0)
-      dry-configurable (~> 1.0, >= 1.0.1)
-      dry-core (~> 1.1)
-      dry-initializer (~> 3.2)
-      dry-logic (~> 1.5)
-      dry-types (~> 1.8)
-      zeitwerk (~> 2.6)
-    dry-types (1.8.2)
-      bigdecimal (~> 3.0)
-      concurrent-ruby (~> 1.0)
-      dry-core (~> 1.0)
-      dry-inflector (~> 1.0)
-      dry-logic (~> 1.4)
-      zeitwerk (~> 2.6)
-    dry-validation (1.11.1)
-      concurrent-ruby (~> 1.0)
-      dry-core (~> 1.1)
-      dry-initializer (~> 3.2)
-      dry-schema (~> 1.14)
-      zeitwerk (~> 2.6)
     erb (5.0.1)
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
-    factory_bot (6.5.1)
+    factory_bot (6.5.2)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
@@ -295,9 +243,6 @@ GEM
       logger
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
-    fcm (2.0.1)
-      faraday (>= 1.0.0, < 3.0)
-      googleauth (~> 1)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -316,56 +261,30 @@ GEM
       csv (>= 3.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-apis-core (0.18.0)
-      addressable (~> 2.5, >= 2.5.1)
-      googleauth (~> 1.9)
-      httpclient (>= 2.8.3, < 3.a)
-      mini_mime (~> 1.0)
-      mutex_m
-      representable (~> 3.0)
-      retriable (>= 2.0, < 4.a)
-    google-apis-drive_v3 (0.66.0)
-      google-apis-core (>= 0.15.0, < 2.a)
-    google-cloud-env (2.3.1)
-      base64 (~> 0.2)
-      faraday (>= 1.0, < 3.a)
-    google-logging-utils (0.2.0)
-    google-protobuf (4.31.0)
+    google-protobuf (4.31.1)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.31.0-aarch64-linux-gnu)
+    google-protobuf (4.31.1-aarch64-linux-gnu)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.31.0-aarch64-linux-musl)
+    google-protobuf (4.31.1-aarch64-linux-musl)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.31.0-arm64-darwin)
+    google-protobuf (4.31.1-arm64-darwin)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.31.0-x86_64-linux-gnu)
+    google-protobuf (4.31.1-x86_64-linux-gnu)
       bigdecimal
       rake (>= 13)
-    google-protobuf (4.31.0-x86_64-linux-musl)
+    google-protobuf (4.31.1-x86_64-linux-musl)
       bigdecimal
       rake (>= 13)
-    googleauth (1.14.0)
-      faraday (>= 1.0, < 3.a)
-      google-cloud-env (~> 2.2)
-      google-logging-utils (~> 0.1)
-      jwt (>= 1.4, < 3.0)
-      multi_json (~> 1.11)
-      os (>= 0.9, < 2.0)
-      signet (>= 0.16, < 2.a)
-    groupdate (6.6.0)
-      activesupport (>= 7.1)
     hashdiff (1.2.0)
     hashie (5.0.0)
     httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    httpclient (2.9.0)
-      mutex_m
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     image_processing (1.14.0)
@@ -394,8 +313,6 @@ GEM
       bigdecimal (~> 3.1)
     jwt (2.10.1)
       base64
-    kmeans-clusterer (0.11.4)
-      narray (~> 0.6)
     kredis (1.8.0)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -422,8 +339,6 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mapkick (0.0.0)
-    mapkick-rb (0.2.0)
     marcel (1.0.4)
     matrix (0.4.2)
     memory_profiler (1.1.0)
@@ -441,14 +356,9 @@ GEM
     mobility-ransack (1.2.2)
       mobility (>= 1.0.1, < 2.0)
       ransack (>= 1.8.0, < 5.0)
-    money (6.19.0)
-      i18n (>= 0.6.4, <= 2)
     msgpack (1.8.0)
-    multi_json (1.15.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
-    mutex_m (0.3.0)
-    narray (0.6.1.2)
     net-http (0.6.0)
       uri
     net-imap (0.5.8)
@@ -460,7 +370,6 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
-    newrelic_rpm (9.19.0)
     nio4r (2.7.4)
     nokogiri (1.18.8-aarch64-linux-gnu)
       racc (~> 1.4)
@@ -497,7 +406,6 @@ GEM
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    os (1.1.4)
     ostruct (0.6.1)
     overcommit (0.67.1)
       childprocess (>= 0.6.3, < 6)
@@ -508,13 +416,11 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.27.0)
-    parallel_tests (5.2.0)
+    parallel_tests (5.3.0)
       parallel
     parser (3.3.8.0)
       ast (~> 2.4.1)
       racc
-    pbkdf2 (0.1.0)
-    pbkdf2-ruby (0.2.1)
     pg (1.5.9)
     pg_query (6.1.0)
       google-protobuf (>= 3.25.3)
@@ -600,7 +506,7 @@ GEM
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.2.1)
+    rake (13.3.0)
     ransack (4.3.0)
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
@@ -615,25 +521,17 @@ GEM
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
-    representable (3.2.0)
-      declarative (< 0.1.0)
-      trailblazer-option (>= 0.1.1, < 0.2.0)
-      uber (< 0.2.0)
     request_store (1.7.0)
       rack (>= 1.4)
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    retriable (3.1.2)
     rexml (3.4.1)
     rgeo (3.0.1)
     rgeo-activerecord (7.0.1)
       activerecord (>= 5.0)
       rgeo (>= 1.0.0)
     rolify (6.0.1)
-    roo (2.10.1)
-      nokogiri (~> 1)
-      rubyzip (>= 1.3.0, < 3.0.0)
     rouge (4.5.2)
     rspec-core (3.13.4)
       rspec-support (~> 3.13.0)
@@ -727,18 +625,12 @@ GEM
       sidekiq (>= 6.5.0)
     sidekiq-limit_fetch (4.4.1)
       sidekiq (>= 6)
-    signet (0.20.0)
-      addressable (~> 2.8)
-      faraday (>= 0.17.5, < 3.a)
-      jwt (>= 1.5, < 3.0)
-      multi_json (~> 1.10)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
-    smarter_csv (1.14.3)
     snaky_hash (2.0.3)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
@@ -775,10 +667,7 @@ GEM
     thruster (0.1.13-arm64-darwin)
     thruster (0.1.13-x86_64-linux)
     tilt (2.6.0)
-    timecop (0.9.10)
     timeout (0.4.3)
-    tod (3.1.2)
-    trailblazer-option (0.1.2)
     turbo-rails (2.0.13)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
@@ -786,12 +675,10 @@ GEM
       turbo-rails (>= 1.3.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uber (0.1.0)
     unicode (0.4.4.5)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
-    uniform_notifier (1.17.0)
     uri (1.0.3)
     useragent (0.16.11)
     vcr (6.3.1)
@@ -855,13 +742,9 @@ DEPENDENCIES
   bootsnap
   bootstrap (~> 5.3.5)
   brakeman
-  bullet
   bundle-audit
   byebug
   capybara
-  cequens!
-  chartkick
-  creek
   database_cleaner-active_record
   debug
   devise (~> 4.9)
@@ -871,35 +754,24 @@ DEPENDENCIES
   down
   factory_bot_rails
   faker
-  fcm (~> 2.0.0)
   fuubar
   geocoder
-  google-apis-drive_v3 (~> 0.66)
-  googleauth
-  groupdate
   httparty
   image_processing (~> 1.2)
   importmap-rails
   jbuilder
-  kmeans-clusterer
   kredis
   letter_opener_web
-  mapkick
-  mapkick-rb
   memory_profiler
   mini_magick
   mobility (~> 1.3.0.rc3)
   mobility-ransack (~> 1.2.2)
-  money
-  newrelic_rpm (~> 9.15)
   omniauth-google-oauth2
   ostruct
   overcommit
   pagy
   paper_trail
   parallel_tests
-  pbkdf2
-  pbkdf2-ruby
   pg (~> 1.5)
   pg_query
   pg_search
@@ -916,7 +788,6 @@ DEPENDENCIES
   rails-i18n
   ransack
   rolify
-  roo
   rspec-rails
   rswag-api
   rswag-specs
@@ -933,7 +804,6 @@ DEPENDENCIES
   sidekiq-cron (~> 2.3)
   sidekiq-limit_fetch (~> 4.4.1)
   simplecov
-  smarter_csv
   solid_cache (~> 1.0)
   solid_queue (~> 1.1)
   spring
@@ -943,8 +813,6 @@ DEPENDENCIES
   stimulus-rails
   test-prof
   thruster
-  timecop
-  tod
   turbo-rails
   tzinfo-data
   vcr

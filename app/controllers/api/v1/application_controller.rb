@@ -10,7 +10,7 @@ module Api
       include Paginable
 
       skip_before_action :verify_authenticity_token
-      before_action :doorkeeper_authorize!, if: -> { doorkeeper_token.present? }
+      before_action :doorkeeper_authorize!
 
       def current_user
         return unless doorkeeper_token

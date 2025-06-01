@@ -82,3 +82,7 @@ ar:
   doorkeeper:
     errors:
       invalid_credentials: "البيانات المدخلة غير صحيحة. يرجى التحقق من رقم الموبايل وكلمة المرور."
+
+  errors:
+    contact_us:
+      creation_failed: "فشل في إرسال طلب الاتصال. يرجى التحقق من البيانات والمحاولة مرة أخرى."
