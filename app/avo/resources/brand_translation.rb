@@ -3,6 +3,7 @@
 module Avo
   module Resources
     class BrandTranslation < Avo::BaseResource
+      self.visible_on_sidebar = false
       self.search = {
         query: lambda {
           query.ransack(presentation_cont: params[:q], m: 'or').result(distinct: true)

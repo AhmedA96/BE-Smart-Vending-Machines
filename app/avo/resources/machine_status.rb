@@ -5,7 +5,8 @@ module Avo
     class MachineStatus < Avo::BaseResource
       include ResourceHelpers
       self.title = :status
-      self.includes = [:machine]
+      self.visible_on_sidebar = false
+      self.includes = []
       self.search = {
         query: -> { query.ransack(id_eq: params[:q], status_cont: params[:q], m: 'or').result(distinct: false) }
       }

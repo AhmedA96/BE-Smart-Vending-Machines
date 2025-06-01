@@ -5,6 +5,7 @@ module Avo
     class CountryTranslation < Avo::BaseResource
       include ResourceHelpers
 
+      self.visible_on_sidebar = false
       self.search = {
         query: -> { query.ransack(name_eq: params[:q], m: 'or').result(distinct: false) }
       }

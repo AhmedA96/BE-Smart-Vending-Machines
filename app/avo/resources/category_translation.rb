@@ -6,7 +6,9 @@ module Avo
       include ResourceHelpers
 
       self.title = :presentation
-      self.includes = [:category]
+      self.includes = []
+      self.visible_on_sidebar = false
+
       self.search = {
         query: -> { query.ransack(id_eq: params[:q], presentation_cont: params[:q], m: 'or').result(distinct: false) }
       }

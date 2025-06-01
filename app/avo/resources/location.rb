@@ -5,7 +5,7 @@ module Avo
     class Location < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[machines]
+      self.includes = %i[machines translations]
       self.attachments = []
       self.record_selector = true
 

@@ -5,7 +5,7 @@ module Avo
     class MachineCategory < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[translations]
+      self.includes = %i[translations machines]
       self.default_sort_direction = :asc
       self.default_view_type = :grid
       self.search = {

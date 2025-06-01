@@ -5,7 +5,7 @@ module Avo
     class Machine < Avo::BaseResource
       include ResourceHelpers
       self.title = :name
-      self.includes = %i[machine_statuses machine_items]
+      self.includes = %i[machine_statuses machine_items translations machine_payment_methods]
       self.record_selector = true
       self.attachments = []
 
@@ -52,6 +52,7 @@ module Avo
           field :machine_items, as: :has_many, reloadable: true, name: 'Machine Items'
           field :machine_translations, as: :has_many, reloadable: true, name: 'Machine Translations'
           field :machine_payment_methods, as: :has_many, reloadable: true, name: 'Payment Methods', linkable: true
+          field :machine_statuses, as: :has_many, reloadable: true, name: 'Status History', linkable: true
         end
       end
     end

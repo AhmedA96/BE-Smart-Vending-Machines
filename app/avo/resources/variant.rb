@@ -6,7 +6,7 @@ module Avo
       include ResourceHelpers
 
       self.title = :full_name
-      self.includes = []
+      self.includes = %i[translations]
       self.visible_on_sidebar = false
       self.search = {
         query: lambda {

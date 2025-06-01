@@ -6,7 +6,7 @@ module Avo
       include ResourceHelpers
 
       self.title = :name
-      self.includes = []
+      self.includes = %i[price_list_items locations]
       self.search = {
         query: -> { query.ransack(name_cont: params[:q], m: 'or').result(distinct: false) }
       }
