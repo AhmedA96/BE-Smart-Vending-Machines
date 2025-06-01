@@ -83,6 +83,12 @@ ar:
     errors:
       invalid_credentials: "البيانات المدخلة غير صحيحة. يرجى التحقق من رقم الموبايل وكلمة المرور."
 
+  verification:
+    mobile:
+      otp_message: "رمز التحقق الخاص بك هو: %{otp}"
+  
   errors:
+    password_reset:
+      wrong_or_expired_code: "رمز خاطئ أو منتهي الصلاحية"
     contact_us:
       creation_failed: "فشل في إرسال طلب الاتصال. يرجى التحقق من البيانات والمحاولة مرة أخرى."

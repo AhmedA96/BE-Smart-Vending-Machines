@@ -64,6 +64,7 @@ class User < ApplicationRecord
 
   has_many :orders, dependent: :destroy
   has_many :users_roles, dependent: :destroy
+  has_many :mobile_verifications, dependent: :destroy
 
   def password_complexity
     return if password.blank? || password.match?(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,70}$/)
