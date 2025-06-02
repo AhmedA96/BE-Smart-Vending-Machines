@@ -23,11 +23,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Auto-assign reviewers
-        uses: kentaro-m/auto-assign-action@v2.0.0
-        with:
-          configuration-path: ".github/auto_assign.yml"
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -122,3 +117,8 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
+
+      - name: Auto-assign reviewers
+        uses: kentaro-m/auto-assign-action@v2.0.0
+        with:
+          configuration-path: ".github/auto_assign.yml"
