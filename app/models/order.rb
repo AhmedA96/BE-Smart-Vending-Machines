@@ -42,6 +42,7 @@ class Order < ApplicationRecord
   has_many :payments, dependent: :nullify
 
   delegate :price_list, to: :machine, allow_nil: true
+  delegate :country, to: :machine, allow_nil: true
 
   validates :number, presence: true
 
