@@ -73,7 +73,7 @@ gem 'status-page'
 gem 'geocoder'
 
 # Utilities
-gem 'aasm', '~> 5.0'
+gem 'aasm', '~> 5.5'
 gem "acts_as_list"
 gem 'acts_as_paranoid', github: 'ActsAsParanoid/acts_as_paranoid', branch: 'master'
 gem "auto_increment"
