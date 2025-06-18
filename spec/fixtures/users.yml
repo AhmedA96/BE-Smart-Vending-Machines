@@ -2,7 +2,7 @@ john_doe:
   email: "john.doe@example.com"
   encrypted_password: "$2a$12$YourEncryptedPasswordHere"
   name: "John Doe"
-  mobile_number: "+1-555-0789"
+  mobile_number: "+971555234"
   verified: true
   locale: "en"
   email_notification: true
@@ -19,7 +19,7 @@ jane_smith:
   email: "jane.smith@example.com"
   encrypted_password: "$2a$12$YourEncryptedPasswordHere"
   name: "Jane Smith"
-  mobile_number: "+1-555-0987"
+  mobile_number: "+9715550987"
   verified: true
   locale: "en"
   email_notification: false
