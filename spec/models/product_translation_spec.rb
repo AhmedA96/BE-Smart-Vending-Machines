@@ -8,7 +8,7 @@ RSpec.describe ProductTranslation, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:product_translation) }
+    subject { product_translations(:coke_classic_en) }
 
     it { should validate_presence_of(:description) }
     it { should validate_presence_of(:locale) }
