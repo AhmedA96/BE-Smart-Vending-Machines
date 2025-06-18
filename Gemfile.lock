@@ -19,7 +19,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.5.0)
+    aasm (5.5.1)
       concurrent-ruby (~> 1.0)
     actioncable (8.0.2)
       actionpack (= 8.0.2)
@@ -161,7 +161,7 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bigdecimal (3.2.0)
+    bigdecimal (3.2.1)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
@@ -577,7 +577,7 @@ GEM
     rubocop-ast (1.44.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
-    rubocop-minitest (0.38.0)
+    rubocop-minitest (0.38.1)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
@@ -670,7 +670,7 @@ GEM
     thruster (0.1.13-x86_64-linux)
     tilt (2.6.0)
     timeout (0.4.3)
-    turbo-rails (2.0.13)
+    turbo-rails (2.0.16)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
     turbo_power (0.7.0)
@@ -726,7 +726,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  aasm (~> 5.0)
+  aasm (~> 5.5)
   activemodel-serializers-xml
   activerecord-postgis-adapter!
   activestorage
