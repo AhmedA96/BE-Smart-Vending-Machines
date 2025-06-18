@@ -66,7 +66,7 @@ RSpec.describe Product, type: :model do
 
     describe '.with_stock_availability' do
       it 'returns products with stock availability' do
-        machine = machines(:machine_001)
+        machine = machines(:machine_001) # rubocop:disable Naming/VariableNumber
         product = products(:coke_classic)
         expect(Product.with_stock_availability(machine, 1)).to include(product)
       end
