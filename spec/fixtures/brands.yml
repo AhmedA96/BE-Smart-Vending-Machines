@@ -1,0 +1,14 @@
+coca_cola:
+  name: "Coca-Cola"
+  description: "The world's most popular soft drink brand"
+
+
+pepsi:
+  name: "Pepsi"
+  description: "Bold cola with a refreshing taste"
+
+
+nestle:
+  name: "Nestlé"
+  description: "Good food, good life"
+

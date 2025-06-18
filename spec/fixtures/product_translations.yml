@@ -1,0 +1,17 @@
+coke_classic_en: 
+  presentation: "Coca-Cola Classic 12oz"
+  description: "The original Coca-Cola taste"
+  locale: "en"
+  product: coke_classic
+
+pepsi_cola_en: 
+  presentation: "Pepsi Cola 12oz"
+  description: "Bold cola taste"
+  locale: "en"
+  product: pepsi_cola
+
+kit_kat_en: 
+  presentation: "Kit Kat 42g"
+  description: "Crispy wafer chocolate bar"
+  locale: "en"
+  product: kit_kat

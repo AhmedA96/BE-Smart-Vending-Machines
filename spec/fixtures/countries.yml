@@ -1,0 +1,20 @@
+uae:
+  name: "United Arab Emirates"
+  iso2: "AE"
+  currency: "AED"
+  time_zone: "Asia/Dubai"
+  vat_percentage: 8.25
+
+saudi_arabia:
+  name: "Saudi Arabia"
+  iso2: "SA"
+  currency: "SAR"
+  time_zone: "Asia/Riyadh"
+  vat_percentage: 13.00
+
+egypt:
+  name: "Egypt"
+  iso2: "EG"
+  currency: "EGP"
+  time_zone: "Africa/Cairo"
+  vat_percentage: 20.00

@@ -1,0 +1,17 @@
+beverages_en:
+  presentation: "Refreshing Drinks"
+  description: "Cold and hot beverages including sodas, juices, and water"
+  locale: "en"
+  category: beverages
+
+snacks_en:
+  presentation: "Tasty Snacks"
+  description: "Delicious snacks including chips, crackers, and nuts"
+  locale: "en"
+  category: snacks
+
+candy_en:
+  presentation: "Sweet Treats"
+  description: "Candy, chocolate bars, and other sweet confections"
+  locale: "en"
+  category: candy

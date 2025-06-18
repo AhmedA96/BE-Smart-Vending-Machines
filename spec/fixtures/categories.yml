@@ -1,0 +1,17 @@
+beverages:
+  name: "Beverages"
+  active: true
+  presentation: "Refreshing Drinks"
+  position: 1
+
+snacks:
+  name: "Snacks"
+  active: true
+  presentation: "Tasty Snacks"
+  position: 2
+
+candy:
+  name: "Candy"
+  active: true
+  presentation: "Sweet Treats"
+  position: 3

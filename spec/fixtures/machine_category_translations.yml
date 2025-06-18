@@ -1,0 +1,17 @@
+snack_machines_en:
+  presentation: "Snack Dispensers"
+  description: "Automated machines for snacks and candy"
+  locale: "en"
+  machine_category: snack_machines
+
+beverage_machines_en:
+  presentation: "Drink Machines"
+  description: "Automated beverage dispensers"
+  locale: "en"
+  machine_category: beverage_machines
+
+combo_machines_en:
+  presentation: "Combo Dispensers"
+  description: "Machines for both snacks and beverages"
+  locale: "en"
+  machine_category: combo_machines

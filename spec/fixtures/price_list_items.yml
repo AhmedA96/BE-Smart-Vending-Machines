@@ -1,0 +1,19 @@
+coke_standard_price:
+  price_list: standard_pricing
+  variant: coke_classic_12oz
+  price: 1.50
+
+pepsi_standard_price:
+  price_list: standard_pricing
+  variant: pepsi_cola_12oz
+  price: 1.50
+
+kit_kat_standard_price:
+  price_list: standard_pricing
+  variant: kit_kat_42g
+  price: 2.00
+
+coke_premium_price:
+  price_list: premium_pricing
+  variant: coke_classic_12oz
+  price: 1.75
