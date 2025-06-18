@@ -2,7 +2,6 @@ beverages:
   name: "Beverages"
   active: true
   presentation: "Refreshing Drinks"
-  position: 1
 
 snacks:
   name: "Snacks"

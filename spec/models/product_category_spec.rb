@@ -9,7 +9,7 @@ RSpec.describe ProductCategory, type: :model do
   end
 
   describe 'validations' do
-    subject { create(:product_category) }
+    subject { product_categories(:beverages_snacks) }
     it { should validate_uniqueness_of(:product_id).scoped_to(:category_id) }
   end
 end

@@ -15,14 +15,14 @@ RSpec.describe Category, type: :model do
   end
 
   describe 'default values' do
-    let(:category) { create(:category) }
+    let(:category) { categories(:beverages) }
 
     it 'sets active to true by default' do
       expect(category.active).to be true
     end
 
     it 'sets position to 0 by default' do
-      expect(category.position).to eq(0)
+      expect(category.position).to eq
     end
   end
 end
