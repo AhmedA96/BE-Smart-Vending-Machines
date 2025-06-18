@@ -80,3 +80,5 @@ Metrics/ClassLength:
 Style/SafeNavigationChainLength:
   Enabled: true
   Max: 6
+Naming/PredicateMethod:
+  Enabled: false
