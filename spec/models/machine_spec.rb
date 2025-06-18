@@ -1,3 +1,4 @@
+# rubocop:disable Naming/VariableNumber
 # frozen_string_literal: true
 
 require 'rails_helper'
@@ -19,7 +20,7 @@ RSpec.describe Machine, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:machine) }
+    subject { machines(:machine_001) }
 
     it { should validate_presence_of(:external_machine_id) }
     it { should validate_uniqueness_of(:external_machine_id) }
@@ -32,8 +33,8 @@ RSpec.describe Machine, type: :model do
   end
 
   describe 'scopes' do
-    let!(:active_machine) { create(:machine, status: 'Active') }
-    let!(:inactive_machine) { create(:machine, status: 'Inactive') }
+    let!(:active_machine) { machines(:machine_001) }
+    let!(:inactive_machine) { machines(:machine_002) }
 
     describe '.active' do
       it 'returns only active machines' do
@@ -82,3 +83,5 @@ RSpec.describe Machine, type: :model do
     end
   end
 end
+
+# rubocop:enable Naming/VariableNumber

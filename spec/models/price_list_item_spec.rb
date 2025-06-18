@@ -9,7 +9,7 @@ RSpec.describe PriceListItem, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:price_list_item) }
+    subject { price_list_items(:coke_standard_price) }
 
     it { should validate_presence_of(:price) }
     it { should validate_numericality_of(:price).is_greater_than(0) }

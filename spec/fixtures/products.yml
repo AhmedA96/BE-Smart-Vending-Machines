@@ -2,7 +2,7 @@ coke_classic:
   name: "Coca-Cola Classic"
   description: "The original Coca-Cola taste"
   brand: coca_cola
-  status: "active"
+  status: "Active"
   slug: "coca-cola-classic"
   total_rate: 4.5
   max_orderable_quantity: 10
@@ -13,7 +13,7 @@ pepsi_cola:
   name: "Pepsi Cola"
   description: "Bold cola taste"
   brand: pepsi
-  status: "active"
+  status: "Inactive"
   slug: "pepsi-cola"
   total_rate: 4.2
   max_orderable_quantity: 10
@@ -24,7 +24,7 @@ kit_kat:
   name: "Kit Kat"
   description: "Crispy wafer chocolate bar"
   brand: nestle
-  status: "active"
+  status: "Active"
   slug: "kit-kat"
   total_rate: 4.7
   max_orderable_quantity: 5

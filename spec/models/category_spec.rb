@@ -22,7 +22,7 @@ RSpec.describe Category, type: :model do
     end
 
     it 'sets position to 0 by default' do
-      expect(category.position).to eq
+      expect(category.position).to eq(0)
     end
   end
 end

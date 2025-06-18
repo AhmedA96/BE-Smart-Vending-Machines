@@ -1,7 +1,7 @@
 coke_standard_price:
   price_list: standard_pricing
   variant: coke_classic_12oz
-  price: 1.50
+  price: 5.50
 
 pepsi_standard_price:
   price_list: standard_pricing

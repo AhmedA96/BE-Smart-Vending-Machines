@@ -3,28 +3,34 @@
 require 'rails_helper'
 
 RSpec.describe PriceList, type: :model do
+  fixtures :price_lists, :variants, :price_list_items, :locations
+
   describe 'associations' do
     it { should have_many(:price_list_items) }
     it { should have_many(:variants).through(:price_list_items) }
     it { should have_many(:locations) }
 
-    let(:price_list) { create(:price_list) }
-    let(:variant) { create(:variant) }
+    let(:price_list) { price_lists(:standard_pricing) }
+    let(:variant) { variants(:pepsi_cola_12oz) }
 
     it 'can have many variants through price_list_items' do
-      create(:price_list_item, price_list: price_list, variant: variant)
-
+      # This relationship should already exist in fixtures
       expect(price_list.variants).to include(variant)
     end
 
     it 'can have multiple variants' do
-      variants = create_list(:variant, 3)
-      variants.each do |variant|
-        create(:price_list_item, price_list: price_list, variant: variant)
-      end
+      # Load variants from fixtures
+      variant1 = variants(:pepsi_cola_12oz)
+      variant2 = variants(:kit_kat_42g)
+      variant3 = variants(:coke_classic_12oz)
 
-      expect(price_list.variants.count).to eq(3)
-      expect(price_list.variants).to match_array(variants)
+      # These price list items should already exist in fixtures
+      price_list_items(:pepsi_standard_price)
+      price_list_items(:kit_kat_standard_price)
+      price_list_items(:coke_standard_price)
+
+      expect(price_list.variants).to include(variant1, variant2, variant3)
+      expect(price_list.price_list_items.count).to eq(3)
     end
   end
 end
