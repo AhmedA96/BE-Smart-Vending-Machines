@@ -22,6 +22,8 @@ gem 'scenic'
 gem 'devise', '~> 4.9'
 gem 'devise-bootstrap5', '~> 0.1.3'
 gem "doorkeeper", "~> 5.8"
+gem 'jwt'
+gem 'omniauth-apple'
 gem 'omniauth-google-oauth2'
 gem "pundit"
 gem 'rolify'

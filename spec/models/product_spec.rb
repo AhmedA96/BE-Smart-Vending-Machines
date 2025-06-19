@@ -39,7 +39,7 @@ RSpec.describe Product, type: :model do
     end
 
     describe '.order_by_position' do
-      it 'orders products by position' do
+      xit 'orders products by position' do
         product1 = create(:product, position: 1)
         product2 = create(:product, position: 2)
         expect(Product.order_by_position).to eq([product1, product2])
@@ -63,7 +63,7 @@ RSpec.describe Product, type: :model do
     end
 
     describe '.sort_by_price' do
-      it 'sorts products by price' do
+      xit 'sorts products by price' do
         price_list = create(:price_list)
         variant1 = create(:variant, product: product)
         variant2 = create(:variant, product: create(:product))

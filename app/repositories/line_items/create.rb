@@ -27,7 +27,7 @@ module LineItems
     end
 
     def self.find_variant_price(variant, price_list_id)
-      variant.with_price_list(price_list_id)&.price.to_f || 0
+      variant.with_price_list(price_list_id)&.price.to_f
     end
   end
 end
