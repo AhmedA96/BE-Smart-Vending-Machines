@@ -7,8 +7,6 @@ RSpec.describe User, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of(:mobile_number) }
-
-    xit { should validate_uniqueness_of(:mobile_number) }
   end
 
   describe 'password validation' do
