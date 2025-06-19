@@ -787,6 +787,7 @@ DEPENDENCIES
   mobility-ransack (~> 1.2.2)
   omniauth-apple
   money
+  omniauth-apple
   omniauth-google-oauth2
   ostruct
   overcommit
