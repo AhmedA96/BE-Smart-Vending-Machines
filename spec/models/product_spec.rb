@@ -59,13 +59,10 @@ RSpec.describe Product, type: :model do
 
     describe '.sort_by_price' do
       it 'sorts products by price ascending' do
-        price_list = create(:price_list)
-        variant1 = create(:variant, product: product)
-        variant2 = create(:variant, product: create(:product))
-        create(:price_list_item, price_list: price_list, variant: variant1, price: 10)
-        create(:price_list_item, price_list: price_list, variant: variant2, price: 5)
         sorted = Product.sort_by_price(:asc)
+
         expect(sorted.first).to eq(products(:pepsi_cola))
+        expect(sorted.second).to eq(products(:coke_classic))
       end
     end
 

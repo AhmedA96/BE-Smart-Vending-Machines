@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::MachineCategoriesController, type: :request do
-  let!(:machine_category) { create(:machine_category) }
+  let!(:machine_category) { machine_categories(:snack_machines) }
   let(:application) { create(:oauth_application) }
   let(:access_token) { create(:doorkeeper_access_token, application: application, resource_owner_id: nil) }
 
