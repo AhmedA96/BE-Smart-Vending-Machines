@@ -12,6 +12,8 @@
 #
 class MachineCategory < ApplicationRecord
   extend Mobility
+  has_one_attached :logo, dependent: :destroy
+
   translates :description, :presentation
   accepts_nested_attributes_for :translations
 
