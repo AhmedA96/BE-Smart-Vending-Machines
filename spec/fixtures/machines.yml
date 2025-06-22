@@ -1,0 +1,30 @@
+machine_001:
+  external_machine_id: "VM001"
+  name: "Office Snack Machine"
+  category: snack_machines
+  vendor: prime_vending
+  supplier: acme_supplier
+  country: uae
+  location: downtown_office
+  status: "Active"
+  floor_no: 1
+  installed_at: <%= 6.months.ago %>
+  last_service_date: <%= 1.week.ago %>
+  coordinates: "POINT(-73.9857 40.7484)"
+  location_updated_at: <%= 1.month.ago %>
+
+machine_002:
+  external_machine_id: "VM002"
+  name: "Mall Beverage Machine"
+  category: beverage_machines
+  vendor: metro_machines
+  supplier: global_vendor
+  country: saudi_arabia
+  location: mall_location
+  status: "Inactive"
+  floor_no: 2
+  installed_at: <%= 3.months.ago %>
+  last_service_date: <%= 3.days.ago %>
+  coordinates: "POINT(-118.2437 34.0522)"
+  location_updated_at: <%= 2.weeks.ago %>
+

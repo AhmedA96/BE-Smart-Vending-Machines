@@ -43,4 +43,8 @@ class Payment < ApplicationRecord
       transitions from: :pending, to: :failed
     end
   end
+
+  def currency
+    order.country.country_translations.find_by(locale: 'en')&.currency
+  end
 end

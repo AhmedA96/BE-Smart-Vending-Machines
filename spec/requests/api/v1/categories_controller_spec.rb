@@ -7,7 +7,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
   let(:access_token) { create(:doorkeeper_access_token, application: application, resource_owner_id: nil) }
 
   describe 'GET /api/v1/categories' do
-    let!(:category) { create(:category) }
+    let!(:category) { categories(:beverages) }
 
     it 'returns all categories' do
       get '/api/v1/categories', headers: { Authorization: "Bearer #{access_token.token}" }
@@ -20,7 +20,7 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
   end
 
   describe 'GET /api/v1/mcategories/:id' do
-    let!(:category) { create(:category) }
+    let!(:category) { categories(:beverages) }
 
     it 'returns category by :id' do
       get "/api/v1/categories/#{category.id}", headers: { Authorization: "Bearer #{access_token.token}" }

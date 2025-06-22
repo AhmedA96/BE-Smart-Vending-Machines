@@ -21,5 +21,7 @@ class PaymentTransaction < ApplicationRecord
   belongs_to :payment_customer, optional: false
   belongs_to :payment, optional: false
 
+  has_many :payment_statuses, dependent: :destroy
+
   validates :charge_id, presence: true
 end

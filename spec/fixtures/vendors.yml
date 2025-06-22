@@ -1,0 +1,13 @@
+prime_vending:
+  name: "Prime Vending Co."
+  contact_person: "John Smith"
+  phone_number: "+1-555-0123"
+  email: "john@primevending.com"
+  address: "123 Main St, New York, NY 10001"
+
+metro_machines:
+  name: "Metro Vending Machines"
+  contact_person: "Sarah Johnson"
+  phone_number: "+1-555-0456"
+  email: "sarah@metrovending.com"
+  address: "456 Oak Ave, Los Angeles, CA 90210"

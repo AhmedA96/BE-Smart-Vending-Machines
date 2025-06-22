@@ -9,7 +9,7 @@ RSpec.describe MachineCategory, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:machine_category) }
+    subject { machine_categories(:snack_machines) }
 
     it { should validate_presence_of(:name) }
     it { should validate_length_of(:name).is_at_most(255) }

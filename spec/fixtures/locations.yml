@@ -1,0 +1,15 @@
+downtown_office:
+  name: "Downtown Office Complex"
+  address: "789 Business Blvd"
+  city: "Sharjah"
+  landmark: "Near Central Park"
+  zip_code: "10022"
+  price_list: standard_pricing
+
+mall_location:
+  name: "Shopping Mall Food Court"
+  address: "321 Mall Dr"
+  city: "Dubai"
+  landmark: "Level 2 Food Court"
+  zip_code: "90210"
+  price_list: premium_pricing

@@ -22,6 +22,8 @@ gem 'scenic'
 gem 'devise', '~> 4.9'
 gem 'devise-bootstrap5', '~> 0.1.3'
 gem "doorkeeper", "~> 5.8"
+gem 'jwt'
+gem 'omniauth-apple'
 gem 'omniauth-google-oauth2'
 gem "pundit"
 gem 'rolify'
@@ -78,6 +80,7 @@ gem "acts_as_list"
 gem 'acts_as_paranoid', github: 'ActsAsParanoid/acts_as_paranoid', branch: 'master'
 gem "auto_increment"
 gem 'httparty'
+gem "money"
 gem 'ostruct'
 gem 'pagy'
 gem 'phonelib'

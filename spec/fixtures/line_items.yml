@@ -1,0 +1,26 @@
+order_001_coke:
+  order: order_001
+  variant: coke_classic_12oz
+  quantity: 1
+  price: 1.50
+  price_after_discount: 1.50
+  buyx_gety_discount: 0.00
+  processed: true
+
+order_001_kit_kat:
+  order: order_001
+  variant: kit_kat_42g
+  quantity: 1
+  price: 2.00
+  price_after_discount: 2.00
+  buyx_gety_discount: 0.00
+  processed: true
+
+order_002_coke:
+  order: order_002
+  variant: coke_classic_12oz
+  quantity: 1
+  price: 1.50
+  price_after_discount: 1.50
+  buyx_gety_discount: 0.00
+  processed: true

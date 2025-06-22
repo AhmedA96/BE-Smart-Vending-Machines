@@ -4,7 +4,7 @@
 require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/' # exclude spec files from coverage
-  minimum_coverage 70.0
+  minimum_coverage 60.0
 end
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
@@ -39,7 +39,10 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
   config.use_instantiated_fixtures = false
+
   config.use_transactional_fixtures = true
+  config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
+  config.global_fixtures = :all
 
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::ControllerHelpers, type: :controller

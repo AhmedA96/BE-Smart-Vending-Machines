@@ -12,7 +12,7 @@ module Avo
             record.update(read: true)
           end
 
-          succeed "Marked #{records.count} #{records.count == 1 ? 'request' : 'requests'} as read."
+          succeed "Marked #{records.count} #{records.one? ? 'request' : 'requests'} as read."
         end
       end
     end

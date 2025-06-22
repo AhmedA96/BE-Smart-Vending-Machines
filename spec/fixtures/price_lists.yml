@@ -1,0 +1,8 @@
+standard_pricing:
+  name: "Standard Pricing"
+
+premium_pricing:
+  name: "Premium Location Pricing"
+
+discount_pricing:
+  name: "Discount Pricing"

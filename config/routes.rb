@@ -24,6 +24,8 @@ Rails.application.routes.draw do
                              sessions: 'api/v1/users/sessions',
                              registrations: 'api/v1/users/registrations'
                            }
+        post 'auth/google', to: 'omniauth_callbacks#google'
+        post 'auth/apple', to: 'omniauth_callbacks#apple'
       end
 
       resources :machines do

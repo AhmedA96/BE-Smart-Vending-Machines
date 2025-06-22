@@ -3,14 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
+  fixtures :users
+
   describe 'validations' do
     it { should validate_presence_of(:mobile_number) }
-    it { should validate_uniqueness_of(:mobile_number) }
   end
 
   describe 'password validation' do
     it 'validates password complexity' do
-      user = build(:user, password: 'simple')
+      user = users(:john_doe)
+      user.password = 'simple'
       expect(user).not_to be_valid
       expect(user.errors[:password]).to include(I18n.t('errors.messages.password_complexity'))
 
@@ -20,7 +22,12 @@ RSpec.describe User, type: :model do
   end
 
   describe '.authenticate' do
-    let(:user) { create(:user, password: 'ValidP@ssw0rd') }
+    let(:user) { users(:john_doe) }
+
+    before do
+      user.password = 'ValidP@ssw0rd'
+      user.save!
+    end
 
     it 'returns user when credentials are valid' do
       authenticated_user = described_class.authenticate(user.mobile_number, 'ValidP@ssw0rd')

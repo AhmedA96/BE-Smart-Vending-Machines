@@ -1,0 +1,32 @@
+coke_classic_12oz:
+  sku: "COKE-CLASSIC-12OZ"
+  name: "Coca-Cola Classic 12oz"
+  product: coke_classic
+  points: 100
+  weight: 355.0
+  is_master: true
+  active: true
+  position: 1
+  cost_price: 0.75
+
+pepsi_cola_12oz:
+  sku: "PEPSI-COLA-12OZ"
+  name: "Pepsi Cola 12oz"
+  product: pepsi_cola
+  points: 95
+  weight: 355.0
+  is_master: true
+  active: true
+  position: 1
+  cost_price: 0.72
+
+kit_kat_42g:
+  sku: "KITKAT-42G"
+  name: "Kit Kat 42g"
+  product: kit_kat
+  points: 150
+  weight: 42.0
+  is_master: true
+  active: true
+  position: 1
+  cost_price: 0.60

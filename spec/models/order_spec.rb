@@ -12,7 +12,7 @@ RSpec.describe Order, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:order) }
+    subject { orders(:order_001) } # rubocop:disable Naming/VariableNumber
     it { should validate_presence_of(:number) }
   end
 

@@ -78,6 +78,6 @@ class Variant < ApplicationRecord
   end
 
   def full_name
-    "#{product.name} - #{product&.name == name ? '' : name} [#{sku}]"
+    "#{product.name} - #{name unless product&.name == name} [#{sku}]"
   end
 end

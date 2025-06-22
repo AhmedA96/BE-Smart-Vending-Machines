@@ -1,0 +1,33 @@
+john_doe:
+  email: "john.doe@example.com"
+  encrypted_password: "$2a$12$YourEncryptedPasswordHere"
+  name: "John Doe"
+  mobile_number: "+971555234"
+  verified: true
+  locale: "en"
+  email_notification: true
+  sms_notification: true
+  sign_in_count: 5
+  current_sign_in_at: <%= 1.day.ago %>
+  last_sign_in_at: <%= 3.days.ago %>
+  current_sign_in_ip: "192.168.1.100"
+  last_sign_in_ip: "192.168.1.101"
+  confirmed_at: <%= 1.month.ago %>
+  last_active_at: <%= 1.hour.ago %>
+
+jane_smith:
+  email: "jane.smith@example.com"
+  encrypted_password: "$2a$12$YourEncryptedPasswordHere"
+  name: "Jane Smith"
+  mobile_number: "+9715550987"
+  verified: true
+  locale: "en"
+  email_notification: false
+  sms_notification: true
+  sign_in_count: 12
+  current_sign_in_at: <%= 2.hours.ago %>
+  last_sign_in_at: <%= 1.day.ago %>
+  current_sign_in_ip: "192.168.1.102"
+  last_sign_in_ip: "192.168.1.103"
+  confirmed_at: <%= 2.months.ago %>
+  last_active_at: <%= 30.minutes.ago %>

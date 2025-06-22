@@ -1,0 +1,7 @@
+john_admin:
+  user: john_doe
+  role: admin_role
+
+jane_user:
+  user: jane_smith
+  role: user_role
