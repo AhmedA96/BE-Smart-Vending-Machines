@@ -42,6 +42,7 @@ Rails.application.routes.draw do
           get 'machine_products'
         end
       end
+      resources :brands, only: %i[index show]
 
       resources :orders
       resources :variants, only: %i[index show]
