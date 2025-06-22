@@ -1,0 +1,17 @@
+cash:
+  name: "Cash"
+  description: "Payment by cash"
+  presentation: "Cash Payment"
+  active: true
+
+credit_card:
+  name: "Credit Card"
+  description: "Payment by credit card"
+  presentation: "Credit/Debit Card"
+  active: true
+
+mobile_payment:
+  name: "Mobile Payment"
+  description: "Payment via mobile app"
+  presentation: "Mobile Pay"
+  active: true

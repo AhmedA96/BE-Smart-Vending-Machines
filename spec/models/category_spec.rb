@@ -15,7 +15,7 @@ RSpec.describe Category, type: :model do
   end
 
   describe 'default values' do
-    let(:category) { create(:category) }
+    let(:category) { categories(:beverages) }
 
     it 'sets active to true by default' do
       expect(category.active).to be true

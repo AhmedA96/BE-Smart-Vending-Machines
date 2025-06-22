@@ -1,0 +1,9 @@
+admin_role:
+  name: "admin"
+  resource_type: nil
+  resource_id: nil
+
+user_role:
+  name: "user"
+  resource_type: nil
+  resource_id: nil

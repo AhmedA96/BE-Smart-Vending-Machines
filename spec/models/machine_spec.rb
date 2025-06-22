@@ -19,7 +19,7 @@ RSpec.describe Machine, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:machine) }
+    subject { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
 
     it { should validate_presence_of(:external_machine_id) }
     it { should validate_uniqueness_of(:external_machine_id) }
@@ -32,8 +32,8 @@ RSpec.describe Machine, type: :model do
   end
 
   describe 'scopes' do
-    let!(:active_machine) { create(:machine, status: 'Active') }
-    let!(:inactive_machine) { create(:machine, status: 'Inactive') }
+    let(:active_machine) { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
+    let(:inactive_machine) { machines(:machine_002) } # rubocop:disable Naming/VariableNumber
 
     describe '.active' do
       it 'returns only active machines' do
@@ -42,24 +42,17 @@ RSpec.describe Machine, type: :model do
       end
     end
   end
-
   describe '.nearby' do
-    let!(:close_machine) do
-      create(:machine,
-             status: 'Active',
-             coordinates: 'POINT(100.5 13.7)')
-    end
+    let(:reference_lat) { 40.7484 }
+    let(:reference_lng) { -73.9857 }
 
-    let!(:far_machine) do
-      create(:machine,
-             status: 'Active',
-             coordinates: 'POINT(104.5 15.7)')
-    end
+    let(:close_machine) { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
+    let(:far_machine)   { machines(:machine_002) } # rubocop:disable Naming/VariableNumber
 
     it 'returns machines within specified radius' do
       result = described_class.nearby(
-        latitude: 13.7,
-        longitude: 100.5,
+        latitude: reference_lat,
+        longitude: reference_lng,
         radius_in_meters: 1000
       )
 
@@ -68,17 +61,13 @@ RSpec.describe Machine, type: :model do
     end
 
     it 'orders results by distance' do
-      create(:machine,
-             status: 'Active',
-             coordinates: 'POINT(100.51 13.71)')
-
-      results = described_class.nearby(
-        latitude: 13.7,
-        longitude: 100.5,
-        radius_in_meters: 5000
+      result = described_class.nearby(
+        latitude: reference_lat,
+        longitude: reference_lng,
+        radius_in_meters: 10_000_000
       )
 
-      expect(results.first).to eq(close_machine)
+      expect(result.first).to eq(close_machine)
     end
   end
 end

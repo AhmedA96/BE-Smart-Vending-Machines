@@ -13,7 +13,7 @@ RSpec.describe Variant, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:variant) }
+    subject { variants(:coke_classic_12oz) }
 
     it { should validate_presence_of(:sku) }
     it { should validate_uniqueness_of(:sku).case_insensitive }

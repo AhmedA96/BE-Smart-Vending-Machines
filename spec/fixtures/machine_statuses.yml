@@ -1,0 +1,11 @@
+machine_001_status:
+  machine: machine_001
+  status: "operational"
+  changed_at: <%= 1.week.ago %>
+  notes: "Regular maintenance completed"
+
+machine_002_status:
+  machine: machine_002
+  status: "operational"
+  changed_at: <%= 3.days.ago %>
+  notes: "Restocked and cleaned"

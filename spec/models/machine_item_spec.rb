@@ -10,13 +10,12 @@ RSpec.describe MachineItem, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:machine_item) }
+    subject { machine_items(:machine_001_coke) }
 
     it { should validate_presence_of(:stock) }
     it { should validate_numericality_of(:stock).only_integer.is_greater_than_or_equal_to(0) }
 
     it 'validates uniqueness of variant_id scoped to machine_id' do
-      create(:machine_item)
       should validate_uniqueness_of(:variant_id).scoped_to(:machine_id)
     end
   end

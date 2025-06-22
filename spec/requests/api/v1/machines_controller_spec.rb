@@ -7,7 +7,7 @@ RSpec.describe Api::V1::MachinesController, type: :request do
   let(:access_token) { create(:doorkeeper_access_token, application: application, resource_owner_id: nil) }
 
   describe 'GET /api/v1/machines/nearby' do
-    let!(:machine) { create(:machine, coordinates: 'POINT(-74.0060 40.7128)', status: 'Active') }
+    let!(:machine) { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
     let(:params) { { latitude: 40.7128, longitude: -74.0060, radius_in_meters: 1000 } }
 
     it 'returns nearby machines' do
@@ -22,7 +22,7 @@ RSpec.describe Api::V1::MachinesController, type: :request do
   end
 
   describe 'GET /api/v1/machines/:id' do
-    let!(:machine) { create(:machine) }
+    let!(:machine) { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
 
     it 'returns machine by :id' do
       get "/api/v1/machines/#{machine.id}", headers: { Authorization: "Bearer #{access_token.token}" }

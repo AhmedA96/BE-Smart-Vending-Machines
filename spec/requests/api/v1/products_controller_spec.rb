@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.describe Api::V1::ProductsController, type: :request do
   let(:application) { create(:oauth_application) }
   let(:access_token) { create(:doorkeeper_access_token, application: application, resource_owner_id: nil) }
-  let(:product) { create(:product, status: 'Active') }
-  let(:machine) { create(:machine) }
-  let(:price_list) { create(:price_list) }
+  let(:product) { products(:coke_classic) }
+  let(:machine) { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
+  let(:price_list) { price_lists(:standard_pricing) }
 
   before do
     allow_any_instance_of(Products::PriceListFindable).to receive(:find_machine).and_return(machine)
@@ -22,7 +22,7 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   end
 
   describe 'GET /api/v1/products/:id' do
-    let(:product) { create(:product) }
+    let(:product) { products(:coke_classic) }
 
     it 'returns a successful response' do
       get "/api/v1/products/#{product.id}", headers: { Authorization: "Bearer #{access_token.token}" }
@@ -38,8 +38,8 @@ RSpec.describe Api::V1::ProductsController, type: :request do
   end
 
   describe 'GET /api/v1/products/machine_products' do
-    let(:variant) { create(:variant, product: product) }
-    let(:machine_item) { create(:machine_item, machine: machine, variant: variant) }
+    let(:variant) { variants(:coke_classic_12oz) }
+    let(:machine_item) { machine_items(:machine_001_coke) }
 
     before do
       machine_item

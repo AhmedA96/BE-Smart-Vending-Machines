@@ -54,8 +54,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :trackable,
          password_length: 8..128
 
-  validates :mobile_number, phone: { possible: true, allow_blank: false }, presence: true,
-                            uniqueness: true
+  validates :mobile_number,
+            phone: { possible: true, allow_blank: false },
+            presence: true,
+            uniqueness: { case_sensitive: false }
 
   validate :password_complexity
   validate :new_and_old_password_must_be_different

@@ -1,0 +1,11 @@
+snack_machines:
+  name: "Snack Machines"
+  description: "Machines that dispense snacks and candy"
+
+beverage_machines:
+  name: "Beverage Machines"
+  description: "Machines that dispense cold beverages"
+
+combo_machines:
+  name: "Combo Machines"
+  description: "Machines that dispense both snacks and beverages"

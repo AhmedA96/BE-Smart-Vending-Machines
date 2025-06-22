@@ -1,0 +1,23 @@
+machine_001_coke:
+  machine: machine_001
+  variant: coke_classic_12oz
+  stock: 25
+  line_number: 1
+
+machine_001_pepsi:
+  machine: machine_001
+  variant: pepsi_cola_12oz
+  stock: 20
+  line_number: 2
+
+machine_001_kit_kat:
+  machine: machine_001
+  variant: kit_kat_42g
+  stock: 15
+  line_number: 3
+
+machine_002_coke:
+  machine: machine_002
+  variant: coke_classic_12oz
+  stock: 30
+  line_number: 1

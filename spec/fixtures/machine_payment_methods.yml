@@ -1,0 +1,19 @@
+machine_001_cash:
+  machine: machine_001
+  payment_method: cash
+  active: true
+
+machine_001_card:
+  machine: machine_001
+  payment_method: credit_card
+  active: true
+
+machine_002_card:
+  machine: machine_002
+  payment_method: credit_card
+  active: true
+
+machine_002_mobile:
+  machine: machine_002
+  payment_method: mobile_payment
+  active: true

@@ -1,0 +1,11 @@
+beverages_snacks:
+  product: coke_classic
+  category: beverages
+
+snacks_candy:
+  product: kit_kat
+  category: candy
+
+pepsi_beverage:
+  product: pepsi_cola
+  category: beverages

@@ -8,7 +8,7 @@ RSpec.describe Vendor, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:vendor) }
+    subject { vendors(:prime_vending) }
 
     it { should validate_presence_of(:name) }
     it { should validate_length_of(:address).is_at_most(255) }
