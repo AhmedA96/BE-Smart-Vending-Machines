@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Suppliers
-  class CheckDispenseStatusJob
-    include Sidekiq::Job
-
-    sidekiq_options queue: :suppliers, retry: 5
+  class CheckDispenseStatusJob < ApplicationJob
+    queue_as :suppliers
+    retry_on StandardError, wait: :exponentially_longer, attempts: 5
 
     def perform(order_id) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       order = Order.find_by(id: order_id)
@@ -28,16 +27,16 @@ module Suppliers
             Rails.logger.error("Dispense failed for order #{order_id}: #{parsed_response['message']}")
           elsif order.pending_dispense?
             # Still pending, schedule another check
-            self.class.perform_in(30.seconds, order_id)
+            self.class.set(wait: 30.seconds).perform_later(order_id)
           end
         else
-          Rails.logger.error("Failed to check dispense status for order #{order_id}: #{response.code} - #{response.body}") # rubocop:disable Layout/LineLength
-          # Retry through Sidekiq
+          Rails.logger.error("Failed to check dispense status for order #{order_id}: #{response.code} - #{response.body}")
+          # Retry through job retry mechanism
           raise StandardError, "Failed to check dispense status: #{response.code}"
         end
       rescue StandardError => e
         Rails.logger.error("Error checking dispense status for order #{order_id}: #{e.message}")
-        raise e # Let Sidekiq handle the retry
+        raise e
       end
     end
 

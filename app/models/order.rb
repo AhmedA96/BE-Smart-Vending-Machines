@@ -103,8 +103,7 @@ class Order < ApplicationRecord
   def create_machine_order
     return unless supplier
 
-    # job to create the order in the machine backend
-    Suppliers::CreateMachineOrderJob.perform_async(id)
+    Suppliers::CreateMachineOrderJob.perform_later(id)
   end
 
   def start_dispense_status_check
@@ -115,6 +114,6 @@ class Order < ApplicationRecord
                       1.minute
                     end
 
-    Suppliers::CheckDispenseStatusJob.perform_in(initial_delay, id)
+    Suppliers::CheckDispenseStatusJob.set(wait: initial_delay).perform_later(id)
   end
 end

@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Suppliers
-  class SyncProductsJob
-    include Sidekiq::Job
-
-    sidekiq_options queue: :suppliers, retry: 3
+  class SyncProductsJob < ApplicationJob
+    queue_as :suppliers
+    retry_on StandardError, wait: :exponentially_longer, attempts: 3
 
     def perform
       Machine.includes(:supplier).find_each do |machine|

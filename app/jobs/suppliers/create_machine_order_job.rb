@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Suppliers
-  class CreateMachineOrderJob
-    include Sidekiq::Job
-
-    sidekiq_options queue: :suppliers, retry: 3
+  class CreateMachineOrderJob < ApplicationJob
+    queue_as :suppliers
+    retry_on StandardError, wait: :exponentially_longer, attempts: 3
 
     def perform(order_id) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       order = Order.find_by(id: order_id)
