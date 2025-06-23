@@ -12,7 +12,7 @@ module Api
           render json: @contact, status: :created
         else
           render json: {
-            error: I18n.t('errors.contact_us.creation_failed')
+            errors: @contact.errors.messages
           }, status: :unprocessable_entity
         end
       end
