@@ -7,7 +7,6 @@
 #  id                     :bigint           not null, primary key
 #  deleted_at             :datetime
 #  description            :string
-#  image_url              :string
 #  max_orderable_quantity :integer
 #  name                   :string           not null
 #  position               :integer          default(1)
