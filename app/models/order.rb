@@ -43,20 +43,50 @@ class Order < ApplicationRecord
 
   delegate :price_list, to: :machine, allow_nil: true
   delegate :country, to: :machine, allow_nil: true
+  delegate :supplier, to: :machine, allow_nil: true
 
   validates :number, presence: true
 
   aasm column: 'status' do
-    state :initial, initial: true
-    state :pending
-    state :dispended
+    state :cart, initial: true
+    state :pending_payment
+    state :paid
+    state :pending_dispense
+    state :dispensed
+    state :failed
+    state :cancelled
 
-    event :pending do
-      transitions from: :initial, to: :pending
+    event :process_payment do
+      transitions from: :cart, to: :pending_payment
     end
 
-    event :dispense do
-      transitions from: :pending, to: :dispended
+    event :mark_paid do
+      transitions from: :pending_payment, to: :paid
+      after do
+        create_machine_order
+      end
+    end
+
+    event :start_dispense do
+      transitions from: :paid, to: :pending_dispense
+      after do
+        start_dispense_status_check
+      end
+    end
+
+    event :complete_dispense do
+      transitions from: :pending_dispense, to: :dispensed
+      after do
+        update(completed_at: Time.current)
+      end
+    end
+
+    event :fail do
+      transitions from: %i[pending_payment paid pending_dispense], to: :failed
+    end
+
+    event :cancel do
+      transitions from: %i[cart pending_payment], to: :cancelled
     end
   end
 
@@ -66,5 +96,25 @@ class Order < ApplicationRecord
       order_number = "VNDG#{random_number}"
       return order_number unless Order.exists?(number: order_number)
     end
+  end
+
+  private
+
+  def create_machine_order
+    return unless supplier
+
+    # job to create the order in the machine backend
+    Suppliers::CreateMachineOrderJob.perform_async(id)
+  end
+
+  def start_dispense_status_check
+    return unless supplier
+
+    initial_delay = case supplier.name.downcase
+                    when 'reyah'
+                      1.minute
+                    end
+
+    Suppliers::CheckDispenseStatusJob.perform_in(initial_delay, id)
   end
 end
