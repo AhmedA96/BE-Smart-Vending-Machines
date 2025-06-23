@@ -30,7 +30,7 @@ module Suppliers
             self.class.set(wait: 30.seconds).perform_later(order_id)
           end
         else
-          Rails.logger.error("Failed to check dispense status for order #{order_id}: #{response.code} - #{response.body}")
+          Rails.logger.error("Failed to check dispense status for order #{order_id}: #{response.code} - #{response.body}") # rubocop:disable Layout/LineLength
           # Retry through job retry mechanism
           raise StandardError, "Failed to check dispense status: #{response.code}"
         end

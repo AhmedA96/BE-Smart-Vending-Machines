@@ -53,7 +53,7 @@ module Api
 
         return unless card_id && customer_id
 
-        DeleteCardJob.perform_async(card_id, customer_id)
+        DeleteCardJob.perform_later(card_id, customer_id)
       end
 
       def find_card
