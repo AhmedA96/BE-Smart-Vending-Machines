@@ -46,6 +46,7 @@ gem 'mini_magick'
 gem 'sidekiq', '~> 8.0'
 gem 'sidekiq-cron', '~> 2.3'
 gem 'sidekiq-limit_fetch', '~> 4.4.1'
+gem 'sidekiq-scheduler'
 
 # Caching & Performance
 gem 'kredis'

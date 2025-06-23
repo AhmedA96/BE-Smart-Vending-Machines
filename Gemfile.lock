@@ -612,6 +612,8 @@ GEM
       ffi (~> 1.12)
       logger
     rubyzip (2.4.1)
+    rufus-scheduler (3.9.2)
+      fugit (~> 1.1, >= 1.11.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -643,6 +645,9 @@ GEM
       sidekiq (>= 6.5.0)
     sidekiq-limit_fetch (4.4.1)
       sidekiq (>= 6)
+    sidekiq-scheduler (6.0.1)
+      rufus-scheduler (~> 3.2)
+      sidekiq (>= 7.3, < 9)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -824,6 +829,7 @@ DEPENDENCIES
   sidekiq (~> 8.0)
   sidekiq-cron (~> 2.3)
   sidekiq-limit_fetch (~> 4.4.1)
+  sidekiq-scheduler
   simplecov
   solid_cache (~> 1.0)
   solid_queue (~> 1.1)
