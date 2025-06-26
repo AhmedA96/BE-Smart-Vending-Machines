@@ -10,6 +10,7 @@
 #  installed_at        :datetime
 #  last_service_date   :datetime
 #  location_updated_at :datetime
+#  max_items_per_order :integer
 #  name                :string
 #  status              :string
 #  created_at          :datetime         not null
