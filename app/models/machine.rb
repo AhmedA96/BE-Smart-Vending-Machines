@@ -59,6 +59,8 @@ class Machine < ApplicationRecord
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payment_methods, through: :machine_payment_methods
 
+  has_one_attached :image
+
   validates :external_machine_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
 
