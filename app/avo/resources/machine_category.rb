@@ -23,7 +23,7 @@ module Avo
       def fields
         field :id, as: :id
         field :name, as: :text, required: true
-        field :logo, as: :files, is_image: true, accept: 'image/*', direct_upload: true, hide_on: %i[index]
+        field :logo, as: :file, is_image: true, accept: 'image/*', direct_upload: true, hide_on: %i[index]
         field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
         field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
 
