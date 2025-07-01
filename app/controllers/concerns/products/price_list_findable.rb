@@ -21,7 +21,7 @@ module Products
     end
 
     def machine_price_list
-      @machine.price_list
+      @machine&.price_list
     end
   end
 end
