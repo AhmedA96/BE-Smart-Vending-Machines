@@ -7,7 +7,7 @@ module Avo
       self.title = :name
       self.includes = %i[machine_statuses machine_items translations machine_payment_methods]
       self.record_selector = true
-      self.attachments = []
+      self.attachments = %i[image]
 
       self.search = {
         results_count: 5,
@@ -33,6 +33,7 @@ module Avo
         field :name, as: :text
         field :vendor, as: :belongs_to
         field :location, as: :belongs_to
+        field :image, as: :file, is_image: true, accept: 'image/*', direct_upload: true, hide_on: %i[index]
         field :status, as: :select, enum: status, hide_on: %i[show], summarizable: true
         field :status, as: :badge, enum: status, only_on: %i[index show],
                        options: { danger: %i[Inactive], success: %i[Active],
