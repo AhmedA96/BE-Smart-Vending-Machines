@@ -32,6 +32,8 @@ module Avo
         field :id, as: :id
         field :name, as: :text
         field :vendor, as: :belongs_to
+        field :country, as: :belongs_to
+        field :supplier, as: :belongs_to
         field :location, as: :belongs_to
         field :image, as: :file, is_image: true, accept: 'image/*', direct_upload: true, hide_on: %i[index]
         field :status, as: :select, enum: status, hide_on: %i[show], summarizable: true
