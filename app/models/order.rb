@@ -126,6 +126,5 @@ class Order < ApplicationRecord
     return unless total_items > machine.max_items_per_order
 
     errors.add(:base, "Maximum #{machine.max_items_per_order} item allowed per order")
-
   end
 end
