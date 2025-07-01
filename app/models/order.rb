@@ -45,6 +45,7 @@ class Order < ApplicationRecord
   delegate :country, to: :machine, allow_nil: true
 
   validates :number, presence: true
+  validate :check_item_limit
 
   aasm column: 'status' do
     state :initial, initial: true
@@ -66,5 +67,17 @@ class Order < ApplicationRecord
       order_number = "VNDG#{random_number}"
       return order_number unless Order.exists?(number: order_number)
     end
+  end
+
+  private
+
+  def check_item_limit
+    return unless machine&.max_items_per_order
+
+    total_items = line_items.sum(:quantity)
+
+    return unless total_items > machine.max_items_per_order
+
+    errors.add(:base, "Maximum #{machine.max_items_per_order} item allowed per order")
   end
 end
