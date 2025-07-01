@@ -9,6 +9,7 @@ module Orders
         cart_items = params[:cart_items]
 
         validate_order_creation!(machine, user, cart_items)
+        validate_item_limit!(machine, cart_items)
 
         ActiveRecord::Base.transaction do
           order = create_order(machine, user, cart_items)
@@ -66,6 +67,23 @@ module Orders
 
         total.round(2)
       end
+    end
+
+    def self.validate_item_limit!(machine, cart_items)
+      return unless machine.max_items_per_order
+
+      total_items = cart_items.sum { |item| item[:quantity].to_i }
+
+      return unless total_items > machine.max_items_per_order
+
+      raise FailedRequestError.new(
+        "Maximum #{machine.max_items_per_order} item allowed per order",
+        {
+          machine_id: machine.id,
+          max_items: machine.max_items_per_order,
+          attempted_items: total_items
+        }
+      )
     end
   end
 end

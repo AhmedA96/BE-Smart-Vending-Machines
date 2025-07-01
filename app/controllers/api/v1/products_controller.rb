@@ -18,7 +18,9 @@ module Api
 
       def machine_products
         machine_id = params[:machine_id]
-        @products = paginate(Product.filtered_by_machine(machine_id))
+        @machine = Machine.includes(location: { price_list: :price_list_items }).find(machine_id)
+        @products = paginate(Product.includes(:variants)
+                           .filtered_by_machine(machine_id))
       end
 
       def show; end

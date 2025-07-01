@@ -10,6 +10,7 @@
 #  installed_at        :datetime
 #  last_service_date   :datetime
 #  location_updated_at :datetime
+#  max_items_per_order :integer
 #  name                :string
 #  status              :string
 #  created_at          :datetime         not null
@@ -58,6 +59,8 @@ class Machine < ApplicationRecord
   has_many :machine_translations, dependent: :destroy
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payment_methods, through: :machine_payment_methods
+
+  has_one_attached :image
 
   validates :external_machine_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true

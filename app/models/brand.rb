@@ -22,6 +22,8 @@ class Brand < ApplicationRecord
   has_one_attached :cover, dependent: :destroy
 
   has_many :products, dependent: :nullify
+  has_many :product_categories, through: :products
+  has_many :categories, -> { distinct }, through: :product_categories
   has_many :brand_translations, dependent: :destroy
 
   validates :name, presence: true
