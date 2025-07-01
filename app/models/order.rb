@@ -46,6 +46,7 @@ class Order < ApplicationRecord
   delegate :supplier, to: :machine, allow_nil: true
 
   validates :number, presence: true
+  validate :check_item_limit
 
   aasm column: 'status' do
     state :cart, initial: true
@@ -115,5 +116,16 @@ class Order < ApplicationRecord
                     end
 
     Suppliers::CheckDispenseStatusJob.set(wait: initial_delay).perform_later(id)
+  end
+
+  def check_item_limit
+    return unless machine&.max_items_per_order
+
+    total_items = line_items.sum(:quantity)
+
+    return unless total_items > machine.max_items_per_order
+
+    errors.add(:base, "Maximum #{machine.max_items_per_order} item allowed per order")
+
   end
 end
