@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_03_005009) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_26_182340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -229,6 +229,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_03_005009) do
     t.integer "floor_no"
     t.bigint "supplier_id"
     t.bigint "country_id"
+    t.integer "max_items_per_order"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["country_id"], name: "index_machines_on_country_id"

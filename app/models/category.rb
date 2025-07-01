@@ -19,7 +19,19 @@ class Category < ApplicationRecord
   has_many :product_categories, dependent: :destroy
   has_many :products, through: :product_categories
   has_many :category_translations, dependent: :destroy
+  has_many :brands, -> { distinct }, through: :products
+
   accepts_nested_attributes_for :translations
 
   validates :name, :presentation, presence: true
+
+  def self.with_brands
+    includes(:brands).map do |category|
+      {
+        id: category.id,
+        name: category.name,
+        brands: category.brands.map { |brand| { id: brand.id, name: brand.name } }
+      }
+    end
+  end
 end

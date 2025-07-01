@@ -35,7 +35,11 @@ Rails.application.routes.draw do
       end
 
       resources :machine_categories
-      resources :categories
+      resources :categories do
+        collection do
+          get :with_brands
+        end
+      end
 
       resources :products do
         collection do

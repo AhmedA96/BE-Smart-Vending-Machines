@@ -35,7 +35,13 @@ module ErrorHandling
   end
 
   def request_error(exception)
-    render_json(:bad_request, exception.message)
+    error_response = {
+      message: exception.message
+    }
+
+    error_response.merge!(exception.data) if exception.data.present?
+
+    render_json(:bad_request, error_response)
     nil
   end
 

@@ -10,6 +10,10 @@ module Api
 
       def show; end
 
+      def with_brands
+        @categories_with_brands = Category.with_brands
+      end
+
       private
 
       def set_category
