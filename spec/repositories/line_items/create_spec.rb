@@ -135,7 +135,7 @@ RSpec.describe LineItems::Create do
 
     context 'when price list exists but has no id' do
       let(:machine_with_nil_price_list) do
-        machine = machines(:machine_001)
+        machine = machines(:machine_001) # rubocop:disable Naming/VariableNumber
         allow(machine).to receive(:price_list).and_return(double('PriceList', id: nil))
         machine
       end
