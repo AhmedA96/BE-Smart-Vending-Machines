@@ -16,7 +16,7 @@ module Api
 
       def create
         authorize Payment
-        return render_completed_error if @order.completed?
+        return render_completed_error if @order.dispensed?
 
         @payment = Payments::Create.call(params, @order)
         render 'api/v1/orders/show', status: :created

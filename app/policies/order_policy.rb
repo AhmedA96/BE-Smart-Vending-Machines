@@ -11,12 +11,12 @@ class OrderPolicy < ApplicationPolicy
     end
   end
 
-  def index? = admins?
-  def show? = admins?
+  def index? = admin?
+  def show? = admin?
   def create? = true
-  def new? = admins?
-  def edit? = admins?
-  def update? = admins?
-  def act_on? = admins?
-  def search? = admins?
+  def new? = admin?
+  def edit? = admin?
+  def update? = admin?
+  def act_on? = admin?
+  def search? = admin?
 end

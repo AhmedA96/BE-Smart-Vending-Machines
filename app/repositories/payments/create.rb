@@ -15,7 +15,6 @@ module Payments
         amount: amount,
         payment_method_id: payment_data[:payment_method_id],
         order: order,
-        payment_type: :pay,
         card_id: payment_data[:card_id],
         token_id: payment_data[:token_id]
       }
