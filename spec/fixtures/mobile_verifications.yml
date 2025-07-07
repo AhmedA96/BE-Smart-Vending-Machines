@@ -1,0 +1,19 @@
+one:
+  code: "123456"
+  expired: false
+  expires_at: <%= 10.minutes.from_now %>
+  mobile_number: "+201001234567"
+  verified: false
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+  user: john_doe
+
+expired_verified:
+  code: "654321"
+  expired: true
+  expires_at: <%= 1.day.ago %>
+  mobile_number: "+201009876543"
+  verified: true
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 1.day.ago %>
+  user: jane_doe

@@ -19,9 +19,21 @@ order_002:
   total_tax: 0.12
   total_discounts: 0.00
   payment_method: "mobile_payment"
-  status: "completed"
-  dispense_status: "dispensed"
+  status: "pending"
   machine_response: '{"status": "success", "items_dispensed": 1}'
   completed_at: <%= 2.hours.ago %>
   user: jane_smith
   machine: machine_002
+
+order_003:
+  number: "ORD-2024-003"
+  total: 2.00
+  items_total: 2.00
+  total_tax: 0.16
+  total_discounts: 0.00
+  payment_method: "cash"
+  status: "completed"
+  machine_response: '{"status": "success", "items_dispensed": 1}'
+  completed_at: <%= 3.hours.ago %>
+  user: john_doe
+  machine: machine_001
