@@ -1,0 +1,17 @@
+:verbose: false
+:concurrency: <%= ENV.fetch('SIDEKIQ_CONCURRENCY', 5) %>
+:timeout: 25
+
+:queues:
+  - [critical, 3]
+  - [default, 2]
+  - [suppliers, 2]
+  - [mailers, 1]
+  - [low, 1]
+
+:schedule:
+  suppliers_sync_products:
+    cron: '*/10 * * * *'  # Every 10 minutes
+    class: Suppliers::SyncProductsJob
+    queue: suppliers
+    description: "Sync products from all suppliers every 10 minutes" 

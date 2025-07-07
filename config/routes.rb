@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       post 'contact-us', to: 'contact_us_requests#create'
 
       resources :payment_methods, only: %i[index show]
+      resources :payments, only: %i[index show create]
 
       post 'mobile_verifications/send_code', to: 'mobile_verifications#send_verification_code'
       post 'mobile_verifications/verify_code', to: 'mobile_verifications#verify_code'

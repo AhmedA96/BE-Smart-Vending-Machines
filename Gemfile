@@ -43,16 +43,13 @@ gem "image_processing", "~> 1.2"
 gem 'mini_magick'
 
 # Background Processing
-gem 'sidekiq', '~> 8.0'
-gem 'sidekiq-cron', '~> 2.3'
-gem 'sidekiq-limit_fetch', '~> 4.4.1'
+gem 'solid_queue'
 
 # Caching & Performance
 gem 'kredis'
 gem 'puma', '>= 6.4.2'
 gem 'rack', '>= 3.1.10'
 gem "solid_cache", "~> 1.0"
-gem "solid_queue", "~> 1.1"
 gem 'thruster'
 
 # Frontend & Assets

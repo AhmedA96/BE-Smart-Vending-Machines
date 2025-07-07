@@ -43,21 +43,51 @@ class Order < ApplicationRecord
 
   delegate :price_list, to: :machine, allow_nil: true
   delegate :country, to: :machine, allow_nil: true
+  delegate :supplier, to: :machine, allow_nil: true
 
   validates :number, presence: true
   validate :check_item_limit
 
   aasm column: 'status' do
-    state :initial, initial: true
-    state :pending
-    state :dispended
+    state :cart, initial: true
+    state :pending_payment
+    state :paid
+    state :pending_dispense
+    state :dispensed
+    state :failed
+    state :cancelled
 
-    event :pending do
-      transitions from: :initial, to: :pending
+    event :process_payment do
+      transitions from: :cart, to: :pending_payment
     end
 
-    event :dispense do
-      transitions from: :pending, to: :dispended
+    event :mark_paid do
+      transitions from: :pending_payment, to: :paid
+      after do
+        create_machine_order
+      end
+    end
+
+    event :start_dispense do
+      transitions from: :paid, to: :pending_dispense
+      after do
+        start_dispense_status_check
+      end
+    end
+
+    event :complete_dispense do
+      transitions from: :pending_dispense, to: :dispensed
+      after do
+        update(completed_at: Time.current)
+      end
+    end
+
+    event :fail do
+      transitions from: %i[pending_payment paid pending_dispense], to: :failed
+    end
+
+    event :cancel do
+      transitions from: %i[cart pending_payment], to: :cancelled
     end
   end
 
@@ -70,6 +100,23 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def create_machine_order
+    return unless supplier
+
+    Suppliers::CreateMachineOrderJob.perform_later(id)
+  end
+
+  def start_dispense_status_check
+    return unless supplier
+
+    initial_delay = case supplier.name.downcase
+                    when 'reyah'
+                      1.minute
+                    end
+
+    Suppliers::CheckDispenseStatusJob.set(wait: initial_delay).perform_later(id)
+  end
 
   def check_item_limit
     return unless machine&.max_items_per_order
