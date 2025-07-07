@@ -16,6 +16,8 @@ module Api
       def create
         @order = Orders::Create.call(order_params)
         render :show, status: :created
+      rescue StandardError => e
+        raise FailedRequestError, e.message
       end
 
       private

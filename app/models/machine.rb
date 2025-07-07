@@ -81,4 +81,8 @@ class Machine < ApplicationRecord
       .select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
       .order('distance ASC')
   end
+
+  def active?
+    status == 'Active'
+  end
 end
