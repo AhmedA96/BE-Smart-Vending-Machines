@@ -24,9 +24,9 @@ class MachineCategory < ApplicationRecord
   validates :description, length: { maximum: 500 }, allow_blank: true
 
   # returns distinct machines categories for only active machines with a given location id
-  def self.by_location(location_id)
+  scope :by_location, lambda { |location_id|
     joins(:machines).where(machines: { location_id: location_id })
                     .merge(Machine.active)
                     .distinct
-  end
+  }
 end
