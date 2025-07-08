@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :machines do
         collection do
           get :nearby
+          get :by_location
         end
       end
 
@@ -58,6 +59,12 @@ Rails.application.routes.draw do
 
       post 'mobile_verifications/send_code', to: 'mobile_verifications#send_verification_code'
       post 'mobile_verifications/verify_code', to: 'mobile_verifications#verify_code'
+
+      resources :locations do
+        collection do
+          get :nearby
+        end
+      end
     end
   end
 

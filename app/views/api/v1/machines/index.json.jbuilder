@@ -3,7 +3,7 @@
 json.machines do
   json.array! @machines do |machine|
     json.partial! 'machine', machine: machine
-    json.distance machine.distance.round(2)
+    json.distance machine.distance.round(2) if machine.respond_to?(:distance)
   end
 end
 

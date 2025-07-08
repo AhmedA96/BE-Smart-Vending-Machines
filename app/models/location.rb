@@ -7,6 +7,7 @@
 #  id            :bigint           not null, primary key
 #  address       :string
 #  city          :string
+#  coordinates   :geography        point, 4326
 #  landmark      :string
 #  name          :string
 #  state         :string
@@ -17,6 +18,7 @@
 #
 # Indexes
 #
+#  index_locations_on_coordinates    (coordinates) USING gist
 #  index_locations_on_price_list_id  (price_list_id)
 #
 # Foreign Keys
@@ -31,4 +33,27 @@ class Location < ApplicationRecord
   belongs_to :price_list
   has_many :machines
   has_many :location_translations, dependent: :destroy
+
+  def self.nearby(latitude:, longitude:, radius_km: nil)
+    point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
+    distance_sql = "ST_Distance(coordinates, #{point_sql})"
+
+    base_binds = { latitude: latitude, longitude: longitude }
+
+    query = select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", base_binds])))
+            .where.not(coordinates: nil)
+
+    if radius_km
+      radius_meters = radius_km.to_f * 1000
+      radius_binds = base_binds.merge(radius: radius_meters)
+
+      query = query.where(
+        Arel.sql(ActiveRecord::Base.sanitize_sql_array([
+                                                         "ST_DWithin(coordinates, #{point_sql}, :radius)", radius_binds
+                                                       ]))
+      )
+    end
+
+    query.order('distance ASC')
+  end
 end

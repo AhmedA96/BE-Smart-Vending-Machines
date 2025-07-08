@@ -27,4 +27,10 @@ class Brand < ApplicationRecord
   has_many :brand_translations, dependent: :destroy
 
   validates :name, presence: true
+
+  scope :by_location, lambda { |location_id|
+    joins(products: { variants: { machine_items: { machine: :location } } })
+      .where(locations: { id: location_id })
+      .distinct
+  }
 end
