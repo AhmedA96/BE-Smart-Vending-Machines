@@ -44,7 +44,9 @@ Rails.application.routes.draw do
 
       resources :products do
         collection do
-          get 'machine_products'
+          get :machine_products
+          get :by_category_and_location
+          get :by_brand_and_location
         end
       end
       resources :brands, only: %i[index show]

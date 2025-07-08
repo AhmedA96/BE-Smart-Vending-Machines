@@ -8,6 +8,9 @@ module Api
       include Products::Sortable
 
       before_action :set_product, only: %i[show]
+      before_action :set_location, only: %i[by_brand_and_location by_category_and_location]
+      before_action :set_category, only: %i[by_category_and_location]
+      before_action :set_brand, only: %i[by_brand_and_location]
 
       def index
         products = main_products.includes(:variants).includes(:translations)
@@ -21,6 +24,26 @@ module Api
         @machine = Machine.includes(location: { price_list: :price_list_items }).find(machine_id)
         @products = paginate(Product.includes(:variants)
                            .filtered_by_machine(machine_id))
+      end
+
+      def by_category_and_location
+        location_id = params[:location_id]
+        category_id = params[:category_id]
+
+        @products = paginate(Product.by_location_and_category(location_id, category_id)
+                           .includes(:variants, :categories))
+
+        render :index
+      end
+
+      def by_brand_and_location
+        location_id = params[:location_id]
+        brand_id = params[:brand_id]
+
+        @products = paginate(Product.by_location_and_brand(location_id, brand_id)
+                    .includes(:brand, :variants, :translations))
+
+        render :index
       end
 
       def show; end
@@ -43,6 +66,18 @@ module Api
 
       def set_product
         @product = Product.find(params[:id])
+      end
+
+      def set_location
+        @location = Location.find(params[:location_id])
+      end
+
+      def set_category
+        @category = Category.find(params[:category_id])
+      end
+
+      def set_brand
+        @brand = Brand.find(params[:brand_id])
       end
     end
   end
