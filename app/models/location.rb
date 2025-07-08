@@ -33,4 +33,26 @@ class Location < ApplicationRecord
   belongs_to :price_list
   has_many :machines
   has_many :location_translations, dependent: :destroy
+
+  def self.nearby(latitude:, longitude:, radius_km: nil)
+    point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
+    distance_sql = "ST_Distance(coordinates, #{point_sql})"
+    binds = { latitude: latitude, longitude: longitude }
+
+    query = select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
+            .where.not(coordinates: nil)
+
+    if radius_km
+      radius_meters = radius_km * 1000
+      binds[:radius] = radius_meters
+      query = query.where(
+        Arel.sql(ActiveRecord::Base.sanitize_sql_array([
+                                                         "ST_DWithin(coordinates, #{point_sql}, :radius)",
+                                                         binds
+                                                       ]))
+      )
+    end
+
+    query.order('distance DESC')
+  end
 end
