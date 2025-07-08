@@ -270,6 +270,7 @@ locations = [
     state: 'Cairo Governorate',
     zip_code: '11511',
     landmark: 'Near Central Square',
+    coordinates: 'POINT(31.2357 30.0444)',
     price_list: price_list_records[1],
     translations_attributes: [
       { locale: 'en', name: 'Downtown Mall' },
@@ -282,6 +283,7 @@ locations = [
     state: 'Giza Governorate',
     zip_code: '12511',
     landmark: 'Next to Science Museum',
+    coordinates: 'POINT(31.3074 30.0566)',
     price_list: price_list_records[0],
     translations_attributes: [
       { locale: 'en', name: 'Tech Park' },
@@ -421,7 +423,7 @@ machines = [
     location: location_records[0],
     country: country_records[0],
     status: 'Active',
-    coordinates: 'POINT(31.2357 30.0444)',
+    coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 6.months.ago,
     last_service_date: 1.month.ago,
     supplier: supplier_records[1],
