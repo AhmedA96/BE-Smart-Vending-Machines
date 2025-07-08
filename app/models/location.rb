@@ -14,7 +14,7 @@
 #  zip_code      :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  country_id    :bigint           not null
+#  country_id    :bigint
 #  price_list_id :bigint
 #
 # Indexes

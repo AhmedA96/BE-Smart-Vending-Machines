@@ -150,7 +150,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.datetime "updated_at", null: false
     t.bigint "price_list_id"
     t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
-    t.bigint "country_id", null: false
+    t.bigint "country_id"
     t.index ["coordinates"], name: "index_locations_on_coordinates", using: :gist
     t.index ["country_id"], name: "index_locations_on_country_id"
     t.index ["price_list_id"], name: "index_locations_on_price_list_id"
