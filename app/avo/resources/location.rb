@@ -32,6 +32,7 @@ module Avo
         field :state, as: :text, hide_on: :index
         field :zip_code, as: :text, hide_on: :index
         field :price_list, as: :belongs_to
+        field :country, as: :belongs_to
 
         many_relation_tabs
       end
