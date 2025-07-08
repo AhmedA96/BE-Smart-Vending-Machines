@@ -37,22 +37,23 @@ class Location < ApplicationRecord
   def self.nearby(latitude:, longitude:, radius_km: nil)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
     distance_sql = "ST_Distance(coordinates, #{point_sql})"
-    binds = { latitude: latitude, longitude: longitude }
 
-    query = select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
+    base_binds = { latitude: latitude, longitude: longitude }
+
+    query = select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", base_binds])))
             .where.not(coordinates: nil)
 
     if radius_km
-      radius_meters = radius_km * 1000
-      binds[:radius] = radius_meters
+      radius_meters = radius_km.to_f * 1000
+      radius_binds = base_binds.merge(radius: radius_meters)
+
       query = query.where(
         Arel.sql(ActiveRecord::Base.sanitize_sql_array([
-                                                         "ST_DWithin(coordinates, #{point_sql}, :radius)",
-                                                         binds
+                                                         "ST_DWithin(coordinates, #{point_sql}, :radius)", radius_binds
                                                        ]))
       )
     end
 
-    query.order('distance DESC')
+    query.order('distance ASC')
   end
 end
