@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :machines do
         collection do
           get :nearby
+          get :by_location
         end
       end
 
