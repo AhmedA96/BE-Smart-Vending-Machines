@@ -28,3 +28,36 @@ machine_002:
   coordinates: "POINT(-118.2437 34.0522)"
   location_updated_at: <%= 2.weeks.ago %>
 
+limited_machine:
+  external_machine_id: "VM003"
+  name: "Limited Edition Machine"
+  category: beverage_machines
+  vendor: metro_machines
+  supplier: global_vendor
+  country: uae
+  location: mall_location
+  status: "Active"
+  floor_no: 3
+  installed_at: <%= 1.month.ago %>
+  last_service_date: <%= 2.days.ago %>
+  coordinates: "POINT(-122.4194 37.7749)"
+  location_updated_at: <%= 1.week.ago %>
+  max_items_per_order: 3
+
+machine_no_price_list:
+  external_machine_id: "VM004"
+  name: "No Price List Machine"
+  category: snack_machines
+  vendor: prime_vending
+  supplier: acme_supplier
+  country: uae
+  location: no_price_list
+  status: "Active"
+  floor_no: 1
+  installed_at: <%= 2.months.ago %>
+  last_service_date: <%= 1.week.ago %>
+  coordinates: "POINT(-73.9857 40.7484)"
+  location_updated_at: <%= 1.month.ago %>
+
+
+

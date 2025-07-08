@@ -18,9 +18,14 @@ class PaymentMethod < ApplicationRecord
 
   validates :name, presence: true
 
-  scope :active_for_machine, lambda {
-    joins(:machine_payment_methods)
-      .where(active: true)
-      .where(machine_payment_methods: { active: true })
+  scope :active_for_machine, lambda { |machine_id = nil|
+    if machine_id
+      joins(:machine_payment_methods)
+        .where(active: true)
+        .where(machine_payment_methods: { machine_id: machine_id, active: true })
+        .distinct
+    else
+      where(active: true)
+    end
   }
 end

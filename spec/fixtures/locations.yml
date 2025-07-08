@@ -1,3 +1,7 @@
+
+
+
+
 downtown_office:
   name: "Downtown Office Complex"
   address: "789 Business Blvd"
@@ -13,3 +17,11 @@ mall_location:
   landmark: "Level 2 Food Court"
   zip_code: "90210"
   price_list: premium_pricing
+
+no_price_list:
+  name: "No Price List"
+  address: "N/A"
+  city: "N/A"
+  landmark: "N/A"
+  zip_code: "00000"
+
