@@ -18,7 +18,7 @@ module Api
 
       def by_location
         @machines = paginate(
-          @location.machines.includes(:category).includes(:location)
+          @location.machines.active.includes(:category).includes(:location)
         )
         render :index
       end
