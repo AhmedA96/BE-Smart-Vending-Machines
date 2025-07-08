@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_091127) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -150,7 +150,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_091127) do
     t.datetime "updated_at", null: false
     t.bigint "price_list_id"
     t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.bigint "country_id", null: false
     t.index ["coordinates"], name: "index_locations_on_coordinates", using: :gist
+    t.index ["country_id"], name: "index_locations_on_country_id"
     t.index ["price_list_id"], name: "index_locations_on_price_list_id"
   end
 
@@ -230,11 +232,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_091127) do
     t.bigint "location_id"
     t.integer "floor_no"
     t.bigint "supplier_id"
-    t.bigint "country_id"
     t.integer "max_items_per_order"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
-    t.index ["country_id"], name: "index_machines_on_country_id"
     t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
     t.index ["location_id"], name: "index_machines_on_location_id"
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
@@ -561,13 +561,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_091127) do
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "location_translations", "locations"
+  add_foreign_key "locations", "countries"
   add_foreign_key "locations", "price_lists"
   add_foreign_key "machine_category_translations", "machine_categories"
   add_foreign_key "machine_items", "machines"
   add_foreign_key "machine_items", "variants"
   add_foreign_key "machine_statuses", "machines"
   add_foreign_key "machine_translations", "machines"
-  add_foreign_key "machines", "countries"
   add_foreign_key "machines", "locations"
   add_foreign_key "machines", "suppliers"
   add_foreign_key "machines", "vendors"
