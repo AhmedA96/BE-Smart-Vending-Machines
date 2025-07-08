@@ -7,6 +7,7 @@
 #  id            :bigint           not null, primary key
 #  address       :string
 #  city          :string
+#  coordinates   :geography        point, 4326
 #  landmark      :string
 #  name          :string
 #  state         :string
@@ -17,6 +18,7 @@
 #
 # Indexes
 #
+#  index_locations_on_coordinates    (coordinates) USING gist
 #  index_locations_on_price_list_id  (price_list_id)
 #
 # Foreign Keys
