@@ -66,6 +66,10 @@ class Machine < ApplicationRecord
 
   scope :active, -> { where(status: 'Active') }
 
+  scope :by_category_and_location, lambda { |category_id, location_id|
+    where(category_id: category_id, location_id: location_id)
+      .active
+  }
   def self.nearby(latitude:, longitude:)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
     distance_sql = "ST_Distance(coordinates, #{point_sql})"
