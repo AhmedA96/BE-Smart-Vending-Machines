@@ -51,20 +51,6 @@ class Product < ApplicationRecord
   validates :max_orderable_quantity, numericality: { greater_than: 0, allow_nil: true }
   validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
-  scope :by_location_and_category, lambda { |location_id, category_id|
-    joins(:product_categories, variants: { machine_items: { machine: :location } })
-      .where(locations: { id: location_id }, product_categories: { category_id: category_id })
-      .merge(Machine.active)
-      .distinct
-  }
-
-  scope :by_location_and_brand, lambda { |location_id, brand_id|
-    joins(variants: { machine_items: { machine: :location } })
-      .where(locations: { id: location_id }, products: { brand_id: brand_id })
-      .merge(Machine.active)
-      .distinct
-  }
-
   scope :filtered_by_machine, lambda { |machine_id|
     joins(variants: :machine_items)
       .where(machine_items: { machine_id: machine_id })
