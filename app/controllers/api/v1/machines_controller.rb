@@ -4,7 +4,11 @@ module Api
   module V1
     class MachinesController < ApplicationController
       before_action :set_machine, only: %i[show]
-      before_action :set_location, only: %i[by_location]
+
+      def index
+        @machines = paginate(Machines::Filter.call(params)).includes(:translations, :location, :category,
+                                                                     :image_attachment, supplier: :image_attachment)
+      end
 
       def nearby
         @machines = paginate(
@@ -13,21 +17,6 @@ module Api
             longitude: params[:longitude]
           ).includes(:category).includes(:location)
         )
-        render :index
-      end
-
-      def by_location
-        @machines = paginate(
-          @location.machines.active.includes(:category).includes(:location)
-        )
-        render :index
-      end
-
-      def by_category_and_location
-        @machines = paginate(
-          Machine.by_category_and_location(params[:category_id], params[:location_id])
-        ).includes(:translations, :location, :category, :image_attachment, supplier: :image_attachment)
-
         render :index
       end
 

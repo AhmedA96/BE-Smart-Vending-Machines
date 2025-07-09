@@ -28,11 +28,9 @@ Rails.application.routes.draw do
         post 'auth/apple', to: 'omniauth_callbacks#apple'
       end
 
-      resources :machines do
+      resources :machines, only: %i[index show] do
         collection do
           get :nearby
-          get :by_location
-          get :by_category_and_location
         end
       end
 

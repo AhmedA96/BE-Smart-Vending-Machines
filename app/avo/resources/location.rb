@@ -31,6 +31,8 @@ module Avo
         field :landmark, as: :text, hide_on: %i[index]
         field :state, as: :text, hide_on: :index
         field :zip_code, as: :text, hide_on: :index
+        field :coordinates, as: :text, hide_on: %i[index],
+                            help: 'Enter coordinates in format: POINT (40.7128 74.0060)'
         field :price_list, as: :belongs_to
         field :country, as: :belongs_to
 
