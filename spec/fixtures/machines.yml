@@ -55,5 +55,19 @@ machine_no_price_list:
   coordinates: "POINT(-73.9857 40.7484)"
   location_updated_at: <%= 1.month.ago %>
 
+machine_inactive:
+  external_machine_id: "VM005"
+  name: "Inactive Machine"
+  category: snack_machines
+  vendor: prime_vending
+  supplier: acme_supplier
+  location: downtown_office
+  status: "Inactive"
+  floor_no: 1
+  installed_at: <%= 2.months.ago %>
+  last_service_date: <%= 1.week.ago %>
+  coordinates: "POINT(-73.9857 40.7484)"
+  location_updated_at: <%= 1.month.ago %> 
+
 
 
