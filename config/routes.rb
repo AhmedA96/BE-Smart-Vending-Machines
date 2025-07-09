@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         collection do
           get :nearby
           get :by_location
+          get :by_category_and_location
         end
       end
 

@@ -23,16 +23,20 @@ module Api
         render :index
       end
 
+      def by_category_and_location
+        @machines = paginate(
+          Machine.by_category_and_location(params[:category_id], params[:location_id])
+        ).includes(:translations, :location, :category, :image_attachment, supplier: :image_attachment)
+
+        render :index
+      end
+
       def show; end
 
       private
 
       def set_machine
         @machine = Machine.find(params[:id])
-      end
-
-      def set_location
-        @location = Location.find(params[:location_id])
       end
     end
   end
