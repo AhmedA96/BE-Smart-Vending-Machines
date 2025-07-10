@@ -4,7 +4,6 @@ machine_001:
   category: snack_machines
   vendor: prime_vending
   supplier: acme_supplier
-  country: uae
   location: downtown_office
   status: "Active"
   floor_no: 1
@@ -19,7 +18,6 @@ machine_002:
   category: beverage_machines
   vendor: metro_machines
   supplier: global_vendor
-  country: saudi_arabia
   location: mall_location
   status: "Inactive"
   floor_no: 2
@@ -34,7 +32,6 @@ limited_machine:
   category: beverage_machines
   vendor: metro_machines
   supplier: global_vendor
-  country: uae
   location: mall_location
   status: "Active"
   floor_no: 3
@@ -50,7 +47,6 @@ machine_no_price_list:
   category: snack_machines
   vendor: prime_vending
   supplier: acme_supplier
-  country: uae
   location: no_price_list
   status: "Active"
   floor_no: 1
@@ -58,6 +54,20 @@ machine_no_price_list:
   last_service_date: <%= 1.week.ago %>
   coordinates: "POINT(-73.9857 40.7484)"
   location_updated_at: <%= 1.month.ago %>
+
+machine_inactive:
+  external_machine_id: "VM005"
+  name: "Inactive Machine"
+  category: snack_machines
+  vendor: prime_vending
+  supplier: acme_supplier
+  location: downtown_office
+  status: "Inactive"
+  floor_no: 1
+  installed_at: <%= 2.months.ago %>
+  last_service_date: <%= 1.week.ago %>
+  coordinates: "POINT(-73.9857 40.7484)"
+  location_updated_at: <%= 1.month.ago %> 
 
 
 

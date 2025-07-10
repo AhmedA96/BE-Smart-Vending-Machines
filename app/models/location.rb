@@ -14,15 +14,18 @@
 #  zip_code      :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  country_id    :bigint
 #  price_list_id :bigint
 #
 # Indexes
 #
 #  index_locations_on_coordinates    (coordinates) USING gist
+#  index_locations_on_country_id     (country_id)
 #  index_locations_on_price_list_id  (price_list_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (country_id => countries.id)
 #  fk_rails_...  (price_list_id => price_lists.id)
 #
 class Location < ApplicationRecord
@@ -31,6 +34,8 @@ class Location < ApplicationRecord
   accepts_nested_attributes_for :translations
 
   belongs_to :price_list
+  belongs_to :country
+
   has_many :machines
   has_many :location_translations, dependent: :destroy
 

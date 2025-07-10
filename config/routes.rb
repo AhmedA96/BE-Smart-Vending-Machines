@@ -28,10 +28,9 @@ Rails.application.routes.draw do
         post 'auth/apple', to: 'omniauth_callbacks#apple'
       end
 
-      resources :machines do
+      resources :machines, only: %i[index show] do
         collection do
           get :nearby
-          get :by_location
         end
       end
 
@@ -44,7 +43,7 @@ Rails.application.routes.draw do
 
       resources :products do
         collection do
-          get 'machine_products'
+          get :machine_products
         end
       end
       resources :brands, only: %i[index show]

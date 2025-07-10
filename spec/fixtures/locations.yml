@@ -1,7 +1,5 @@
 
 
-
-
 downtown_office:
   name: "Downtown Office Complex"
   address: "789 Business Blvd"
@@ -9,6 +7,7 @@ downtown_office:
   landmark: "Near Central Park"
   zip_code: "10022"
   price_list: standard_pricing
+  country: saudi_arabia
 
 mall_location:
   name: "Shopping Mall Food Court"
@@ -17,6 +16,8 @@ mall_location:
   landmark: "Level 2 Food Court"
   zip_code: "90210"
   price_list: premium_pricing
+  country: saudi_arabia
+
 
 no_price_list:
   name: "No Price List"
@@ -24,4 +25,5 @@ no_price_list:
   city: "N/A"
   landmark: "N/A"
   zip_code: "00000"
+  country: uae
 

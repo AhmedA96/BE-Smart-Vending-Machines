@@ -19,7 +19,8 @@ class Country < ApplicationRecord
   translates :presentation, :currency
   accepts_nested_attributes_for :translations
 
-  has_many :machines
+  has_many :locations
+  has_many :machines, through: :locations
   has_many :country_translations, dependent: :destroy
 
   enum :name,

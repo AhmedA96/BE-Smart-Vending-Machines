@@ -45,7 +45,7 @@ module Avo
       end
 
       def many_relations_tabs
-        field :machines, as: :has_many
+        field :locations, as: :has_many
         field :country_translations, as: :has_many
       end
 

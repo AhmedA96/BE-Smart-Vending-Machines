@@ -258,73 +258,6 @@ PriceListItem.create!(price_list_items)
 
 Rails.logger.debug { "Created #{price_list_records.count} Price Lists with #{price_list_items.count} items." }
 
-# ---------------------------- #
-# Locations
-# ---------------------------- #
-Rails.logger.debug 'Creating Locations...'
-
-locations = [
-  {
-    address: '123 Mall Street',
-    city: 'Cairo',
-    state: 'Cairo Governorate',
-    zip_code: '11511',
-    landmark: 'Near Central Square',
-    coordinates: 'POINT(31.2357 30.0444)',
-    price_list: price_list_records[1],
-    translations_attributes: [
-      { locale: 'en', name: 'Downtown Mall' },
-      { locale: 'ar', name: 'مول وسط البلد' }
-    ]
-  },
-  {
-    address: '456 Innovation Avenue',
-    city: 'Giza',
-    state: 'Giza Governorate',
-    zip_code: '12511',
-    landmark: 'Next to Science Museum',
-    coordinates: 'POINT(31.3074 30.0566)',
-    price_list: price_list_records[0],
-    translations_attributes: [
-      { locale: 'en', name: 'Tech Park' },
-      { locale: 'ar', name: 'حديقة التكنولوجيا' }
-    ]
-  },
-  {
-    address: '789 Retail Boulevard',
-    city: 'Alexandria',
-    state: 'Alexandria Governorate',
-    zip_code: '21511',
-    landmark: 'Opposite Central Park',
-    price_list: price_list_records[1],
-    translations_attributes: [
-      { locale: 'en', name: 'Shopping Center' },
-      { locale: 'ar', name: 'مركز التسوق' }
-    ]
-  },
-  {
-    address: '321 Education Road',
-    city: 'Cairo',
-    state: 'Cairo Governorate',
-    zip_code: '11522',
-    landmark: 'Main Campus Gate',
-    price_list: price_list_records[0],
-    translations_attributes: [
-      { locale: 'en', name: 'University Campus' },
-      { locale: 'ar', name: 'الحرم الجامعي' }
-    ]
-  }
-]
-
-location_records = Location.create!(locations)
-
-Rails.logger.debug { "Created #{location_records.count} Locations with translations." }
-
-# ---------------------------- #
-# Countries
-# ---------------------------- #
-Rails.logger.debug 'Creating Countries...'
-
 countries = [
   {
     name: 'UAE',
@@ -349,6 +282,77 @@ countries = [
 country_records = Country.create!(countries)
 
 Rails.logger.debug { "Created #{country_records.count} Countries with translations." }
+
+# ---------------------------- #
+# Locations
+# ---------------------------- #
+Rails.logger.debug 'Creating Locations...'
+
+locations = [
+  {
+    address: '123 Mall Street',
+    city: 'Cairo',
+    state: 'Cairo Governorate',
+    zip_code: '11511',
+    landmark: 'Near Central Square',
+    coordinates: 'POINT(31.2357 30.0444)',
+    price_list: price_list_records[1],
+    country: country_records[0],
+    translations_attributes: [
+      { locale: 'en', name: 'Downtown Mall' },
+      { locale: 'ar', name: 'مول وسط البلد' }
+    ]
+  },
+  {
+    address: '456 Innovation Avenue',
+    city: 'Giza',
+    state: 'Giza Governorate',
+    zip_code: '12511',
+    landmark: 'Next to Science Museum',
+    coordinates: 'POINT(31.3074 30.0566)',
+    price_list: price_list_records[0],
+    country: country_records[1],
+    translations_attributes: [
+      { locale: 'en', name: 'Tech Park' },
+      { locale: 'ar', name: 'حديقة التكنولوجيا' }
+    ]
+  },
+  {
+    address: '789 Retail Boulevard',
+    city: 'Alexandria',
+    state: 'Alexandria Governorate',
+    zip_code: '21511',
+    landmark: 'Opposite Central Park',
+    price_list: price_list_records[1],
+    country: country_records[0],
+    translations_attributes: [
+      { locale: 'en', name: 'Shopping Center' },
+      { locale: 'ar', name: 'مركز التسوق' }
+    ]
+  },
+  {
+    address: '321 Education Road',
+    city: 'Cairo',
+    state: 'Cairo Governorate',
+    zip_code: '11522',
+    landmark: 'Main Campus Gate',
+    price_list: price_list_records[0],
+    country: country_records[1],
+    translations_attributes: [
+      { locale: 'en', name: 'University Campus' },
+      { locale: 'ar', name: 'الحرم الجامعي' }
+    ]
+  }
+]
+
+location_records = Location.create!(locations)
+
+Rails.logger.debug { "Created #{location_records.count} Locations with translations." }
+
+# ---------------------------- #
+# Countries
+# ---------------------------- #
+Rails.logger.debug 'Creating Countries...'
 
 # ---------------------------- #
 # Machine Categories
@@ -421,7 +425,6 @@ machines = [
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[0],
-    country: country_records[0],
     status: 'Active',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 6.months.ago,
@@ -438,7 +441,6 @@ machines = [
     category: machine_categories[1],
     vendor: vendor_records[0],
     location: location_records[1],
-    country: country_records[0],
     status: 'Maintenance',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 1.year.ago,
@@ -455,7 +457,6 @@ machines = [
     category: machine_categories[2],
     vendor: vendor_records[0],
     location: location_records[2],
-    country: country_records[1],
     status: 'Active',
     coordinates: 'POINT(31.3074 30.0566)',
     installed_at: 3.months.ago,
@@ -473,7 +474,6 @@ machines = [
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[3],
-    country: country_records[1],
     status: 'Inactive',
     coordinates: 'POINT(31.2646 30.0355)',
     installed_at: 8.months.ago,

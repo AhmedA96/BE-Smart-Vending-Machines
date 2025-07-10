@@ -16,7 +16,6 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  category_id         :bigint           not null
-#  country_id          :bigint
 #  external_machine_id :string
 #  location_id         :bigint
 #  supplier_id         :bigint
@@ -26,7 +25,6 @@
 #
 #  index_machines_on_category_id          (category_id)
 #  index_machines_on_coordinates          (coordinates) USING gist
-#  index_machines_on_country_id           (country_id)
 #  index_machines_on_external_machine_id  (external_machine_id) UNIQUE
 #  index_machines_on_location_id          (location_id)
 #  index_machines_on_supplier_id          (supplier_id)
@@ -34,7 +32,6 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (country_id => countries.id)
 #  fk_rails_...  (location_id => locations.id)
 #  fk_rails_...  (supplier_id => suppliers.id)
 #  fk_rails_...  (vendor_id => vendors.id)
@@ -49,9 +46,9 @@ class Machine < ApplicationRecord
   belongs_to :category, class_name: 'MachineCategory'
   belongs_to :location, optional: false
   belongs_to :supplier, optional: false
-  belongs_to :country, optional: false
 
   has_one :price_list, through: :location
+  has_one :country, through: :location
 
   has_many :machine_statuses
   has_many :machine_items
