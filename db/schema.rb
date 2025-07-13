@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_030726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -218,7 +218,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
   end
 
   create_table "machines", force: :cascade do |t|
-    t.string "external_machine_id"
+    t.string "machineuuid"
     t.string "name"
     t.bigint "category_id", null: false
     t.bigint "vendor_id", null: false
@@ -235,8 +235,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.integer "max_items_per_order"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
-    t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
     t.index ["location_id"], name: "index_machines_on_location_id"
+    t.index ["machineuuid"], name: "index_machines_on_machineuuid", unique: true
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
   end
@@ -462,6 +462,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "base_url"
+    t.string "supplier_type", default: ""
+    t.index ["supplier_type"], name: "index_suppliers_on_supplier_type"
   end
 
   create_table "users", force: :cascade do |t|
