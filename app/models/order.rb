@@ -34,7 +34,7 @@
 class Order < ApplicationRecord
   include AASM
 
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :machine
 
   has_many :line_items, dependent: :nullify
@@ -48,6 +48,12 @@ class Order < ApplicationRecord
   validates :number, presence: true
   validate :check_item_limit
 
+  # Scopes for guest and user orders
+  scope :guest_orders, -> { where(user_id: nil) }
+  scope :user_orders, -> { where.not(user_id: nil) }
+  scope :guest_carts, -> { where(user_id: nil, status: 'cart') }
+  scope :user_carts, -> { where.not(user_id: nil).where(status: 'cart') }
+
   aasm column: 'status' do
     state :cart, initial: true
     state :pending_payment
@@ -58,7 +64,7 @@ class Order < ApplicationRecord
     state :cancelled
 
     event :process_payment do
-      transitions from: :cart, to: :pending_payment
+      transitions from: :cart, to: :pending_payment, guard: :user_present?
     end
 
     event :mark_paid do
@@ -99,23 +105,32 @@ class Order < ApplicationRecord
     end
   end
 
-  private
-
-  def create_machine_order
-    return unless supplier
-
-    Suppliers::CreateMachineOrderJob.perform_later(id)
+  # Helper methods for guest orders
+  def guest_order?
+    user_id.nil?
   end
 
-  def start_dispense_status_check
-    return unless supplier
+  def can_checkout?
+    user_id.present? && cart?
+  end
 
-    initial_delay = case supplier.name.downcase
-                    when 'reyah'
-                      1.minute
-                    end
+  def recalculate_totals!
+    self.items_total = line_items.sum { |item| item.quantity * item.price }
+    save!
+  end
 
-    Suppliers::CheckDispenseStatusJob.set(wait: initial_delay).perform_later(id)
+  # Method to attach guest order to user
+  def attach_to_user!(user)
+    raise ArgumentError, 'Order already has a user' if user_id.present?
+    raise ArgumentError, 'User cannot be nil' if user.nil?
+
+    update!(user: user)
+  end
+
+  private
+
+  def user_present?
+    user_id.present?
   end
 
   def check_item_limit

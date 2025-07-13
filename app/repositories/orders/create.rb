@@ -5,7 +5,7 @@ module Orders
     class << self
       def call(params)
         machine = Machine.find(params[:machine_id])
-        user = User.find_by(id: params[:user_id])
+        user = User.find_by(id: params[:user_id]) if params[:user_id].present?
         cart_items = params[:cart_items]
 
         validate_order_creation!(machine, user, cart_items)
@@ -20,8 +20,7 @@ module Orders
 
       private
 
-      def validate_order_creation!(machine, user, cart_items)
-        raise 'User not found' unless user
+      def validate_order_creation!(machine, _user, cart_items)
         raise 'Machine not available' unless machine&.active?
         raise 'Machine has no price list' unless machine.price_list
         raise 'Cart items cannot be empty' if cart_items.blank?
@@ -38,7 +37,6 @@ module Orders
 
       def create_order(machine, user, cart_items)
         total_amount = calculate_total_amount(cart_items, machine)
-
         raise 'Order total cannot be zero' if total_amount <= 0
 
         Order.create!(
@@ -59,31 +57,28 @@ module Orders
         total = cart_items.sum do |item|
           variant = Variant.find(item[:variant_id])
           price = LineItems::Create.variant_price(machine, variant)
-
           raise "No price found for variant #{variant.name}" if price <= 0
 
           item[:quantity].to_i * price
         end
-
         total.round(2)
       end
-    end
 
-    def self.validate_item_limit!(machine, cart_items)
-      return unless machine.max_items_per_order
+      def validate_item_limit!(machine, cart_items)
+        return unless machine.max_items_per_order
 
-      total_items = cart_items.sum { |item| item[:quantity].to_i }
+        total_items = cart_items.sum { |item| item[:quantity].to_i }
+        return unless total_items > machine.max_items_per_order
 
-      return unless total_items > machine.max_items_per_order
-
-      raise FailedRequestError.new(
-        "Maximum #{machine.max_items_per_order} item allowed per order",
-        {
-          machine_id: machine.id,
-          max_items: machine.max_items_per_order,
-          attempted_items: total_items
-        }
-      )
+        raise FailedRequestError.new(
+          "Maximum #{machine.max_items_per_order} item allowed per order",
+          {
+            machine_id: machine.id,
+            max_items: machine.max_items_per_order,
+            attempted_items: total_items
+          }
+        )
+      end
     end
   end
 end
