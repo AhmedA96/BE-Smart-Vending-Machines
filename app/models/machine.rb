@@ -10,25 +10,25 @@
 #  installed_at        :datetime
 #  last_service_date   :datetime
 #  location_updated_at :datetime
+#  machineuuid         :string
 #  max_items_per_order :integer
 #  name                :string
 #  status              :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  category_id         :bigint           not null
-#  external_machine_id :string
 #  location_id         :bigint
 #  supplier_id         :bigint
 #  vendor_id           :bigint           not null
 #
 # Indexes
 #
-#  index_machines_on_category_id          (category_id)
-#  index_machines_on_coordinates          (coordinates) USING gist
-#  index_machines_on_external_machine_id  (external_machine_id) UNIQUE
-#  index_machines_on_location_id          (location_id)
-#  index_machines_on_supplier_id          (supplier_id)
-#  index_machines_on_vendor_id            (vendor_id)
+#  index_machines_on_category_id  (category_id)
+#  index_machines_on_coordinates  (coordinates) USING gist
+#  index_machines_on_location_id  (location_id)
+#  index_machines_on_machineuuid  (machineuuid) UNIQUE
+#  index_machines_on_supplier_id  (supplier_id)
+#  index_machines_on_vendor_id    (vendor_id)
 #
 # Foreign Keys
 #
@@ -59,7 +59,7 @@ class Machine < ApplicationRecord
 
   has_one_attached :image
 
-  validates :external_machine_id, presence: true, uniqueness: true
+  validates :machineuuid, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
 
   scope :by_supplier, ->(supplier) { where(supplier_id: supplier.id) }

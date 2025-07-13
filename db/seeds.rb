@@ -421,7 +421,7 @@ Rails.logger.debug 'Creating Machines...'
 
 machines = [
   {
-    external_machine_id: 'SNACK-001',
+    machineuuid: 'SNACK-001',
     category: machine_categories[0],
     vendor: vendor_records[1],
     location: location_records[0],
@@ -437,7 +437,7 @@ machines = [
     ]
   },
   {
-    external_machine_id: 'BEV-101',
+    machineuuid: 'BEV-101',
     category: machine_categories[1],
     vendor: vendor_records[0],
     location: location_records[1],
@@ -453,7 +453,7 @@ machines = [
     ]
   },
   {
-    external_machine_id: 'ELEC-201',
+    machineuuid: 'ELEC-201',
     category: machine_categories[2],
     vendor: vendor_records[0],
     location: location_records[2],
@@ -469,7 +469,7 @@ machines = [
     ]
   },
   {
-    external_machine_id: 'SNACK-002',
+    machineuuid: 'SNACK-002',
 
     category: machine_categories[0],
     vendor: vendor_records[1],

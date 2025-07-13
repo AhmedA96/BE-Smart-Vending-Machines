@@ -9,7 +9,7 @@ module Suppliers
 
       def initialize(supplier)
         @supplier = supplier
-        @machine = Machine.find_by!(external_machine_id: machine_no)
+        @machine = Machine.find_by!(machineuuid: machine_no)
       end
 
       def call(page: 1, per_page: 10)

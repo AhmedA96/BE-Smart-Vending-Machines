@@ -484,7 +484,7 @@ components:
       properties:
         id:
           type: integer
-        external_machine_id:
+        machineuuid:
           type: string
         name:
           type: string
