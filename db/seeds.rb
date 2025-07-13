@@ -159,14 +159,6 @@ products = [
 
 product_records = Product.create!(products)
 
-# Attach images to products
-product_records[0].images.attach(io: Rails.root.join('app/assets/images/products/cola.svg').open,
-                                 filename: 'cola.svg', content_type: 'image/svg+xml')
-product_records[1].images.attach(io: Rails.root.join('app/assets/images/products/chips.svg').open,
-                                 filename: 'chips.svg', content_type: 'image/svg+xml')
-
-Rails.logger.debug { "Created #{product_records.count} Products with images and translations." }
-
 # ---------------------------- #
 # Product Categories
 # ---------------------------- #
