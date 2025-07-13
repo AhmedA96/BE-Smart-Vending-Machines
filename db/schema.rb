@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_085140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -309,7 +309,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.bigint "machine_id", null: false
     t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
