@@ -70,7 +70,7 @@ module Api
         end
 
         # Validate user_id matches current user (security check)
-        if permitted_params[:user_id].present? && @current_user.present? && permitted_params[:user_id].to_i != @current_user.id
+        if permitted_params[:user_id].present? && @current_user.present? && permitted_params[:user_id].to_i != @current_user.id # rubocop:disable Layout/LineLength
           raise FailedRequestError, 'Cannot assign order to different user'
         end
 
