@@ -56,7 +56,7 @@ RSpec.describe Orders::Update do
     end
 
     context 'when updating attributes like payment_method' do
-      let(:user_cart) { orders(:order_002) }
+      let(:user_cart) { orders(:order_002) } # rubocop:disable Naming/VariableNumber
 
       before do
         user_cart.update!(user: user, machine: machine, status: 'cart', payment_method: nil)
