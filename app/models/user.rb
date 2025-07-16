@@ -65,6 +65,7 @@ class User < ApplicationRecord
   validate :new_and_old_password_must_be_different
 
   has_one :payment_customer, dependent: :destroy
+  has_one :wallet, dependent: :destroy
 
   has_many :orders, dependent: :destroy
   has_many :users_roles, dependent: :destroy
@@ -72,6 +73,7 @@ class User < ApplicationRecord
   has_many :addresses, dependent: :destroy
 
   before_create :generate_qr_code_token
+  after_create :create_wallet
 
   def password_complexity
     return if password.blank? || password.match?(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,70}$/)
@@ -122,6 +124,12 @@ class User < ApplicationRecord
 
   def resource_title
     name.presence || email || "User/#{id}"
+  end
+
+  private
+
+  def create_wallet
+    create_wallet!(balance: 0.0) if wallet.blank?
   end
 
   def generate_qr_code_token
