@@ -49,6 +49,8 @@ module Avo
       def many_relations
         tabs id: :many_relation_tabs do
           field :users_roles, as: :has_many, reloadable: true, name: 'Roles'
+          field :orders, as: :has_many, reloadable: true
+          field :addresses, as: :has_many, reloadable: true
         end
       end
 

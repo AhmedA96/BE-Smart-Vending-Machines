@@ -47,6 +47,7 @@ module Avo
       def many_relations_tabs
         field :locations, as: :has_many
         field :country_translations, as: :has_many
+        field :addresses, as: :has_many
       end
 
       private
