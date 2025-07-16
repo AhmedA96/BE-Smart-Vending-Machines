@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_15_230309) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_16_085602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -41,6 +41,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_230309) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "address"
+    t.string "appart_number", default: "N/A", null: false
+    t.string "building_number", default: "N/A", null: false
+    t.string "city"
+    t.boolean "default", default: false, null: false
+    t.string "floor_number", default: "N/A", null: false
+    t.string "name", default: "", null: false
+    t.integer "country_id"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "brand_translations", force: :cascade do |t|
