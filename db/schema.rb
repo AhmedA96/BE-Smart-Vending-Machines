@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_16_091123) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_16_092213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -569,6 +569,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_091123) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "wallet_transactions", force: :cascade do |t|
+    t.bigint "wallet_id", null: false
+    t.decimal "amount", precision: 15, scale: 2, null: false
+    t.string "transaction_type", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wallet_id"], name: "index_wallet_transactions_on_wallet_id"
+  end
+
   create_table "wallets", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.decimal "balance", precision: 15, scale: 2, default: "0.0", null: false
@@ -605,5 +615,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_091123) do
   add_foreign_key "product_translations", "products"
   add_foreign_key "products", "brands"
   add_foreign_key "variant_translations", "variants"
+  add_foreign_key "wallet_transactions", "wallets"
   add_foreign_key "wallets", "users"
 end
