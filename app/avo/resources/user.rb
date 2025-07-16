@@ -42,6 +42,7 @@ module Avo
                               filterable: true, hide_on: %i[index]
         field :created_at, as: :date_time, filterable: true, hide_on: %i[new edit]
         field :password, as: :password, visible: admin?, revealable: true
+        field :wallet, as: :has_one, only_on: %i[show edit], searchable: true
 
         many_relations
       end
@@ -49,8 +50,6 @@ module Avo
       def many_relations
         tabs id: :many_relation_tabs do
           field :users_roles, as: :has_many, reloadable: true, name: 'Roles'
-          field :orders, as: :has_many, reloadable: true
-          field :addresses, as: :has_many, reloadable: true
         end
       end
 
