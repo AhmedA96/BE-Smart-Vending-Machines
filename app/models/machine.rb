@@ -72,6 +72,13 @@ class Machine < ApplicationRecord
 
   scope :active, -> { where(status: 'Active') }
 
+  scope :stocked, lambda {
+    joins(machine_items: :variant)
+      .where(variants: { active: true })
+      .where('machine_items.stock > 0')
+      .distinct
+  }
+
   def self.nearby(latitude:, longitude:)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
     distance_sql = "ST_Distance(coordinates, #{point_sql})"
@@ -85,5 +92,12 @@ class Machine < ApplicationRecord
 
   def active?
     status == 'Active'
+  end
+
+  def stocked?
+    machine_items.joins(:variant)
+                 .where(variants: { active: true })
+                 .where('machine_items.stock > 0')
+                 .exists?
   end
 end

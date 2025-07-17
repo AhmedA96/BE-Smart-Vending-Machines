@@ -19,7 +19,13 @@ module Api
         )
 
         # Filter by machine type if provided
-        machines_query = machines_query.where(machine_type: @machine_type) if params[:machine_type_id].present?
+        if params[:machine_type_id].present?
+          machine_type = MachineType.find_by(id: params[:machine_type_id])
+          machines_query = machines_query.where(machine_type: machine_type) if machine_type
+        end
+
+        # Filter stocked machines
+        machines_query = machines_query.stocked if params[:stocked] == 'true'
 
         @machines = paginate(machines_query.includes(:category, :location, :machine_type))
         render :index
