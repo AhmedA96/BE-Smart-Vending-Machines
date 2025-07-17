@@ -7,6 +7,7 @@ json.status machine.status
 json.category machine.category.name
 json.category_id machine.category_id
 json.floor_no machine.floor_no
+json.machine_type machine.machine_type
 
 json.image do
   if machine.image.attached?
