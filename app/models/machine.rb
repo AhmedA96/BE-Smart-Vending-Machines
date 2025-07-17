@@ -18,6 +18,7 @@
 #  category_id         :bigint           not null
 #  external_machine_id :string
 #  location_id         :bigint
+#  machine_type_id     :bigint
 #  supplier_id         :bigint
 #  vendor_id           :bigint           not null
 #
@@ -27,12 +28,14 @@
 #  index_machines_on_coordinates          (coordinates) USING gist
 #  index_machines_on_external_machine_id  (external_machine_id) UNIQUE
 #  index_machines_on_location_id          (location_id)
+#  index_machines_on_machine_type_id      (machine_type_id)
 #  index_machines_on_supplier_id          (supplier_id)
 #  index_machines_on_vendor_id            (vendor_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (location_id => locations.id)
+#  fk_rails_...  (machine_type_id => machine_types.id)
 #  fk_rails_...  (supplier_id => suppliers.id)
 #  fk_rails_...  (vendor_id => vendors.id)
 #
@@ -46,6 +49,7 @@ class Machine < ApplicationRecord
   belongs_to :category, class_name: 'MachineCategory'
   belongs_to :location, optional: false
   belongs_to :supplier, optional: false
+  belongs_to :machine_type
 
   has_one :price_list, through: :location
   has_one :country, through: :location
@@ -61,6 +65,8 @@ class Machine < ApplicationRecord
 
   validates :external_machine_id, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
+
+  delegate :capacity, to: :machine_type
 
   scope :by_supplier, ->(supplier) { where(supplier_id: supplier.id) }
 

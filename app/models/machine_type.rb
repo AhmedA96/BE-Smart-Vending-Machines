@@ -16,7 +16,7 @@
 #  index_machine_types_on_name  (name) UNIQUE
 #
 class MachineType < ApplicationRecord
-  has_many :machines, dependent: :restrict_with_error
+  has_many :machines
 
   validates :name, presence: true, uniqueness: true
   validates :capacity, presence: true

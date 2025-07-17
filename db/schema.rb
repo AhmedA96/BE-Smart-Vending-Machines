@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_17_010542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -217,6 +217,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.index ["machine_id", "locale"], name: "index_machine_translations_on_machine_id_and_locale", unique: true
   end
 
+  create_table "machine_types", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "capacity", null: false
+    t.boolean "has_temperature_control", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_machine_types_on_name", unique: true
+  end
+
   create_table "machines", force: :cascade do |t|
     t.string "external_machine_id"
     t.string "name"
@@ -233,10 +242,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.integer "floor_no"
     t.bigint "supplier_id"
     t.integer "max_items_per_order"
+    t.bigint "machine_type_id"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
     t.index ["location_id"], name: "index_machines_on_location_id"
+    t.index ["machine_type_id"], name: "index_machines_on_machine_type_id"
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
   end
@@ -569,6 +580,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
   add_foreign_key "machine_statuses", "machines"
   add_foreign_key "machine_translations", "machines"
   add_foreign_key "machines", "locations"
+  add_foreign_key "machines", "machine_types"
   add_foreign_key "machines", "suppliers"
   add_foreign_key "machines", "vendors"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
