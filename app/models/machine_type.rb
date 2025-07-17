@@ -19,5 +19,5 @@ class MachineType < ApplicationRecord
   has_many :machines
 
   validates :name, presence: true, uniqueness: true
-  validates :capacity, presence: true
+  validates :capacity, presence: true, numericality: { greater_than: 0 } # capacity = total number of slots/machine
 end
