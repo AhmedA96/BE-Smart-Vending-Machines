@@ -42,6 +42,7 @@ module Avo
                               filterable: true, hide_on: %i[index]
         field :created_at, as: :date_time, filterable: true, hide_on: %i[new edit]
         field :password, as: :password, visible: admin?, revealable: true
+        field :wallet, as: :has_one, only_on: %i[show edit], searchable: true
 
         many_relations
       end

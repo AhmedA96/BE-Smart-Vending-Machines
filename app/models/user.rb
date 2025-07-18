@@ -26,6 +26,7 @@
 #  mobile_number          :string
 #  name                   :string
 #  provider               :string
+#  qr_code_token          :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
@@ -44,6 +45,7 @@
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_locale                (locale)
 #  index_users_on_mobile_number         (mobile_number) UNIQUE
+#  index_users_on_qr_code_token         (qr_code_token)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 class User < ApplicationRecord
@@ -63,10 +65,15 @@ class User < ApplicationRecord
   validate :new_and_old_password_must_be_different
 
   has_one :payment_customer, dependent: :destroy
+  has_one :wallet, dependent: :destroy
 
   has_many :orders, dependent: :destroy
   has_many :users_roles, dependent: :destroy
   has_many :mobile_verifications, dependent: :destroy
+  has_many :addresses, dependent: :destroy
+
+  before_create :generate_qr_code_token
+  after_create :create_wallet
 
   def password_complexity
     return if password.blank? || password.match?(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,70}$/)
@@ -117,5 +124,18 @@ class User < ApplicationRecord
 
   def resource_title
     name.presence || email || "User/#{id}"
+  end
+
+  private
+
+  def create_wallet
+    create_wallet!(balance: 0.0) if wallet.blank?
+  end
+
+  def generate_qr_code_token
+    self.qr_code_token = loop do
+      token = SecureRandom.hex(10)
+      break token unless User.exists?(qr_code_token: token)
+    end
   end
 end

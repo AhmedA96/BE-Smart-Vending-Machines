@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_16_092213) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -41,6 +41,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "address"
+    t.string "appart_number", default: "N/A", null: false
+    t.string "building_number", default: "N/A", null: false
+    t.string "city"
+    t.boolean "default", default: false, null: false
+    t.string "floor_number", default: "N/A", null: false
+    t.string "name", default: "", null: false
+    t.integer "country_id"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "brand_translations", force: :cascade do |t|
@@ -498,9 +512,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.string "provider"
     t.string "hashed_password"
     t.bigint "profile_id"
+    t.string "qr_code_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locale"], name: "index_users_on_locale"
     t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
+    t.index ["qr_code_token"], name: "index_users_on_qr_code_token"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -553,6 +569,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "wallet_transactions", force: :cascade do |t|
+    t.bigint "wallet_id", null: false
+    t.decimal "amount", precision: 15, scale: 2, null: false
+    t.string "transaction_type", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wallet_id"], name: "index_wallet_transactions_on_wallet_id"
+  end
+
+  create_table "wallets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.decimal "balance", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_wallets_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "brand_translations", "brands"
@@ -581,4 +615,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_165310) do
   add_foreign_key "product_translations", "products"
   add_foreign_key "products", "brands"
   add_foreign_key "variant_translations", "variants"
+  add_foreign_key "wallet_transactions", "wallets"
+  add_foreign_key "wallets", "users"
 end
