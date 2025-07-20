@@ -9,6 +9,7 @@ module Api
 
         respond_to :json
         skip_before_action :verify_signed_out_user, only: :destroy
+        skip_before_action :verify_authenticity_token
 
         def create
           resource = find_resource

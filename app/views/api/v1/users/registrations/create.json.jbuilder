@@ -2,3 +2,4 @@
 
 json.id resource.id
 json.mobile_number resource.mobile_number
+json.name resource.name
