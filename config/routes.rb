@@ -65,6 +65,8 @@ Rails.application.routes.draw do
           get :nearby
         end
       end
+
+      resources :wallets, only: %i[index]
     end
   end
 
