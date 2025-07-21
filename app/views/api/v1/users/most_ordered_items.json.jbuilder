@@ -9,7 +9,3 @@ json.items @items do |variant|
   json.last_ordered variant.last_ordered_by_user(@current_user)
   json.is_favorite @current_user.favorite_variants.include?(variant)
 end
-
-json.pagination do
-  json.partial! 'api/v1/shared/pagination', collection: @items
-end
