@@ -15,6 +15,7 @@ RSpec.describe Machine, type: :model do
     it { should have_many(:machine_translations) }
     it { should have_many(:machine_payment_methods) }
     it { should have_many(:payment_methods).through(:machine_payment_methods) }
+    it { should belong_to(:machine_type) }
   end
 
   describe 'validations' do

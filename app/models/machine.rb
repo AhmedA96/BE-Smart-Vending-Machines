@@ -18,6 +18,7 @@
 #  updated_at          :datetime         not null
 #  category_id         :bigint           not null
 #  location_id         :bigint
+#  machine_type_id     :bigint
 #  supplier_id         :bigint
 #  vendor_id           :bigint           not null
 #
@@ -33,6 +34,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (location_id => locations.id)
+#  fk_rails_...  (machine_type_id => machine_types.id)
 #  fk_rails_...  (supplier_id => suppliers.id)
 #  fk_rails_...  (vendor_id => vendors.id)
 #
@@ -46,6 +48,7 @@ class Machine < ApplicationRecord
   belongs_to :category, class_name: 'MachineCategory'
   belongs_to :location, optional: false
   belongs_to :supplier, optional: false
+  belongs_to :machine_type
 
   has_one :price_list, through: :location
   has_one :country, through: :location
@@ -62,9 +65,18 @@ class Machine < ApplicationRecord
   validates :machineuuid, presence: true, uniqueness: true
   validates :status, inclusion: { in: %w[Active Inactive Maintenance Retired] }, allow_nil: true
 
+  delegate :capacity, to: :machine_type
+
   scope :by_supplier, ->(supplier) { where(supplier_id: supplier.id) }
 
   scope :active, -> { where(status: 'Active') }
+
+  scope :stocked, lambda {
+    joins(machine_items: :variant)
+      .where(variants: { active: true })
+      .where('machine_items.stock > 0')
+      .distinct
+  }
 
   def self.nearby(latitude:, longitude:)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
@@ -79,5 +91,12 @@ class Machine < ApplicationRecord
 
   def active?
     status == 'Active'
+  end
+
+  def stocked?
+    machine_items.joins(:variant)
+                 .where(variants: { active: true })
+                 .where('machine_items.stock > 0')
+                 .exists?
   end
 end
