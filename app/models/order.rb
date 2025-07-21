@@ -23,8 +23,9 @@
 #
 # Indexes
 #
-#  index_orders_on_machine_id  (machine_id)
-#  index_orders_on_user_id     (user_id)
+#  index_orders_on_machine_id              (machine_id)
+#  index_orders_on_user_id                 (user_id)
+#  index_orders_on_user_id_and_created_at  (user_id,created_at)
 #
 # Foreign Keys
 #
