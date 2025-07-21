@@ -1,0 +1,7 @@
+two_door_machine:
+  name: "Two Door Machine"
+  capacity: 10
+
+smart_machine:
+  name: "Smart Machine"
+  capacity: 20
