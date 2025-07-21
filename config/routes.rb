@@ -28,6 +28,11 @@ Rails.application.routes.draw do
         post 'auth/apple', to: 'omniauth_callbacks#apple'
       end
 
+      resources :users, only: [] do
+        member do
+          get :most_ordered_items
+        end
+      end
       resources :machines, only: %i[index show] do
         collection do
           get :nearby

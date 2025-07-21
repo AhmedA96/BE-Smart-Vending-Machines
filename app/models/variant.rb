@@ -42,11 +42,12 @@ class Variant < ApplicationRecord
 
   belongs_to :product, optional: true
 
-  has_many :machine_items
+  has_many :machine_items, dependent: :destroy
   has_many :machines, through: :machine_items
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
-  has_many :line_items, dependent: :nullify
+  has_many :line_items, dependent: :destroy
+  has_many :orders, through: :line_items
   has_many :variant_translations, dependent: :destroy
   has_many :user_favorites, dependent: :destroy
   has_many :users_who_favorited, through: :user_favorites, source: :user
