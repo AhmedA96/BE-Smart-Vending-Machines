@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       resources :users, only: [] do
         member do
           get :most_ordered_items
+          post 'favorites/:variant_id', to: 'user_favorites#create'
+          delete 'favorites/:variant_id', to: 'user_favorites#destroy'
         end
       end
       resources :machines, only: %i[index show] do
