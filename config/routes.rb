@@ -74,6 +74,13 @@ Rails.application.routes.draw do
       end
 
       resources :wallets, only: %i[index]
+
+      resources :items, only: [] do
+        collection do
+          get :popular
+          get :trending
+        end
+      end
     end
   end
 
