@@ -29,4 +29,12 @@ class UserFavorite < ApplicationRecord
   validates :user_id, uniqueness: { scope: :variant_id }
 
   scope :recent, -> { order(created_at: :desc) }
+
+  def display_name
+    if user && variant
+      "#{user.name} Likes #{variant.product&.name} - #{variant.name}"
+    else
+      "Favorite ##{id}"
+    end
+  end
 end
