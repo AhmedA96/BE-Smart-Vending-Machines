@@ -28,6 +28,14 @@ Rails.application.routes.draw do
         post 'auth/apple', to: 'omniauth_callbacks#apple'
       end
 
+      resources :users, only: [] do
+        member do
+          get :most_ordered_items
+          post 'favorites/:variant_id', to: 'user_favorites#create'
+          delete 'favorites/:variant_id', to: 'user_favorites#destroy'
+          get :favorite_items
+        end
+      end
       resources :machines, only: %i[index show] do
         collection do
           get :nearby
@@ -70,6 +78,13 @@ Rails.application.routes.draw do
       end
 
       resources :wallets, only: %i[index]
+
+      resources :items, only: [] do
+        collection do
+          get :popular
+          get :trending
+        end
+      end
     end
   end
 
