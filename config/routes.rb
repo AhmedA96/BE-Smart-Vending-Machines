@@ -48,7 +48,11 @@ Rails.application.routes.draw do
       end
       resources :brands, only: %i[index show]
 
-      resources :orders
+      resources :orders do
+        member do
+          post :reorder
+        end
+      end
       resources :variants, only: %i[index show]
 
       post 'contact-us', to: 'contact_us_requests#create'
