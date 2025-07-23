@@ -26,6 +26,7 @@ module Api
         render :show, status: :ok
       rescue StandardError => e
         raise FailedRequestError, e.message
+      end
 
       def reorder
         result = Orders::Reorder.call(params[:id], reorder_params)
