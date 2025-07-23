@@ -17,8 +17,9 @@
 #
 # Indexes
 #
-#  index_line_items_on_order_id    (order_id)
-#  index_line_items_on_variant_id  (variant_id)
+#  index_line_items_on_order_id                 (order_id)
+#  index_line_items_on_variant_id               (variant_id)
+#  index_line_items_on_variant_id_and_order_id  (variant_id,order_id)
 #
 # Foreign Keys
 #
