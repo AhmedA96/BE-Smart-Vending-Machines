@@ -68,6 +68,9 @@ class User < ApplicationRecord
   has_one :wallet, dependent: :destroy
 
   has_many :orders, dependent: :destroy
+  has_many :line_items, through: :orders
+  has_many :user_favorites, dependent: :destroy
+  has_many :favorite_variants, through: :user_favorites, source: :variant
   has_many :users_roles, dependent: :destroy
   has_many :mobile_verifications, dependent: :destroy
   has_many :addresses, dependent: :destroy
@@ -124,6 +127,24 @@ class User < ApplicationRecord
 
   def resource_title
     name.presence || email || "User/#{id}"
+  end
+
+  def most_ordered_variants(limit: 10)
+    Variant.joins(line_items: :order)
+           .where(orders: { user_id: id })
+           .group('variants.id')
+           .order('COUNT(line_items.id) DESC')
+           .limit(limit)
+           .select('variants.*, COUNT(line_items.id) as order_count')
+  end
+
+  def recently_ordered_variants(limit: 5)
+    Variant.joins(line_items: :order)
+           .where(orders: { user_id: id })
+           .where(deleted_at: nil)
+           .select('DISTINCT ON (variants.id) variants.*, orders.created_at AS order_created_at')
+           .order('variants.id, orders.created_at DESC')
+           .limit(limit)
   end
 
   private

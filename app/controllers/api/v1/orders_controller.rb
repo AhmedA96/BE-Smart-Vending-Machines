@@ -26,6 +26,24 @@ module Api
         render :show, status: :ok
       rescue StandardError => e
         raise FailedRequestError, e.message
+
+      def reorder
+        result = Orders::Reorder.call(params[:id], reorder_params)
+
+        if result[:success]
+          @order = result[:order]
+          @reorder_summary = {
+            total_original_items: result[:total_original_items],
+            reordered_items: result[:reordered_items],
+            unavailable_items: result[:unavailable_items]
+          }
+          @message = build_reorder_message(result)
+
+          render :reorder, status: :created
+        else
+          @errors = result[:errors]
+          render 'shared/errors', status: :unprocessable_entity
+        end
       end
 
       private
@@ -75,6 +93,19 @@ module Api
         end
 
         permitted_params
+      end
+
+      def reorder_params
+        params.permit(:machine_id, :user_id)
+      end
+
+      def build_reorder_message(result)
+        if result[:unavailable_items].empty?
+          "Successfully reordered all #{result[:reordered_items]} items"
+        else
+          unavailable_count = result[:unavailable_items].size
+          "Successfully reordered #{result[:reordered_items]} items. #{unavailable_count} items were unavailable."
+        end
       end
     end
   end

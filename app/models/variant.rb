@@ -42,12 +42,15 @@ class Variant < ApplicationRecord
 
   belongs_to :product, optional: true
 
-  has_many :machine_items
+  has_many :machine_items, dependent: :destroy
   has_many :machines, through: :machine_items
   has_many :price_list_items
   has_many :price_lists, through: :price_list_items
-  has_many :line_items, dependent: :nullify
+  has_many :line_items, dependent: :destroy
+  has_many :orders, through: :line_items
   has_many :variant_translations, dependent: :destroy
+  has_many :user_favorites, dependent: :destroy
+  has_many :users_who_favorited, through: :user_favorites, source: :user
 
   scope :active, -> { where(active: true) }
 
@@ -55,6 +58,24 @@ class Variant < ApplicationRecord
     joins(product: :categories)
       .where(categories: { id: category_ids })
   }
+
+  scope :popular, lambda { |limit = 10|
+    joins(:line_items)
+      .group('variants.id')
+      .order('COUNT(line_items.id) DESC')
+      .limit(limit)
+      .select('variants.*, COUNT(line_items.id) as total_orders')
+  }
+
+  scope :trending, lambda { |days = 7, limit = 10|
+    joins(line_items: :order)
+      .where(orders: { created_at: days.days.ago.. })
+      .group('variants.id')
+      .order('COUNT(line_items.id) DESC')
+      .limit(limit)
+      .select('variants.*, COUNT(line_items.id) as recent_orders')
+  }
+
   def activate!
     update!(active: true)
   end
@@ -79,5 +100,13 @@ class Variant < ApplicationRecord
 
   def full_name
     "#{product.name} - #{name unless product&.name == name} [#{sku}]"
+  end
+
+  def order_count_for_user(user)
+    line_items.joins(:order).where(orders: { user_id: user.id }).count
+  end
+
+  def last_ordered_by_user(user)
+    orders.where(user_id: user.id).order(created_at: :desc).first&.created_at
   end
 end
