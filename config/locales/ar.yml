@@ -58,7 +58,7 @@ ar:
         name: "ماكينة البيع"
         plural: "ماكينات البيع"
         fields:
-          external_machine_id: "معرف المصنع"
+          machineuuid: "معرف المصنع"
           name: "الاسم"
           category: "الفئة"
           vendor: "المورد"

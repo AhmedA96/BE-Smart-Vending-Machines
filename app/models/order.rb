@@ -102,23 +102,6 @@ class Order < ApplicationRecord
 
   private
 
-  def create_machine_order
-    return unless supplier
-
-    Suppliers::CreateMachineOrderJob.perform_later(id)
-  end
-
-  def start_dispense_status_check
-    return unless supplier
-
-    initial_delay = case supplier.name.downcase
-                    when 'reyah'
-                      1.minute
-                    end
-
-    Suppliers::CheckDispenseStatusJob.set(wait: initial_delay).perform_later(id)
-  end
-
   def check_item_limit
     return unless machine&.max_items_per_order
 

@@ -40,6 +40,7 @@ module Avo
                        options: { danger: %i[Inactive], success: %i[Active],
                                   warning: %i[Maintenance], neutral: %i[Retired] }
         field :category, as: :belongs_to, hide_on: %i[index]
+        field :machineuuid, as: :text, hide_on: %i[index]
         field :stock_indicator,
               as: :text,
               name: 'Stock',
@@ -53,7 +54,6 @@ module Avo
                   view_context.raw('<span style="color: #ef4444; font-weight: bold;">● Empty</span>')
                 end
               }
-        field :external_machine_id, as: :text, hide_on: %i[index]
         field :coordinates, as: :text, hide_on: %i[index],
                             help: 'Enter coordinates in format: POINT (40.7128 74.0060)'
         field :installed_at, as: :date_time, hide_on: %i[index]

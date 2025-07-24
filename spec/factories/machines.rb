@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :machine do
-    sequence(:external_machine_id) { |n| "MAN#{n.to_s.rjust(4, '0')}" }
+    sequence(:machineuuid) { |n| "MAN#{n.to_s.rjust(4, '0')}" }
     sequence(:name) { |n| "Machine #{n}" }
     association :category, factory: :machine_category
     association :vendor
