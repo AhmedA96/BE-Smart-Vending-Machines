@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_26_212354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -261,8 +261,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["location_id"], name: "index_machines_on_location_id"
-    t.index ["machineuuid"], name: "index_machines_on_machineuuid", unique: true
     t.index ["machine_type_id"], name: "index_machines_on_machine_type_id"
+    t.index ["machineuuid"], name: "index_machines_on_machineuuid", unique: true
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
   end
@@ -577,11 +577,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "cost_price", precision: 10, scale: 2, default: "0.0"
+    t.string "size"
     t.index ["active"], name: "index_variants_on_active"
     t.index ["created_at"], name: "index_variants_on_created_at"
     t.index ["deleted_at"], name: "index_variants_on_deleted_at"
     t.index ["position"], name: "index_variants_on_position"
+    t.index ["product_id", "size"], name: "index_variants_on_product_size", unique: true
     t.index ["product_id"], name: "index_variants_on_product_id"
+    t.index ["size"], name: "index_variants_on_size"
     t.index ["sku"], name: "index_variants_on_sku", unique: true
   end
 
