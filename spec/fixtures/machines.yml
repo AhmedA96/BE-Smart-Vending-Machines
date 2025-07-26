@@ -1,5 +1,5 @@
 machine_001:
-  external_machine_id: "VM001"
+  machineuuid: "VM001"
   name: "Office Snack Machine"
   category: snack_machines
   vendor: prime_vending
@@ -14,7 +14,7 @@ machine_001:
   machine_type: two_door_machine
 
 machine_002:
-  external_machine_id: "VM002"
+  machineuuid: "VM002"
   name: "Mall Beverage Machine"
   category: beverage_machines
   vendor: metro_machines
@@ -29,7 +29,7 @@ machine_002:
   machine_type: two_door_machine
 
 limited_machine:
-  external_machine_id: "VM003"
+  machineuuid: "VM003"
   name: "Limited Edition Machine"
   category: beverage_machines
   vendor: metro_machines
@@ -46,7 +46,7 @@ limited_machine:
 
 
 machine_no_price_list:
-  external_machine_id: "VM004"
+  machineuuid: "VM004"
   name: "No Price List Machine"
   category: snack_machines
   vendor: prime_vending
@@ -61,7 +61,7 @@ machine_no_price_list:
   machine_type: smart_machine
 
 machine_inactive:
-  external_machine_id: "VM005"
+  machineuuid: "VM005"
   name: "Inactive Machine"
   category: snack_machines
   vendor: prime_vending

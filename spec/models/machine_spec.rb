@@ -21,8 +21,8 @@ RSpec.describe Machine, type: :model do
   describe 'validations' do
     subject { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
 
-    it { should validate_presence_of(:external_machine_id) }
-    it { should validate_uniqueness_of(:external_machine_id) }
+    it { should validate_presence_of(:machineuuid) }
+    it { should validate_uniqueness_of(:machineuuid) }
 
     it 'validates status inclusion' do
       should validate_inclusion_of(:status)

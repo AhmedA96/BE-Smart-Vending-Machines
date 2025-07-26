@@ -242,7 +242,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
   end
 
   create_table "machines", force: :cascade do |t|
-    t.string "external_machine_id"
+    t.string "machineuuid"
     t.string "name"
     t.bigint "category_id", null: false
     t.bigint "vendor_id", null: false
@@ -260,8 +260,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
     t.bigint "machine_type_id"
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
-    t.index ["external_machine_id"], name: "index_machines_on_external_machine_id", unique: true
     t.index ["location_id"], name: "index_machines_on_location_id"
+    t.index ["machineuuid"], name: "index_machines_on_machineuuid", unique: true
     t.index ["machine_type_id"], name: "index_machines_on_machine_type_id"
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
@@ -489,6 +489,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "base_url"
+    t.string "supplier_type", default: ""
+    t.index ["supplier_type"], name: "index_suppliers_on_supplier_type"
   end
 
   create_table "user_favorites", force: :cascade do |t|
