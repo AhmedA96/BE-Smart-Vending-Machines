@@ -261,8 +261,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_225922) do
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["location_id"], name: "index_machines_on_location_id"
-    t.index ["machineuuid"], name: "index_machines_on_machineuuid", unique: true
     t.index ["machine_type_id"], name: "index_machines_on_machine_type_id"
+    t.index ["machineuuid"], name: "index_machines_on_machineuuid", unique: true
     t.index ["supplier_id"], name: "index_machines_on_supplier_id"
     t.index ["vendor_id"], name: "index_machines_on_vendor_id"
   end
