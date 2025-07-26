@@ -29,6 +29,7 @@ module Avo
         field :points, as: :number, only_on: %i[index show]
         field :weight, as: :number
         field :position, as: :number
+        field :size, as: :text, readonly: true
         field :active, as: :boolean, readonly: -> { resource.record.is_master? }, filterable: true
         limited_field :product, as: :belongs_to, searchable:
 
