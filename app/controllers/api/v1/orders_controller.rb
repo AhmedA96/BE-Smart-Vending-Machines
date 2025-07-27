@@ -21,35 +21,21 @@ module Api
       end
 
       def create_pickup_code
-        unless @order.status == 'paid'
-          render json: { error: 'Order must be paid to generate pickup code' },
-                 status: :unprocessable_content
-          return
+        result = Orders::CreatePickupCode.call(@order)
+
+        if result[:success]
+          render json: { pickup_code: result[:pickup_code] }
+        else
+          render json: { error: result[:error] }, status: result[:status]
         end
-
-        machine = @order.machine
-
-        client = machine.supplier
-        order_manager = Suppliers::VendlifeService.new(client)
-
-        pickup_code = order_manager.create_pickup_order(machine, @order)
-        @order.update!(pick_up_code: pickup_code)
-
-        render json: { pickup_code: pickup_code }
-      rescue SupplierApiError
-        render json: { error: 'Failed to generate pickup code' }, status: :unprocessable_entity
       end
 
       def reorder
         result = Orders::Reorder.call(params[:id], reorder_params)
+
         if result[:success]
           @order = result[:order]
-          @reorder_summary = {
-            total_original_items: result[:total_original_items],
-            reordered_items: result[:reordered_items],
-            unavailable_items: result[:unavailable_items]
-          }
-          @message = build_reorder_message(result)
+          @reorder_info = result
           render :reorder, status: :created
         else
           @errors = result[:errors]
@@ -71,15 +57,6 @@ module Api
 
       def reorder_params
         params.permit(:machine_id, :user_id)
-      end
-
-      def build_reorder_message(result)
-        if result[:unavailable_items].empty?
-          "Successfully reordered all #{result[:reordered_items]} items"
-        else
-          unavailable_count = result[:unavailable_items].size
-          "Successfully reordered #{result[:reordered_items]} items. #{unavailable_count} items were unavailable."
-        end
       end
     end
   end
