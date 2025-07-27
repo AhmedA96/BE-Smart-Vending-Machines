@@ -579,12 +579,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_27_000002) do
     t.datetime "updated_at", null: false
     t.decimal "cost_price", precision: 10, scale: 2, default: "0.0"
     t.string "goods_uuid"
+    t.string "size"
     t.index ["active"], name: "index_variants_on_active"
     t.index ["created_at"], name: "index_variants_on_created_at"
     t.index ["deleted_at"], name: "index_variants_on_deleted_at"
     t.index ["goods_uuid"], name: "index_variants_on_goods_uuid", unique: true
     t.index ["position"], name: "index_variants_on_position"
+    t.index ["product_id", "size"], name: "index_variants_on_product_size", unique: true
     t.index ["product_id"], name: "index_variants_on_product_id"
+    t.index ["size"], name: "index_variants_on_size"
     t.index ["sku"], name: "index_variants_on_sku", unique: true
   end
 
