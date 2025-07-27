@@ -4,7 +4,7 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show]
+      before_action :find_order, only: %i[show create_pickup_code]
 
       def index
         orders = (@current_user.orders if @current_user.present?)
@@ -20,9 +20,28 @@ module Api
         raise FailedRequestError, e.message
       end
 
+      def create_pickup_code
+        unless @order.status == 'paid'
+          render json: { error: 'Order must be paid to generate pickup code' },
+                 status: :unprocessable_content
+          return
+        end
+
+        machine = @order.machine
+
+        client = machine.supplier
+        order_manager = Suppliers::VendlifeService.new(client)
+
+        pickup_code = order_manager.create_pickup_order(machine, @order)
+        @order.update!(pick_up_code: pickup_code)
+
+        render json: { pickup_code: pickup_code }
+      rescue SupplierApiError
+        render json: { error: 'Failed to generate pickup code' }, status: :unprocessable_entity
+      end
+
       def reorder
         result = Orders::Reorder.call(params[:id], reorder_params)
-
         if result[:success]
           @order = result[:order]
           @reorder_summary = {
@@ -31,7 +50,6 @@ module Api
             unavailable_items: result[:unavailable_items]
           }
           @message = build_reorder_message(result)
-
           render :reorder, status: :created
         else
           @errors = result[:errors]

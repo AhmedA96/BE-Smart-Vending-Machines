@@ -152,7 +152,7 @@ module Suppliers
           {
             goodsNumber: line_item.quantity,
             goodsPrice: line_item.price.to_f,
-            goodsUuid: line_item.variant.external_product_id.to_i
+            goodsUuid: line_item.variant.goods_uuid.to_i
           }
         end
       end
