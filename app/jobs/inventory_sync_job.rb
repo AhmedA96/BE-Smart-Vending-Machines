@@ -1,15 +1,23 @@
 # frozen_string_literal: true
 
 class InventorySyncJob < ApplicationJob
-  queue_as :default
+  queue_as :inventory_sync
+
+  RATE_LIMIT_DELAY = 1.2
+  RECURRING_INTERVAL = 5.minutes
 
   def perform
-    Machine.joins(:supplier)
-           .where(suppliers: { name: 'vendlife' })
-           .includes(:supplier, machine_items: :variant)
-           .find_each do |machine|
+    machines = Machine.joins(:supplier)
+                      .where(suppliers: { name: 'vendlife' })
+                      .includes(:supplier, machine_items: :variant)
+
+    machines.each_with_index do |machine, index|
       sync_machine_inventory(machine)
+
+      sleep(RATE_LIMIT_DELAY) if index < machines.count - 1
     end
+
+    InventorySyncJob.set(wait: RECURRING_INTERVAL).perform_later
   end
 
   private
