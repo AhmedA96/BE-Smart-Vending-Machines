@@ -73,7 +73,7 @@ module Suppliers
       end
 
       def sync_machine_product(machine, product_data)
-        variant = machine.variants.find_by(external_product_id: product_data['uuid'].to_s)
+        variant = machine.variants.find_by(goods_uuid: product_data['uuid'].to_s)
         return unless variant
 
         machine_item = machine.machine_items.find_or_initialize_by(variant: variant)

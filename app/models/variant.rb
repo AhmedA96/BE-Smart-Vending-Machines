@@ -8,6 +8,7 @@
 #  active     :boolean          default(TRUE)
 #  cost_price :decimal(10, 2)   default(0.0)
 #  deleted_at :datetime
+#  goods_uuid :string
 #  is_master  :boolean          default(FALSE), not null
 #  name       :string
 #  points     :integer
@@ -23,6 +24,7 @@
 #  index_variants_on_active      (active)
 #  index_variants_on_created_at  (created_at)
 #  index_variants_on_deleted_at  (deleted_at)
+#  index_variants_on_goods_uuid  (goods_uuid) UNIQUE
 #  index_variants_on_position    (position)
 #  index_variants_on_product_id  (product_id)
 #  index_variants_on_sku         (sku) UNIQUE
