@@ -5,6 +5,7 @@ Rails.logger.debug 'Cleaning database...'
 
 # Clear main tables first
 Order.destroy_all
+MachineType.destroy_all
 MachineStatus.destroy_all
 MachineItem.destroy_all
 Machine.destroy_all
@@ -28,20 +29,46 @@ Role.destroy_all
 Rails.logger.debug 'Database cleaned!'
 
 # ---------------------------- #
+# Machine Types
+# ---------------------------- #
+Rails.logger.debug 'Creating Machine Types...'
+
+machine_types = [
+  {
+    name: 'Two Door Vending Machine',
+    has_temperature_control: true,
+    capacity: 50
+  },
+  {
+    name: 'Smart Vending Machine',
+    has_temperature_control: false,
+    capacity: 25
+  }
+]
+
+machine_type_records = MachineType.create!(machine_types)
+
+Rails.logger.debug { "Created #{machine_type_records.count} Machine Types." }
+
+# ---------------------------- #
 # Suppliers
 # ---------------------------- #
 Rails.logger.debug 'Creating Suppliers...'
 
 suppliers = [
   {
-    name: 'Reyah',
+    name: 'reyah',
     app_id: 'vt_solutions_001',
-    app_secret: 'vt_secret_key_123'
+    app_secret: 'vt_secret_key_123',
+    base_url: 'https://api.reyah.com',
+    supplier_type: 'reyah'
   },
   {
-    name: '1Trolley',
+    name: 'vendlife',
     app_id: 'svs_002',
-    app_secret: 'svs_secret_key_456'
+    app_secret: 'svs_secret_key_456',
+    base_url: 'https://api.vendlife.com',
+    supplier_type: 'vendlife'
   }
 ]
 
@@ -190,6 +217,7 @@ variants = [
     weight: 0.33,
     product: product_records[0],
     position: 1,
+    size: 'S',
     translations_attributes: [
       { locale: 'en', presentation: 'Cola Classic 330ml' },
       { locale: 'ar', presentation: 'كولا كلاسيك ٣٣٠ مل' }
@@ -203,6 +231,7 @@ variants = [
     weight: 0.5,
     product: product_records[0],
     position: 2,
+    size: 'M',
     translations_attributes: [
       { locale: 'en', presentation: 'Cola Classic 500ml' },
       { locale: 'ar', presentation: 'كولا كلاسيك ٥٠٠ مل' }
@@ -216,9 +245,24 @@ variants = [
     weight: 0.1,
     product: product_records[1],
     position: 1,
+    size: 'S',
     translations_attributes: [
       { locale: 'en', presentation: 'Regular Chips 100g' },
       { locale: 'ar', presentation: 'شيبس عادي ١٠٠ جرام' }
+    ]
+  },
+  {
+    name: 'Regular Chips 200g',
+    sku: "CHIPS-200-#{time_suffix}",
+    is_master: true,
+    points: 8,
+    weight: 0.2,
+    product: product_records[1],
+    position: 1,
+    size: 'M',
+    translations_attributes: [
+      { locale: 'en', presentation: 'Regular Chips 200g' },
+      { locale: 'ar', presentation: 'شيبس عادي ٢٠٠ جرام' }
     ]
   }
 ]
@@ -423,6 +467,7 @@ machines = [
     last_service_date: 1.month.ago,
     floor_no: 4,
     supplier: supplier_records[1],
+    machine_type: machine_type_records[0],
     translations_attributes: [
       { locale: 'en', name: 'Snack Machine Alpha' },
       { locale: 'ar', name: 'آلة الوجبات الخفيفة ألفا' }
@@ -439,6 +484,7 @@ machines = [
     last_service_date: 2.months.ago,
     floor_no: 8,
     supplier: supplier_records[0],
+    machine_type: machine_type_records[1],
     translations_attributes: [
       { locale: 'en', name: 'Drink Machine Beta' },
       { locale: 'ar', name: 'آلة المشروبات بيتا' }
@@ -455,6 +501,7 @@ machines = [
     last_service_date: 1.week.ago,
     floor_no: 1,
     supplier: supplier_records[1],
+    machine_type: machine_type_records[0],
     translations_attributes: [
       { locale: 'en', name: 'Electronics Vendor Gamma' },
       { locale: 'ar', name: 'آلة الإلكترونيات جاما' }
@@ -472,6 +519,7 @@ machines = [
     last_service_date: 3.months.ago,
     floor_no: 9,
     supplier: supplier_records[0],
+    machine_type: machine_type_records[1],
     translations_attributes: [
       { locale: 'en', name: 'Snack Machine Delta' },
       { locale: 'ar', name: 'آلة الوجبات الخفيفة دلتا' }

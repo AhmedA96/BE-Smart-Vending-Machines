@@ -24,12 +24,13 @@
 #
 # Indexes
 #
-#  index_machines_on_category_id  (category_id)
-#  index_machines_on_coordinates  (coordinates) USING gist
-#  index_machines_on_location_id  (location_id)
-#  index_machines_on_machineuuid  (machineuuid) UNIQUE
-#  index_machines_on_supplier_id  (supplier_id)
-#  index_machines_on_vendor_id    (vendor_id)
+#  index_machines_on_category_id      (category_id)
+#  index_machines_on_coordinates      (coordinates) USING gist
+#  index_machines_on_location_id      (location_id)
+#  index_machines_on_machine_type_id  (machine_type_id)
+#  index_machines_on_machineuuid      (machineuuid) UNIQUE
+#  index_machines_on_supplier_id      (supplier_id)
+#  index_machines_on_vendor_id        (vendor_id)
 #
 # Foreign Keys
 #

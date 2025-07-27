@@ -28,7 +28,8 @@ class Supplier < ApplicationRecord
 
   # Define the enum for supplier types
   enum :supplier_type, {
-    vendlife: 'vendlife'
+    vendlife: 'vendlife',
+    reyah: 'reyah'
   }
 
   # Validation to ensure only supported types are used
