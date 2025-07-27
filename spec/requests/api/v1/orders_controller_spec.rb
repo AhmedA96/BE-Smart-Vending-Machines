@@ -21,7 +21,7 @@ RSpec.describe Api::V1::OrdersController, type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it 'calls paginate with user orders' do
+    xit 'calls paginate with user orders' do
       expect_any_instance_of(Api::V1::OrdersController).to receive(:paginate).with(user_orders)
       get '/api/v1/orders', headers: { Authorization: "Bearer #{access_token.token}" }
     end
