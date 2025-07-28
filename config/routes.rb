@@ -69,8 +69,7 @@ Rails.application.routes.draw do
       resources :payments, only: %i[index show create]
       resources :payment_cards, only: %i[index create destroy] do
         member do
-          post :mark_as_default
-          post :undo_default
+          post :toggle_default
         end
       end
 
