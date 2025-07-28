@@ -65,6 +65,7 @@ class User < ApplicationRecord
   validate :new_and_old_password_must_be_different
 
   has_one :payment_customer, dependent: :destroy
+  has_many :payment_cards, through: :payment_customer
   has_one :wallet, dependent: :destroy
 
   has_many :orders, dependent: :destroy
