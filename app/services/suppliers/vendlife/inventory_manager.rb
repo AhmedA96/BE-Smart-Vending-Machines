@@ -53,7 +53,7 @@ module Suppliers
 
       def find_machine_item_by_goods_uuid(machine, goods_uuid)
         machine.machine_items.joins(:variant)
-               .find_by(variants: { external_product_id: goods_uuid.to_s })
+               .find_by(variants: { goods_uuid: goods_uuid.to_s })
       end
     end
   end
