@@ -57,26 +57,14 @@ module Api
       end
 
       def order_params
-        permitted_params = params.permit(:machine_id, :user_id, cart_items: %i[variant_id quantity])
-        # For guest users, don't include user_id if not authenticated
-        permitted_params.delete(:user_id) if permitted_params[:user_id].present? && @current_user.nil?
-        # If user is authenticated but no user_id provided, use current user
-        permitted_params[:user_id] = @current_user.id if @current_user.present? && permitted_params[:user_id].blank?
-        permitted_params
+        params.permit(:machine_id, cart_items: %i[variant_id quantity])
+              .merge(user_id: current_user&.id)
       end
 
       def update_params
-        permitted_params = params.permit(:user_id, :payment_method, cart_items: %i[variant_id quantity])
-        # If updating guest order with current user, use current user's ID
-        if @order.guest_order? && @current_user.present? && permitted_params[:user_id].blank?
-          permitted_params[:user_id] = @current_user.id
-        end
-        # Validate user_id matches current user (security check)
-        if permitted_params[:user_id].present? && @current_user.present? && permitted_params[:user_id].to_i != @current_user.id # rubocop:disable Layout/LineLength
-          raise FailedRequestError, 'Cannot assign order to different user'
-        end
-
-        permitted_params
+        permitted = params.permit(cart_items: %i[variant_id quantity])
+        permitted[:user_id] = current_user.id if @order.guest_order? && current_user
+        permitted
       end
 
       def reorder_params
