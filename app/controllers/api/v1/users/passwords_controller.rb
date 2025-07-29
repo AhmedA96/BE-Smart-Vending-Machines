@@ -4,9 +4,9 @@ module Api
   module V1
     module Users
       class PasswordsController < ApplicationController
-        include ErrorHandling
-        rate_limit to: 3, within: 5.minutes, with: :handle_rate_limit_exceeded,
-                   only: %i[forgot_password reset_password]
+        rate_limit to: 3, within: 5.minutes, with: lambda {
+          render_error(I18n.t('errors.too_many_requests'), :too_many_requests)
+        }, only: %i[forgot_password]
 
         before_action :find_user_by_mobile, only: [:forgot_password]
         before_action :find_user_by_mobile_and_token, only: [:reset_password]
