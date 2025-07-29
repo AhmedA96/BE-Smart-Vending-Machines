@@ -18,6 +18,7 @@ module ErrorHandling
     rescue_from ::ActiveRecord::RecordInvalid, with: :render_unprocessable_content_response
     rescue_from ::ActiveRecord::RecordNotFound, with: :render_not_found_response
     rescue_from FailedRequestError, with: :request_error
+    rescue_from Doorkeeper::Errors::InvalidToken, with: :request_error
   end
 
   def render_error(exception, status)
@@ -39,7 +40,7 @@ module ErrorHandling
       message: exception.message
     }
 
-    error_response.merge!(exception.data) if exception.data.present?
+    error_response.merge!(exception.data) if exception.respond_to?(:data) && exception.data.present?
 
     render_json(:bad_request, error_response)
     nil
