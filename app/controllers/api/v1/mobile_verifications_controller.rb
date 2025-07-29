@@ -3,11 +3,9 @@
 module Api
   module V1
     class MobileVerificationsController < ApplicationController
-      before_action :find_user, only: %i[verify_code send_verification_code]
+      before_action :find_user_by_mobile, only: %i[verify_code send_verification_code]
 
       def send_verification_code
-        return head :not_found unless @user
-
         mobile_number = params[:mobile_number]
 
         if Verification::Mobile.send_code(mobile_number, @user)
@@ -40,8 +38,9 @@ module Api
 
       private
 
-      def find_user
+      def find_user_by_mobile
         @user = User.find_by(mobile_number: params[:mobile_number])
+        render json: { error: I18n.t('user.authentication.invalid_login') }, status: :not_found unless @user
       end
     end
   end
