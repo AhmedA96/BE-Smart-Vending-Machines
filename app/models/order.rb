@@ -12,6 +12,7 @@
 #  machine_response :jsonb
 #  number           :string           not null
 #  payment_method   :string
+#  pick_up_code     :string
 #  status           :string
 #  total            :decimal(10, 2)   default(0.0)
 #  total_discounts  :decimal(10, 2)   default(0.0)
