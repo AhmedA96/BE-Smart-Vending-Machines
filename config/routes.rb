@@ -70,6 +70,11 @@ Rails.application.routes.draw do
 
       resources :payment_methods, only: %i[index show]
       resources :payments, only: %i[index show create]
+      resources :payment_cards, only: %i[index create destroy] do
+        member do
+          post :toggle_default
+        end
+      end
 
       post 'mobile_verifications/send_code', to: 'mobile_verifications#send_verification_code'
       post 'mobile_verifications/verify_code', to: 'mobile_verifications#verify_code'

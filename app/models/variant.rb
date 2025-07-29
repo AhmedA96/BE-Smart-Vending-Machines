@@ -8,6 +8,7 @@
 #  active     :boolean          default(TRUE)
 #  cost_price :decimal(10, 2)   default(0.0)
 #  deleted_at :datetime
+#  goods_uuid :string
 #  is_master  :boolean          default(FALSE), not null
 #  name       :string
 #  points     :integer
