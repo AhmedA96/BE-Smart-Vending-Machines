@@ -3,6 +3,8 @@
 module Avo
   module Resources
     class Order < Avo::BaseResource
+      ORDER_EVENTS = ::Order.aasm&.states&.map(&:name)
+
       self.includes = %i[user machine]
       self.attachments = []
       self.search = {
@@ -18,22 +20,17 @@ module Avo
 
       def fields
         field :id, as: :id
-        field :order_number, as: :text, required: true, sortable: true
-        field :status, as: :select, options: {
-          pending: 'Pending',
-          processing: 'Processing',
-          completed: 'Completed',
-          cancelled: 'Cancelled'
-        }, required: true
-
-        field :total_amount, as: :currency, required: true
+        field :number, as: :text, required: true, sortable: true
+        field :status, as: :status, enum: ORDER_EVENTS,
+                       loading_when: %i[cart initial],
+                       success_when: %i[paid dispensed],
+                       failed_when: %i[failed canceled],
+                       only_on: :display
+        field :items_total, as: :text, required: true, sortable: true
         field :user, as: :belongs_to
-        field :payment_method, as: :select, options: {
-          credit_card: 'Credit Card',
-          paypal: 'PayPal',
-          bank_transfer: 'Bank Transfer'
-        }
-
+        field :payment_method, as: :text, name: 'Payment Method' do
+          record.payments.last&.payment_method&.name || '—'
+        end
         field :created_at, as: :date_time, sortable: true
         field :updated_at, as: :date_time, sortable: true
       end
