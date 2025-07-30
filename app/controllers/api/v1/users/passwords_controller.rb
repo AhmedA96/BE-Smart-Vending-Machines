@@ -27,8 +27,10 @@ module Api
           code = Verification::Mobile.generate_verification_code
           @user.update!(reset_password_token: code, reset_password_sent_at: Time.current)
 
-          Verification::Mobile.send_code(params[:mobile_number], @user)
-          render json: { message: I18n.t('user.password_reset.code_sent') }
+          # Verification::Mobile.send_code(params[:mobile_number], @user)
+          # render json: { message: I18n.t('user.password_reset.code_sent') }
+          #
+          render json: { code: }, status: :ok
         end
 
         def reset_password
