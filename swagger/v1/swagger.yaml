@@ -1,13 +1,19 @@
 ---
 openapi: 3.0.1
 info:
-  title: API V1
+  title: Vending Machine API V1
+  description: API for vending machine management and operations
   version: v1
+
+security:
+  - BearerAuth: []
+
 paths:
+  # Authentication endpoints
   /api/v1/users/signup:
     post:
       tags:
-        - Users
+        - Authentication
       summary: Register a new user
       requestBody:
         required: true
@@ -19,109 +25,139 @@ paths:
                 user:
                   type: object
                   required:
-                    - email
                     - password
                     - mobile_number
                   properties:
-                    email:
+                    name:
                       type: string
-                      format: email
-                      example: user@example.com
+                      example: "A ALI"
+                    mobile_number:
+                      type: string
+                      example: "+201000000001"
                     password:
                       type: string
                       format: password
                       minLength: 8
-                      example: Password@123
-                    mobile_number:
-                      type: string
-                      example: "+201234567890"
+                      example: Password!234
       responses:
-        '200':
+        '201':
           description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/v1/users/login:
     post:
-      summary: User login
       tags:
-      - Users
-      parameters: []
-      responses:
-        '201':
-          description: login successful
-        '422':
-          description: non-existent user
+        - Authentication
+      summary: User login
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - mobile_number
+                - password
               properties:
-                email:
+                mobile_number:
                   type: string
-                  example: user@example.com
+                  example: "+201000000001"
                 password:
                   type: string
-                  example: Password@!123
-              required:
-              - email
-              - password
-  /oauth/token:
-    post:
-      summary: Generate or refresh access token
-      tags:
-      - OAuth
-      parameters: []
+                  example: Password!234
       responses:
-        '200':
-          description: token generated successfully
+        '201':
+          description: Login successful
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiJ9...
-                  token_type:
-                    type: string
-                    example: Bearer
-                  expires_in:
-                    type: integer
-                    example: 7200
-                  refresh_token:
-                    type: string
-                    example: def50200...
-                  created_at:
-                    type: integer
-                    example: 1710893668
-        '400':
-          description: invalid credentials or refresh token
+                $ref: '#/components/schemas/User'
+        '422':
+          description: Invalid credentials
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: invalid_grant
-                  error_description:
-                    type: string
-                    example: The provided authorization grant is invalid
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/users/auth/google:
+    post:
+      tags:
+        - Authentication
+      summary: Google OAuth authentication
+      security:
+        - BearerAuth: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - access_token
+              properties:
+                access_token:
+                  type: string
+                  example: "google_access_token_here"
+      responses:
+        '200':
+          description: Google authentication successful
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '422':
+          description: Authentication failed
+
+  /api/v1/users/auth/apple:
+    post:
+      tags:
+        - Authentication
+      summary: Apple OAuth authentication
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identity_token
+              properties:
+                identity_token:
+                  type: string
+                  example: "apple_identity_token_here"
+      responses:
+        '200':
+          description: Apple authentication successful
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '422':
+          description: Authentication failed
+
+  # OAuth endpoints
+  /oauth/token:
+    post:
+      tags:
+        - OAuth
+      summary: Generate or refresh access token
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - grant_type
               properties:
                 grant_type:
                   type: string
@@ -129,50 +165,165 @@ paths:
                   example: password
                 mobile_number:
                   type: string
-                  example: "+201234567890"
+                  example: "+201000000001"
                 password:
                   type: string
-                  example: Password@!123
+                  example: Password!234
                 refresh_token:
                   type: string
                   example: def50200...
-              required:
-              - grant_type
-              oneOf:
-              - required: [mobile_number, password]
-                properties:
-                  grant_type:
-                    enum: [password]
-              - required: [refresh_token]
-                properties:
-                  grant_type:
-                    enum: [refresh_token]
-  /oauth/revoke:
-    post:
-      summary: Revoke token
-      tags:
-      - OAuth
-      parameters: []
       responses:
         '200':
-          description: token revoked
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Invalid credentials or refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /oauth/revoke:
+    post:
+      tags:
+        - OAuth
+      summary: Revoke token
+      security:
+        - BearerAuth: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - token
               properties:
                 token:
                   type: string
                   example: valid_token
+      responses:
+        '200':
+          description: Token revoked successfully
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  # Mobile verification endpoints
+  /api/v1/mobile_verifications/send_code:
+    post:
+      tags:
+        - Mobile Verification
+      summary: Send verification code to mobile number
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
               required:
-              - token
-              paths:
+                - mobile_number
+              properties:
+                mobile_number:
+                  type: string
+                  example: "+201000000001"
+      responses:
+        '200':
+          description: Verification code sent successfully
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: User not found
+        '422':
+          description: Failed to send verification code
+
+  /api/v1/mobile_verifications/verify_code:
+    post:
+      tags:
+        - Mobile Verification
+      summary: Verify mobile verification code
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mobile_number
+                - verification_code
+              properties:
+                mobile_number:
+                  type: string
+                  example: "+201000000001"
+                verification_code:
+                  type: string
+                  example: "123456"
+      responses:
+        '200':
+          description: Code verified successfully
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: User not found
+        '422':
+          description: Invalid or expired code
+
+  # Machines endpoints
+  /api/v1/machines:
+    get:
+      tags:
+        - Machines
+      summary: List all machines
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: machine_type_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by machine type ID
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of machines
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Machine'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
   /api/v1/machines/nearby:
     get:
       tags:
         - Machines
       summary: Find machines nearby
+      security:
+        - BearerAuth: []
       parameters:
         - name: latitude
           in: query
@@ -188,6 +339,16 @@ paths:
             type: number
             format: float
             example: 31.2357
+        - name: machine_type_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by machine type ID
+        - name: stocked
+          in: query
+          schema:
+            type: boolean
+          description: Filter stocked machines only
         - name: page
           in: query
           schema:
@@ -211,36 +372,23 @@ paths:
                     items:
                       $ref: '#/components/schemas/Machine'
                   meta:
-                    type: object
-                    properties:
-                      pagination:
-                        type: object
-                        properties:
-                          page:
-                            type: integer
-                          per_page:
-                            type: integer
-                          total_pages:
-                            type: integer
-                          total_count:
-                            type: integer
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
         '422':
           description: Validation error
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
+                $ref: '#/components/schemas/ErrorResponse'
 
   /api/v1/machines/{id}:
     get:
       tags:
         - Machines
       summary: Get machine details
+      security:
+        - BearerAuth: []
       parameters:
         - name: id
           in: path
@@ -258,14 +406,178 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Machine'
+        '401':
+          description: Unauthorized - Invalid or missing token
         '404':
           description: Machine not found
 
+  # Machine Categories endpoints
+  /api/v1/machine_categories:
+    get:
+      tags:
+        - Machine Categories
+      summary: List all machine categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+        - name: location_id
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 42
+          description: Filter machine categories by location ID
+      responses:
+        '200':
+          description: List of machine categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MachineCategory'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/machine_categories/{id}:
+    get:
+      tags:
+        - Machine Categories
+      summary: Get machine category details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Machine category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/MachineCategory'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Machine category not found
+
+  # Categories endpoints
+  /api/v1/categories:
+    get:
+      tags:
+        - Categories
+      summary: List all categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/categories/with_brands:
+    get:
+      tags:
+        - Categories
+      summary: List categories with brands
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Categories with brands
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CategoryWithBrands'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Get category details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Category details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Category'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Category not found
+
+  # Products endpoints
   /api/v1/products:
     get:
       tags:
         - Products
       summary: List all products for a specific machine
+      security:
+        - BearerAuth: []
       parameters:
         - name: machine_id
           in: query
@@ -288,39 +600,39 @@ paths:
           in: query
           schema:
             type: string
-            description: Filter by product presentation
+          description: Filter by product presentation
         - name: q[product_translations_description_cont]
           in: query
           schema:
             type: string
-            description: Filter by product description
+          description: Filter by product description
         - name: q[brand_id_eq]
           in: query
           schema:
             type: integer
-            description: Filter by brand ID
+          description: Filter by brand ID
         - name: q[price_for_price_list_gteq]
           in: query
           schema:
             type: number
             format: float
-            description: Minimum price
+          description: Minimum price
         - name: q[price_for_price_list_lteq]
           in: query
           schema:
             type: number
             format: float
-            description: Maximum price
+          description: Maximum price
         - name: q[stock_availability]
           in: query
           schema:
             type: integer
-            description: Filter by stock availability
+          description: Filter by stock availability
         - name: sort_price
           in: query
           schema:
             type: string
-            description: Sort order for products
+          description: Sort order for products
       responses:
         '200':
           description: List of products
@@ -334,56 +646,17 @@ paths:
                     items:
                       $ref: '#/components/schemas/Product'
                   meta:
-                    type: object
-                    properties:
-                      pagination:
-                        type: object
-                        properties:
-                          page:
-                            type: integer
-                          per_page:
-                            type: integer
-                          total_pages:
-                            type: integer
-                          total_count:
-                            type: integer
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
 
-  /api/v1/products/{id}:
-    get:
-      tags:
-        - Products
-      summary: Get product details
-      parameters:
-        - name: machine_id
-          in: query
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-      responses:
-        '200':
-          description: Product details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Product'
-        '404':
-          description: Product not found
-          
   /api/v1/products/machine_products:
     get:
       tags:
         - Products
       summary: List products available for a specific machine
+      security:
+        - BearerAuth: []
       parameters:
         - name: machine_id
           in: query
@@ -414,70 +687,1063 @@ paths:
                     items:
                       $ref: '#/components/schemas/Product'
                   meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: machine_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Product not found
+
+  # Brands endpoints
+  /api/v1/brands:
+    get:
+      tags:
+        - Brands
+      summary: List all brands
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+        - name: location_id
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 42
+          description: Filter machine categories by location ID
+      responses:
+        '200':
+          description: List of brands
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Brand'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/brands/{id}:
+    get:
+      tags:
+        - Brands
+      summary: Get brand details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Brand details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Brand'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Brand not found
+
+  # Orders endpoints
+  /api/v1/orders:
+    get:
+      tags:
+        - Orders
+      summary: List user orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+
+    post:
+      tags:
+        - Orders
+      summary: Create a new order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - machine_id
+                - cart_items
+              properties:
+                machine_id:
+                  type: integer
+                  example: 1
+                cart_items:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - variant_id
+                      - quantity
+                    properties:
+                      variant_id:
+                        type: integer
+                        example: 1
+                      quantity:
+                        type: integer
+                        minimum: 1
+                        example: 2
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Get order details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+
+    patch:
+      tags:
+        - Orders
+      summary: Update order
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart_items:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - variant_id
+                      - quantity
+                    properties:
+                      variant_id:
+                        type: integer
+                        example: 1
+                      quantity:
+                        type: integer
+                        minimum: 1
+                        example: 2
+      responses:
+        '200':
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+        '422':
+          description: Validation error
+
+  /api/v1/orders/{id}/reorder:
+    post:
+      tags:
+        - Orders
+      summary: Reorder items from a previous order
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - machine_id
+              properties:
+                machine_id:
+                  type: integer
+                  example: 1
+                user_id:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Reorder successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+                  reorder_summary:
                     type: object
                     properties:
-                      pagination:
-                        type: object
-                        properties:
-                          page:
-                            type: integer
-                          per_page:
-                            type: integer
-                          total_pages:
-                            type: integer
-                          total_count:
-                            type: integer
+                      total_original_items:
+                        type: integer
+                      reordered_items:
+                        type: integer
+                      unavailable_items:
+                        type: array
+                        items:
+                          type: object
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+        '422':
+          description: Validation error
+
+  # Variants endpoints
+  /api/v1/variants:
+    get:
+      tags:
+        - Variants
+      summary: List all variants
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of variants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Variant'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/variants/{id}:
+    get:
+      tags:
+        - Variants
+      summary: Get variant details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Variant details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Variant'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Variant not found
+
+  # Contact Us endpoint
+  /api/v1/contact-us:
+    post:
+      tags:
+        - Contact
+      summary: Submit contact us request
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contact:
+                  type: object
+                  required:
+                    - full_name
+                    - email
+                  properties:
+                    full_name:
+                      type: string
+                      example: "John Doe"
+                    email:
+                      type: string
+                      format: email
+                      example: "john@example.com"
+                    company_name:
+                      type: string
+                      example: "Acme Corp"
+                    phone_number:
+                      type: string
+                      example: "+201000000001"
+      responses:
+        '201':
+          description: Contact request submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactUsRequest'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Payment Methods endpoints
+  /api/v1/payment_methods:
+    get:
+      tags:
+        - Payment Methods
+      summary: List all payment methods
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of payment methods
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaymentMethod'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/payment_methods/{id}:
+    get:
+      tags:
+        - Payment Methods
+      summary: Get payment method details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Payment method details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PaymentMethod'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Payment method not found
+
+  # Payments endpoints
+  /api/v1/payments:
+    get:
+      tags:
+        - Payments
+      summary: List payments for an order
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: order_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of payments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Payment'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+
+    post:
+      tags:
+        - Payments
+      summary: Create a payment for an order
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - order_id
+              properties:
+                order_id:
+                  type: integer
+                  example: 1
+                payment_method_id:
+                  type: integer
+                  example: 1
+                card_id:
+                  type: integer
+                  example: 1
+                token_id:
+                  type: string
+                  example: "tok_123456"
+      responses:
+        '201':
+          description: Payment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+
+  /api/v1/payments/{id}:
+    get:
+      tags:
+        - Payments
+      summary: Get payment details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Payment details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Payment'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Payment not found
+
+  # Locations endpoints
+  /api/v1/locations:
+    get:
+      tags:
+        - Locations
+      summary: List all locations
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/locations/nearby:
+    get:
+      tags:
+        - Locations
+      summary: Find locations nearby
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+            example: 30.0444
+        - name: longitude
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+            example: 31.2357
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of nearby locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Location'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/locations/{id}:
+    get:
+      tags:
+        - Locations
+      summary: Get location details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Location details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Location'
+        '401':
+          description: Unauthorized - Invalid or missing token
+        '404':
+          description: Location not found
+
+  # Wallets endpoints
+  /api/v1/wallets:
+    get:
+      tags:
+        - Wallets
+      summary: List user wallets
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of wallets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Wallet'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+
+  # Items endpoints
+  /api/v1/items/popular:
+    get:
+      tags:
+        - Items
+      summary: Get popular items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of popular items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  /api/v1/items/trending:
+    get:
+      tags:
+        - Items
+      summary: Get trending items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of trending items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized - Invalid or missing token
+
+  # User Favorites endpoints
+  /api/v1/users/{id}/favorites/{variant_id}:
+    post:
+      tags:
+        - User Favorites
+      summary: Add item to user favorites
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: variant_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Item added to favorites successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User or variant not found
+
+    delete:
+      tags:
+        - User Favorites
+      summary: Remove item from user favorites
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: variant_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Item removed from favorites successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User or variant not found
+
+  /api/v1/users/{id}/favorite_items:
+    get:
+      tags:
+        - User Favorites
+      summary: Get user favorite items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of favorite items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+  /api/v1/users/{id}/most_ordered_items:
+    get:
+      tags:
+        - Users
+      summary: Get user's most ordered items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of most ordered items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Authentication token required for all endpoints.
+        Accepts either:
+        - Public token (for public access)
+        - Access token (for authenticated users)
+        
+        Format: `Bearer <token>`
+
   schemas:
-    Product:
+    User:
       type: object
       properties:
         id:
           type: integer
         name:
           type: string
-        description:
+        email:
           type: string
-        presentation:
+          format: email
+        mobile_number:
           type: string
-        status:
+        date_of_birth:
           type: string
-          enum: [Active, Inactive]
-        max_orderable_quantity:
-          type: integer
-        position:
-          type: integer
-        total_rate:
-          type: number
-          format: float
-        brand_id:
-          type: integer
-        variants:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              price:
-                type: number
-                format: float
-        categories:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
+          format: date
+        verified:
+          type: boolean
+        sms_notification:
+          type: boolean
+        email_notification:
+          type: boolean
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9...
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          example: 7200
+        refresh_token:
+          type: string
+          example: def50200...
+        created_at:
+          type: integer
+          example: 1710893668
 
     Machine:
       type: object
@@ -539,3 +1805,321 @@ components:
         updated_at:
           type: string
           format: date-time
+
+    MachineCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CategoryWithBrands:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        brands:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        presentation:
+          type: string
+        status:
+          type: string
+          enum: [Active, Inactive]
+        max_orderable_quantity:
+          type: integer
+        position:
+          type: integer
+        total_rate:
+          type: number
+          format: float
+        brand_id:
+          type: integer
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              price:
+                type: number
+                format: float
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Brand:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        logo_url:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        order_number:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, completed, cancelled]
+        total_amount:
+          type: number
+          format: float
+        user_id:
+          type: integer
+        machine_id:
+          type: integer
+        cart_items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              variant_id:
+                type: integer
+              quantity:
+                type: integer
+              price:
+                type: number
+                format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Variant:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        product_id:
+          type: integer
+        stock_quantity:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ContactUsRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+        company_name:
+          type: string
+        phone_number:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PaymentMethod:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [pending, completed, failed]
+        payment_method_id:
+          type: integer
+        order_id:
+          type: integer
+        transaction_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+        coordinates:
+          type: object
+          properties:
+            latitude:
+              type: number
+              format: float
+            longitude:
+              type: number
+              format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: integer
+        balance:
+          type: number
+          format: float
+        currency:
+          type: string
+        user_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PaginationMeta:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total_pages:
+              type: integer
+            total_count:
+              type: integer
+
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
