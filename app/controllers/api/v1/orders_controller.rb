@@ -4,7 +4,7 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show update reorder]
+      before_action :find_order, only: %i[show update reorder create_pickup_code]
       before_action :authorize_order_access, only: %i[show update reorder]
 
       def index
@@ -22,6 +22,16 @@ module Api
         raise FailedRequestError, e.message
       end
 
+      def create_pickup_code
+        result = Orders::CreatePickupCode.call(@order)
+
+        if result[:success]
+          render json: { pickup_code: result[:pickup_code] }
+        else
+          render json: { error: result[:error] }, status: result[:status]
+        end
+      end
+
       def update
         @order = Orders::Update.call(@order.id, update_params)
         render :show, status: :ok
@@ -31,14 +41,10 @@ module Api
 
       def reorder
         result = Orders::Reorder.call(params[:id], reorder_params)
+
         if result[:success]
           @order = result[:order]
-          @reorder_summary = {
-            total_original_items: result[:total_original_items],
-            reordered_items: result[:reordered_items],
-            unavailable_items: result[:unavailable_items]
-          }
-          @message = build_reorder_message(result)
+          @reorder_info = result
           render :reorder, status: :created
         else
           @errors = result[:errors]
@@ -69,15 +75,6 @@ module Api
 
       def reorder_params
         params.permit(:machine_id, :user_id)
-      end
-
-      def build_reorder_message(result)
-        if result[:unavailable_items].empty?
-          "Successfully reordered all #{result[:reordered_items]} items"
-        else
-          unavailable_count = result[:unavailable_items].size
-          "Successfully reordered #{result[:reordered_items]} items. #{unavailable_count} items were unavailable."
-        end
       end
     end
   end
