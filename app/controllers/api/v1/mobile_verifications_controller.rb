@@ -8,11 +8,13 @@ module Api
       def send_verification_code
         mobile_number = params[:mobile_number]
 
-        if Verification::Mobile.send_code(mobile_number, @user)
-          head :ok
-        else
-          head :unprocessable_entity
-        end
+        verification = MobileVerification.find_or_create_by!(
+          mobile_number: mobile_number,
+          user_id: @user.id,
+          code: Verification::Mobile.generate_verification_code
+        )
+
+        render json: { verification_code: verification.code }, status: :ok
       end
 
       def verify_code
