@@ -3,18 +3,18 @@
 module Api
   module V1
     class MobileVerificationsController < ApplicationController
-      before_action :find_user, only: %i[verify_code send_verification_code]
+      before_action :find_user_by_mobile, only: %i[verify_code send_verification_code]
 
       def send_verification_code
-        return head :not_found unless @user
-
         mobile_number = params[:mobile_number]
 
-        if Verification::Mobile.send_code(mobile_number, @user)
-          head :ok
-        else
-          head :unprocessable_entity
-        end
+        verification = MobileVerification.find_or_create_by!(
+          mobile_number: mobile_number,
+          user_id: @user.id,
+          code: Verification::Mobile.generate_verification_code
+        )
+
+        render json: { verification_code: verification.code }, status: :ok
       end
 
       def verify_code
@@ -40,8 +40,9 @@ module Api
 
       private
 
-      def find_user
+      def find_user_by_mobile
         @user = User.find_by(mobile_number: params[:mobile_number])
+        render json: { error: I18n.t('user.authentication.invalid_login') }, status: :not_found unless @user
       end
     end
   end
