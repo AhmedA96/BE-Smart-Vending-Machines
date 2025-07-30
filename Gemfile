@@ -12,7 +12,7 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Database
 gem 'activerecord-postgis-adapter', github: "AhmedAliIbrahim/activerecord-postgis-adapter", branch: "rails-8"
-gem 'pg', '~> 1.5'
+gem 'pg', '~> 1.6'
 gem "pghero"
 gem 'pg_search'
 gem 'ransack'
