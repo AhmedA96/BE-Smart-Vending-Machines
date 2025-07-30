@@ -61,6 +61,7 @@ Rails.application.routes.draw do
           post :reorder
         end
       end
+
       resources :variants, only: %i[index show]
 
       post 'contact-us', to: 'contact_us_requests#create'

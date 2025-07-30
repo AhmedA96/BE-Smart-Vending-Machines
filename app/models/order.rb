@@ -20,7 +20,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  machine_id       :bigint           not null
-#  user_id          :bigint           not null
+#  user_id          :bigint
 #
 # Indexes
 #
@@ -36,7 +36,7 @@
 class Order < ApplicationRecord
   include AASM
 
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :machine
 
   has_many :line_items, dependent: :nullify
@@ -50,6 +50,12 @@ class Order < ApplicationRecord
   validates :number, presence: true
   validate :check_item_limit
 
+  # Scopes for guest and user orders
+  scope :guest_orders, -> { where(user_id: nil) }
+  scope :user_orders, -> { where.not(user_id: nil) }
+  scope :guest_carts, -> { where(user_id: nil, status: 'cart') }
+  scope :user_carts, -> { where.not(user_id: nil).where(status: 'cart') }
+
   aasm column: 'status' do
     state :cart, initial: true
     state :pending_payment
@@ -60,7 +66,7 @@ class Order < ApplicationRecord
     state :cancelled
 
     event :process_payment do
-      transitions from: :cart, to: :pending_payment
+      transitions from: :cart, to: :pending_payment, guard: :user_present?
     end
 
     event :mark_paid do
@@ -101,7 +107,33 @@ class Order < ApplicationRecord
     end
   end
 
+  # Helper methods for guest orders
+  def guest_order?
+    user_id.nil?
+  end
+
+  def can_checkout?
+    user_id.present? && cart?
+  end
+
+  def recalculate_totals!
+    self.items_total = line_items.sum { |item| item.quantity * item.price }
+    save!
+  end
+
+  # Method to attach guest order to user
+  def attach_to_user!(user)
+    raise ArgumentError, 'Order already has a user' if user_id.present?
+    raise ArgumentError, 'User cannot be nil' if user.nil?
+
+    update!(user: user)
+  end
+
   private
+
+  def user_present?
+    user_id.present?
+  end
 
   def check_item_limit
     return unless machine&.max_items_per_order

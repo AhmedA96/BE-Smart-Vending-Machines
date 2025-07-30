@@ -37,3 +37,16 @@ order_003:
   completed_at: <%= 3.hours.ago %>
   user: john_doe
   machine: machine_001
+
+guest_cart_order:
+  number: "ORD-2024-004"
+  total: 2.00
+  items_total: 2.00
+  total_tax: 0.16
+  total_discounts: 0.00
+  payment_method: "cash"
+  status: "cart"
+  machine_response: '{"status": "success", "items_dispensed": 1}'
+  completed_at: <%= 3.hours.ago %>
+  user: null
+  machine: machine_001

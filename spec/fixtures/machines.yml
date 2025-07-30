@@ -11,6 +11,7 @@ machine_001:
   last_service_date: <%= 1.week.ago %>
   coordinates: "POINT(-73.9857 40.7484)"
   location_updated_at: <%= 1.month.ago %>
+  machine_type: two_door_machine
 
 machine_002:
   machineuuid: "VM002"
@@ -25,6 +26,7 @@ machine_002:
   last_service_date: <%= 3.days.ago %>
   coordinates: "POINT(-118.2437 34.0522)"
   location_updated_at: <%= 2.weeks.ago %>
+  machine_type: two_door_machine
 
 limited_machine:
   machineuuid: "VM003"
@@ -40,6 +42,8 @@ limited_machine:
   coordinates: "POINT(-122.4194 37.7749)"
   location_updated_at: <%= 1.week.ago %>
   max_items_per_order: 3
+  machine_type: smart_machine
+
 
 machine_no_price_list:
   machineuuid: "VM004"
@@ -54,6 +58,7 @@ machine_no_price_list:
   last_service_date: <%= 1.week.ago %>
   coordinates: "POINT(-73.9857 40.7484)"
   location_updated_at: <%= 1.month.ago %>
+  machine_type: smart_machine
 
 machine_inactive:
   machineuuid: "VM005"
@@ -68,6 +73,7 @@ machine_inactive:
   last_service_date: <%= 1.week.ago %>
   coordinates: "POINT(-73.9857 40.7484)"
   location_updated_at: <%= 1.month.ago %> 
+  machine_type: smart_machine
 
 
 
