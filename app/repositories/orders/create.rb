@@ -6,14 +6,14 @@ module Orders
       def call(params)
         machine = Machine.find(params[:machine_id])
         user = User.find_by(id: params[:user_id]) if params[:user_id].present?
-        cart_items = params[:cart_items]
+        cart_items = params[:cart_items] || []
 
         validate_order_creation!(machine, user, cart_items)
-        validate_item_limit!(machine, cart_items)
+        validate_item_limit!(machine, cart_items) if cart_items.any?
 
         ActiveRecord::Base.transaction do
           order = create_order(machine, user, cart_items)
-          create_line_items(order, cart_items, machine)
+          create_line_items(order, cart_items, machine) if cart_items.any?
           order.reload
         end
       end
@@ -23,9 +23,8 @@ module Orders
       def validate_order_creation!(machine, _user, cart_items)
         raise 'Machine not available' unless machine&.active?
         raise 'Machine has no price list' unless machine.price_list
-        raise 'Cart items cannot be empty' if cart_items.blank?
 
-        validate_cart_items!(cart_items)
+        validate_cart_items!(cart_items) if cart_items.any?
       end
 
       def validate_cart_items!(cart_items)
@@ -37,8 +36,6 @@ module Orders
 
       def create_order(machine, user, cart_items)
         total_amount = calculate_total_amount(cart_items, machine)
-        raise 'Order total cannot be zero' if total_amount <= 0
-
         Order.create!(
           number: Order.generate_unique_order_number,
           machine: machine,
@@ -54,6 +51,8 @@ module Orders
       end
 
       def calculate_total_amount(cart_items, machine)
+        return 0.0 if cart_items.blank?
+
         total = cart_items.sum do |item|
           variant = Variant.find(item[:variant_id])
           price = LineItems::Create.variant_price(machine, variant)
