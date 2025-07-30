@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do
       namespace :users do
+        post 'passwords/change', to: 'passwords#change_password'
+        post 'passwords/forgot', to: 'passwords#forgot_password'
+        post 'passwords/reset', to: 'passwords#reset_password'
         devise_for :users, path: '', path_names: {
                                        sign_in: 'login',
                                        sign_out: 'logout',
