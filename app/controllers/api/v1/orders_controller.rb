@@ -4,16 +4,18 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show create_pickup_code]
+      before_action :find_order, only: %i[show update reorder create_pickup_code]
+      before_action :authorize_order_access, only: %i[show update reorder]
 
       def index
-        orders = (@current_user.orders if @current_user.present?)
+        orders = policy_scope(Order)
         @orders = paginate(orders)
       end
 
       def show; end
 
       def create
+        authorize Order
         @order = Orders::Create.call(order_params)
         render :show, status: :created
       rescue StandardError => e
@@ -28,6 +30,13 @@ module Api
         else
           render json: { error: result[:error] }, status: result[:status]
         end
+      end
+
+      def update
+        @order = Orders::Update.call(@order.id, update_params)
+        render :show, status: :ok
+      rescue StandardError => e
+        raise FailedRequestError, e.message
       end
 
       def reorder
@@ -49,10 +58,19 @@ module Api
         @order = Order.find(params[:id])
       end
 
+      def authorize_order_access
+        authorize @order
+      end
+
       def order_params
-        params.except(order: [
-                        :'cart_items:', :'%i[', :variant_id, :quantity, :']'
-                      ])
+        params.permit(:machine_id, cart_items: %i[variant_id quantity])
+              .merge(user_id: current_user&.id)
+      end
+
+      def update_params
+        permitted = params.permit(cart_items: %i[variant_id quantity])
+        permitted[:user_id] = current_user.id if @order.guest_order? && current_user
+        permitted
       end
 
       def reorder_params

@@ -62,6 +62,7 @@ Rails.application.routes.draw do
           post :create_pickup_code
         end
       end
+
       resources :variants, only: %i[index show]
 
       post 'contact-us', to: 'contact_us_requests#create'
