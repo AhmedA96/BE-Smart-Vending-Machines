@@ -48,6 +48,7 @@ en:
     password_reset:
       wrong_or_expired_code: "Wrong code or code is expired"
       code_sent: "Code sent successfully"
+    account_deleted: "Your account has been deleted successfully"
 
   avo:
     resource_translations:

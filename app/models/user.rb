@@ -156,7 +156,10 @@ class User < ApplicationRecord
 
   def generate_qr_code_token
     self.qr_code_token = loop do
-      token = SecureRandom.hex(10)
+      part1 = SecureRandom.alphanumeric(4).upcase
+      part2 = SecureRandom.alphanumeric(4).upcase
+      part3 = SecureRandom.alphanumeric(4).upcase
+      token = "#{part1}-#{part2}-#{part3}"
       break token unless User.exists?(qr_code_token: token)
     end
   end
