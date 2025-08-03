@@ -31,12 +31,15 @@ Rails.application.routes.draw do
         post 'auth/apple', to: 'omniauth_callbacks#apple'
       end
 
-      resources :users, only: [] do
-        member do
+      resources :users do
+        collection do
           get :most_ordered_items
           post 'favorites/:variant_id', to: 'user_favorites#create'
           delete 'favorites/:variant_id', to: 'user_favorites#destroy'
           get :favorite_items
+          get :profile
+          patch :update_profile
+          delete :destroy
         end
       end
       resources :machines, only: %i[index show] do
