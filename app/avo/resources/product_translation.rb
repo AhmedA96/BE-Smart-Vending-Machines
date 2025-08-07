@@ -4,6 +4,7 @@ module Avo
   module Resources
     class ProductTranslation < Avo::BaseResource
       include ResourceHelpers
+
       self.title = :presentation
       self.visible_on_sidebar = false
       self.includes = []

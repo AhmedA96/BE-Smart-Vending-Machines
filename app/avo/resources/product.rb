@@ -4,6 +4,7 @@ module Avo
   module Resources
     class Product < Avo::BaseResource
       include ResourceHelpers
+
       self.title = :name
       self.includes = %i[product_categories images_attachments variants translations]
       self.attachments = %i[images]

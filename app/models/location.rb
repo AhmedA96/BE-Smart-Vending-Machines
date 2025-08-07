@@ -30,6 +30,7 @@
 #
 class Location < ApplicationRecord
   extend Mobility
+
   translates :name
   accepts_nested_attributes_for :translations
 

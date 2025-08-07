@@ -4,6 +4,7 @@ module Avo
   module Resources
     class MachineStatus < Avo::BaseResource
       include ResourceHelpers
+
       self.title = :status
       self.visible_on_sidebar = false
       self.includes = []

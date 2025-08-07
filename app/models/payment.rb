@@ -18,6 +18,7 @@
 #
 class Payment < ApplicationRecord
   include AASM
+
   acts_as_paranoid
 
   belongs_to :order, optional: false
