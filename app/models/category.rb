@@ -14,6 +14,7 @@
 #
 class Category < ApplicationRecord
   extend Mobility
+
   translates :presentation, :description
 
   has_many :product_categories, dependent: :destroy

@@ -4,6 +4,7 @@ module Avo
   module Resources
     class MachinePaymentMethod < Avo::BaseResource
       include ResourceHelpers
+
       self.includes = []
       self.visible_on_sidebar = false
 

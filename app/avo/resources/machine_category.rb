@@ -4,6 +4,7 @@ module Avo
   module Resources
     class MachineCategory < Avo::BaseResource
       include ResourceHelpers
+
       self.title = :name
       self.includes = %i[translations machines]
       self.default_sort_direction = :asc

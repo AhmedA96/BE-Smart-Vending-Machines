@@ -4,6 +4,7 @@ module Avo
   module Resources
     class Wallet < Avo::BaseResource
       include ResourceHelpers
+
       self.includes = %i[]
       self.title = -> { "#{record.user&.email} " }
       self.search = {

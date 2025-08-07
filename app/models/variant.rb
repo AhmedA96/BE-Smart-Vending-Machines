@@ -33,6 +33,7 @@
 #
 class Variant < ApplicationRecord
   extend Mobility
+
   acts_as_paranoid
   translates :presentation
   accepts_nested_attributes_for :translations

@@ -4,6 +4,7 @@ module Avo
   module Resources
     class Vendor < Avo::BaseResource
       include ResourceHelpers
+
       self.title = :name
       self.includes = %i[machines]
       self.record_selector = true

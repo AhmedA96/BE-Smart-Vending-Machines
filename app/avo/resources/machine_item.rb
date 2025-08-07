@@ -4,6 +4,7 @@ module Avo
   module Resources
     class MachineItem < Avo::BaseResource
       include ResourceHelpers
+
       self.includes = []
       self.visible_on_sidebar = false
 

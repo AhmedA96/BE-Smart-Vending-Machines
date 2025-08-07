@@ -4,6 +4,7 @@ module Avo
   module Resources
     class Machine < Avo::BaseResource
       include ResourceHelpers
+
       self.title = :name
       self.includes = %i[machine_statuses machine_items translations machine_payment_methods]
       self.record_selector = true
