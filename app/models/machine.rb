@@ -87,7 +87,7 @@ class Machine < ApplicationRecord
 
     active
       .select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
-      .order('distance ASC')
+      .order(:distance)
   end
 
   def active?

@@ -60,6 +60,6 @@ class Location < ApplicationRecord
       )
     end
 
-    query.order('distance ASC')
+    query.order(:distance)
   end
 end
