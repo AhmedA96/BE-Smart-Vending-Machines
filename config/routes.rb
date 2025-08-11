@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       resources :brands, only: %i[index show]
 
       resource :cart, controller: :cart, except: [:destroy] do
+        resources :line_items, except: %i[index show]
         member do
           put :update_owner
         end
