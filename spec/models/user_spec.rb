@@ -11,7 +11,7 @@ RSpec.describe User, type: :model do
 
   describe 'password validation' do
     it 'validates password complexity' do
-      user = users(:john_doe)
+      user = users(:user_one)
       user.password = 'simple'
       expect(user).not_to be_valid
       expect(user.errors[:password]).to include(I18n.t('errors.messages.password_complexity'))
@@ -22,7 +22,7 @@ RSpec.describe User, type: :model do
   end
 
   describe '.authenticate' do
-    let(:user) { users(:john_doe) }
+    let(:user) { users(:user_one) }
 
     before do
       user.password = 'ValidP@ssw0rd'

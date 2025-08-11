@@ -5,7 +5,7 @@
 # require 'rails_helper'
 
 # RSpec.describe Api::V1::OrdersController, type: :request do
-#   let(:user) { users(:john_doe) }
+#   let(:user) { users(:user_one) }
 #   let(:order) { orders(:order_001) }
 #   let(:application) { create(:oauth_application) }
 #   let(:access_token) { create(:doorkeeper_access_token, application: application, resource_owner_id: user.id) }
