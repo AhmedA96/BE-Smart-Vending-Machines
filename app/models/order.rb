@@ -53,8 +53,8 @@ class Order < ApplicationRecord
   # Scopes for guest and user orders
   scope :guest_orders, -> { where(user_id: nil) }
   scope :user_orders, -> { where.not(user_id: nil) }
-  scope :guest_carts, -> { where(user_id: nil, status: 'cart') }
-  scope :user_carts, -> { where.not(user_id: nil).where(status: 'cart') }
+  scope :cart, -> { where(status: 'cart') }
+  scope :completed, -> { where(status: %w[paid dispensed]) }
 
   aasm column: 'status' do
     state :cart, initial: true
@@ -107,26 +107,13 @@ class Order < ApplicationRecord
     end
   end
 
-  # Helper methods for guest orders
   def guest_order?
     user_id.nil?
-  end
-
-  def can_checkout?
-    user_id.present? && cart?
   end
 
   def recalculate_totals!
     self.items_total = line_items.sum { |item| item.quantity * item.price }
     save!
-  end
-
-  # Method to attach guest order to user
-  def attach_to_user!(user)
-    raise ArgumentError, 'Order already has a user' if user_id.present?
-    raise ArgumentError, 'User cannot be nil' if user.nil?
-
-    update!(user: user)
   end
 
   private
