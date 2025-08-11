@@ -93,3 +93,10 @@ ar:
       wrong_or_expired_code: "رمز خاطئ أو منتهي الصلاحية"
     contact_us:
       creation_failed: "فشل في إرسال طلب الاتصال. يرجى التحقق من البيانات والمحاولة مرة أخرى."
+    orders:
+      required_quantity_is_not_available_in_the_machine: "الكمية المطلوبة غير متوفرة في الماكينة"
+      exceeds_machine_max_items_limit:
+        one: "يمكنك الاحتفاظ بوحدة واحدة فقط من هذه الماكينة في كل طلب"
+        other: "يمكنك الاحتفاظ فقط ب %{count} وحدات من هذه الماكينة في كل طلب"
+      exceeds_variant_max_orderable_quantity: "يمكنك طلب حتى %{limit} وحدات فقط من %{product_name}"
+      variant_not_available_for_machine: "المنتج غير متوفر لهذه الماكينة"
