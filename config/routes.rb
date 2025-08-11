@@ -69,10 +69,11 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :orders do
+      resources :orders, only: %i[index show] do
         member do
           post :reorder
           post :create_pickup_code
+          put :checkout
         end
       end
 
