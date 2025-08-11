@@ -6,7 +6,7 @@ class OrderPolicy < ApplicationPolicy
       if admin?
         scope.all
       elsif user.present?
-        scope.where(user_id: user.id).or(scope.where(user_id: nil))
+        scope.where(user_id: user.id)
       else
         scope.none
       end
@@ -47,6 +47,10 @@ class OrderPolicy < ApplicationPolicy
 
   def reorder?
     user_owns_order?
+  end
+
+  def add_cart_item?
+    user_owns_order? || guest_order_allowed?
   end
 
   private
