@@ -1,4 +1,4 @@
-john_doe:
+user_one:
   email: "john.doe@example.com"
   encrypted_password: "$2a$12$YourEncryptedPasswordHere"
   name: "John Doe"
@@ -15,7 +15,7 @@ john_doe:
   confirmed_at: <%= 1.month.ago %>
   last_active_at: <%= 1.hour.ago %>
 
-jane_smith:
+user_two:
   email: "jane.smith@example.com"
   encrypted_password: "$2a$12$YourEncryptedPasswordHere"
   name: "Jane Smith"

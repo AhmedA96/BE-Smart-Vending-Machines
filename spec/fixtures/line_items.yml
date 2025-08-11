@@ -24,3 +24,12 @@ order_002_coke:
   price_after_discount: 1.50
   buyx_gety_discount: 0.00
   processed: true
+
+order_004_coke: 
+  order: order_004
+  variant: coke_classic_12oz
+  quantity: 1
+  price: 1.50
+  price_after_discount: 1.50
+  buyx_gety_discount: 0.00  
+  processed: true 

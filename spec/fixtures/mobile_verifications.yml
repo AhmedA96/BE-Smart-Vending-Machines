@@ -6,7 +6,7 @@ one:
   verified: false
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
-  user: john_doe
+  user: user_one
 
 expired_verified:
   code: "654321"
