@@ -33,8 +33,7 @@ module Api
         def current_user
           return super unless doorkeeper_token
 
-          user_model = Constantizer.safe_constantize(doorkeeper_token.resource_owner_type)
-          @current_user ||= user_model.find(doorkeeper_token.resource_owner_id)
+          @current_user ||= User.find(doorkeeper_token.resource_owner_id)
         end
 
         private
