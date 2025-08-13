@@ -11,7 +11,7 @@ module Api
         def create
           build_resource(user_params)
 
-          resource.save ? render('create', status: :created) : render_error(resource.errors, :unprocessable_entity)
+          resource.save ? render('create', status: :created) : render_error(resource.errors, :unprocessable_content)
         end
 
         private

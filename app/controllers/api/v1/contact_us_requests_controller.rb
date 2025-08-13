@@ -13,7 +13,7 @@ module Api
         else
           render json: {
             errors: @contact.errors.messages
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
       end
 

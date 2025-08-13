@@ -30,7 +30,7 @@ module Api
 
         if @mobile_verification.nil? || @mobile_verification.expired?
           return render_error(I18n.t('errors.password_reset.wrong_or_expired_code'),
-                              :unprocessable_entity)
+                              :unprocessable_content)
         end
 
         @mobile_verification.update!(verified: true, expired: true)
