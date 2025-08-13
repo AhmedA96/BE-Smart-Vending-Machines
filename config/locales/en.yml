@@ -28,15 +28,6 @@
 #       enabled: "ON"
 
 en:
-  errors:
-    not_found: "%{model} with id %{id} not found"
-    password_reset:
-      wrong_or_expired_code: "Wrong code or code is expired"
-    contact_us:
-      creation_failed: "Failed to submit contact request. Please check your inputs and try again."
-    too_many_requests: "Too many requests. Please try again later."
-
-
   user:
     wrong_password: "The old password you entered is incorrect"
     password_changed_successfully: "Password changed successfully"
@@ -100,3 +91,18 @@ en:
   verification:
     mobile:
       otp_message: "Your OTP is: %{otp}"
+
+  errors:
+    not_found: "%{model} with id %{id} not found"
+    password_reset:
+      wrong_or_expired_code: "Wrong code or code is expired"
+    contact_us:
+      creation_failed: "Failed to submit contact request. Please check your inputs and try again."
+    too_many_requests: "Too many requests. Please try again later."
+    orders:
+      required_quantity_is_not_available_in_the_machine: "Required quantity for %{product_name} is not available in the machine"
+      exceeds_machine_max_items_limit:
+        one: "You can only checkout one item from this machine per order"
+        other: "You can only checkout only %{count} items from this machine per order"
+      exceeds_variant_max_orderable_quantity: "You can only order up to %{limit} units of %{product_name}"
+      variant_not_available_for_machine: "Variant is not available for this machine"
