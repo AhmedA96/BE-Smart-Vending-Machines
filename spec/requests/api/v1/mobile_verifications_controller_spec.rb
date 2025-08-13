@@ -78,12 +78,12 @@ RSpec.describe Api::V1::MobileVerificationsController, type: :request do
         ).and_return(nil)
       end
 
-      it 'returns unprocessable_entity status' do
+      it 'returns unprocessable_content status' do
         post '/api/v1/mobile_verifications/verify_code',
              params: { mobile_number: mobile_number, verification_code: verification_code },
              headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
