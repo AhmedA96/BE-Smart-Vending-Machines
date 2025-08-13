@@ -48,7 +48,7 @@ module Api
           render :reorder, status: :created
         else
           @errors = result[:errors]
-          render 'shared/errors', status: :unprocessable_entity
+          render 'shared/errors', status: :unprocessable_content
         end
       end
 
