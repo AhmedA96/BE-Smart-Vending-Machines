@@ -12,7 +12,7 @@ json.products do
       json.presentation variant.presentation
       json.master_variant variant.is_master
       json.stock variant.machine_stock(@machine)
-      json.price variant.price_for_price_list(@machine.location&.price_list_id)
+      json.price variant.with_price_list(@machine.location&.price_list_id)&.price
     end
   end
 end
