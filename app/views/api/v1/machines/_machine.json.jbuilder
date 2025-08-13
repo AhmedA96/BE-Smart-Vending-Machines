@@ -9,6 +9,7 @@ json.category machine.category.name
 json.category_id machine.category_id
 json.floor_no machine.floor_no
 json.machine_type machine.machine_type&.name
+json.location_id machine.location_id
 json.image do
   if machine.image.attached?
     json.url url_for(machine.image)

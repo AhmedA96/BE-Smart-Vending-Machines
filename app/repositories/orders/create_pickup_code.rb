@@ -18,7 +18,7 @@ module Orders
 
         { success: true, pickup_code: pickup_code }
       rescue SupplierApiError
-        error_response('Failed to generate pickup code', :unprocessable_entity)
+        error_response('Failed to generate pickup code', :unprocessable_content)
       end
 
       private

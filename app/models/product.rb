@@ -59,6 +59,15 @@ class Product < ApplicationRecord
       .order_by_position
   }
 
+  scope :with_priced_variants_for_machine, lambda { |machine|
+    joins(variants: %i[machine_items price_list_items])
+      .where(machine_items: { machine_id: machine.id })
+      .where(price_list_items: { price_list_id: machine.location&.price_list_id })
+      .includes(:variants)
+      .distinct
+      .order_by_position
+  }
+
   scope :order_by_position, -> { order(position: :asc) }
 
   scope :by_category, lambda { |category_id|
