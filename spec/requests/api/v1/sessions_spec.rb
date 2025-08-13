@@ -30,7 +30,7 @@ RSpec.describe 'User Sessions', type: :request do
       response '422', 'invalid credentials' do
         let(:credentials) { { mobile_number: user.mobile_number, password: 'wrongpassword' } }
         run_test! do
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response.body).to include('Invalid mobile or password')
         end
       end
@@ -38,7 +38,7 @@ RSpec.describe 'User Sessions', type: :request do
       response '422', 'non-existent user' do
         let(:credentials) { { mobile_number: '', password: 'password123' } }
         run_test! do
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response.body).to include('Invalid mobile or password')
         end
       end

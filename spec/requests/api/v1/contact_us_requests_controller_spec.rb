@@ -26,7 +26,7 @@ RSpec.describe 'ContactUsRequests API', type: :request do
     it 'returns validation errors if required fields are missing' do
       post '/api/v1/contact-us', params: { contact: { full_name: '' } }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json_response = response.parsed_body
 
       expect(json_response['errors']).to include(
@@ -44,7 +44,7 @@ RSpec.describe 'ContactUsRequests API', type: :request do
 
       post '/api/v1/contact-us', params: invalid_params
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json_response = response.parsed_body
       expect(json_response['errors']['email']).to include('is invalid')
     end
@@ -56,7 +56,7 @@ RSpec.describe 'ContactUsRequests API', type: :request do
 
       post '/api/v1/contact-us', params: invalid_params
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json_response = response.parsed_body
       expect(json_response['errors']['phone_number']).to include('is invalid')
     end
