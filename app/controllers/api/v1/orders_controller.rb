@@ -4,23 +4,16 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show update reorder create_pickup_code]
-      before_action :authorize_order_access, only: %i[show update reorder]
+      before_action :find_order, only: %i[show reorder create_pickup_code]
+      before_action :authorize_order_access, only: %i[show reorder]
+      before_action :find_cart, only: %i[checkout]
 
       def index
         orders = policy_scope(Order)
-        @orders = paginate(orders)
+        @orders = paginate(orders.completed)
       end
 
       def show; end
-
-      def create
-        authorize Order
-        @order = Orders::Create.call(order_params)
-        render :show, status: :created
-      rescue StandardError => e
-        raise FailedRequestError, e.message
-      end
 
       def create_pickup_code
         result = Orders::CreatePickupCode.call(@order)
@@ -32,24 +25,14 @@ module Api
         end
       end
 
-      def update
-        @order = Orders::Update.call(@order.id, update_params)
-        render :show, status: :ok
-      rescue StandardError => e
-        raise FailedRequestError, e.message
+      def reorder
+        @new_cart = Orders::Reorder.call(@order)
+        render :reorder, status: :created
       end
 
-      def reorder
-        result = Orders::Reorder.call(params[:id], reorder_params)
-
-        if result[:success]
-          @order = result[:order]
-          @reorder_info = result
-          render :reorder, status: :created
-        else
-          @errors = result[:errors]
-          render 'shared/errors', status: :unprocessable_content
-        end
+      def checkout
+        @cart.process_payment!
+        render json: { order_id: @cart.id, total: @cart.total }
       end
 
       private
@@ -62,19 +45,8 @@ module Api
         authorize @order
       end
 
-      def order_params
-        params.permit(:machine_id, cart_items: %i[variant_id quantity])
-              .merge(user_id: current_user&.id)
-      end
-
-      def update_params
-        permitted = params.permit(cart_items: %i[variant_id quantity])
-        permitted[:user_id] = current_user.id if @order.guest_order? && current_user
-        permitted
-      end
-
-      def reorder_params
-        params.permit(:machine_id, :user_id)
+      def find_cart
+        @cart = current_user.orders.find(params[:id])
       end
     end
   end
