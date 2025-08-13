@@ -17,7 +17,7 @@ module Api
             sign_in(resource)
             head :created
           else
-            render_error(I18n.t('user.authentication.invalid_login'), :unprocessable_entity)
+            render_error(I18n.t('user.authentication.invalid_login'), :unprocessable_content)
           end
         end
 

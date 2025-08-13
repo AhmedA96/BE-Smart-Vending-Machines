@@ -19,7 +19,7 @@ module Api
         else
           render json: {
             errors: @favorite.errors.full_messages
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
       end
 
