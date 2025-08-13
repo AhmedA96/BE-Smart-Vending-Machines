@@ -59,6 +59,13 @@ class Variant < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  scope :available_in_machine_with_price_list, lambda { |machine|
+    joins(:machine_items, :price_list_items)
+      .where(machine_items: { machine_id: machine.id })
+      .where(price_list_items: { price_list_id: machine.location&.price_list_id })
+      .distinct
+  }
+
   scope :filtered_by_category, lambda { |category_ids|
     joins(product: :categories)
       .where(categories: { id: category_ids })
