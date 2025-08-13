@@ -21,7 +21,7 @@ module Api
         if @current_user.update(profile_params)
           render :profile
         else
-          render json: { errors: @current_user.errors.full_messages }, status: :unprocessable_entity
+          render json: { errors: @current_user.errors.full_messages }, status: :unprocessable_content
         end
       end
 
@@ -31,7 +31,7 @@ module Api
         else
           render json: {
             errors: @current_user.errors.full_messages
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
       end
 

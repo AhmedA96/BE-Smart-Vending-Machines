@@ -32,7 +32,6 @@ module Api
 
       def checkout
         @cart.process_payment!
-
         render json: { order_id: @cart.id, total: @cart.total }
       end
 

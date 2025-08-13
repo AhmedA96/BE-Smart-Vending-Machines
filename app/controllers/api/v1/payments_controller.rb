@@ -37,7 +37,7 @@ module Api
       end
 
       def render_completed_error
-        render_error('Can\'t update/destroy a completed payment/order', :unprocessable_entity)
+        render_error('Can\'t update/destroy a completed payment/order', :unprocessable_content)
       end
 
       def model_class
