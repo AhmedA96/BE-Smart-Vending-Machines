@@ -9,7 +9,7 @@ RSpec.describe Api::V1::MobileVerificationsController, type: :request do
   let(:mobile_number) { '+971555234' }
 
   describe 'POST /api/v1/mobile_verifications/send_verification_code' do
-    let!(:user) { users(:john_doe) }
+    let!(:user) { users(:user_one) }
 
     context 'when user exists and code is sent successfully' do
       before do
@@ -42,7 +42,7 @@ RSpec.describe Api::V1::MobileVerificationsController, type: :request do
   end
 
   describe 'POST /api/v1/mobile_verifications/verify_code' do
-    let!(:user) { users(:john_doe) }
+    let!(:user) { users(:user_one) }
     let(:verification_code) { '123456' }
     let!(:mobile_verification) { mobile_verifications(:one) }
 

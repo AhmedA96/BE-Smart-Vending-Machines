@@ -1,7 +1,7 @@
 john_admin:
-  user: john_doe
+  user: user_one
   role: admin_role
 
 jane_user:
-  user: jane_smith
+  user: user_two
   role: user_role
