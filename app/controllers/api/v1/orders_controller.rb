@@ -4,7 +4,7 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show reorder create_pickup_code]
+      before_action :find_order, only: %i[show reorder]
       before_action :authorize_order_access, only: %i[show reorder]
       before_action :find_cart, only: %i[checkout]
 
@@ -13,15 +13,11 @@ module Api
         @orders = paginate(orders.completed)
       end
 
-      def show; end
-
-      def create_pickup_code
-        result = Orders::CreatePickupCode.call(@order)
-
-        if result[:success]
-          render json: { pickup_code: result[:pickup_code] }
+      def show
+        if @order.completed?
+          render :show
         else
-          render json: { error: result[:error] }, status: result[:status]
+          render json: [], status: :ok
         end
       end
 
