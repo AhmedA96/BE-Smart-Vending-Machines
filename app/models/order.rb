@@ -38,7 +38,6 @@ class Order < ApplicationRecord
 
   belongs_to :user, optional: true
   belongs_to :machine
-
   has_many :line_items, dependent: :nullify
   has_many :variants, through: :line_items
   has_many :payments, dependent: :nullify
@@ -72,15 +71,12 @@ class Order < ApplicationRecord
     event :mark_paid do
       transitions from: :pending_payment, to: :paid
       after do
-        create_machine_order
+        generate_pickup_code
       end
     end
 
     event :start_dispense do
       transitions from: :paid, to: :pending_dispense
-      after do
-        start_dispense_status_check
-      end
     end
 
     event :complete_dispense do
@@ -116,17 +112,24 @@ class Order < ApplicationRecord
     save!
   end
 
+  def completed?
+    status == 'paid'
+  end
+
   private
 
   def user_present?
     user_id.present?
   end
 
+  def generate_pickup_code
+    Orders::CreatePickupCode.call(self)
+  end
+
   def check_item_limit
     return unless machine&.max_items_per_order
 
     total_items = line_items.sum(:quantity)
-
     return unless total_items > machine.max_items_per_order
 
     errors.add(:base, "Maximum #{machine.max_items_per_order} item allowed per order")
