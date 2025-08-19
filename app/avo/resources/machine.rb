@@ -32,6 +32,7 @@ module Avo
         status = %w[Active Inactive Maintenance Retired]
         field :id, as: :id
         field :name, as: :text
+        field :machineuuid, as: :text
         field :vendor, as: :belongs_to
         field :supplier, as: :belongs_to
         field :location, as: :belongs_to
