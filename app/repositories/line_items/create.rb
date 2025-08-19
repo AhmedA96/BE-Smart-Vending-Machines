@@ -11,7 +11,6 @@ module LineItems
 
       ActiveRecord::Base.transaction do
         existing_item = order.line_items.find_by(variant_id: variant_id)
-
         line_item = if existing_item
                       new_quantity = existing_item.quantity + quantity_to_add
                       existing_item.update!(quantity: new_quantity)
@@ -24,7 +23,6 @@ module LineItems
                       )
                     end
 
-        Stock::Management.call(variant_id, quantity_to_add, machine.id)
         order.recalculate_totals!
 
         line_item
