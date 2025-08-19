@@ -7,6 +7,7 @@ json.cart do
     json.extract! line_item, :id, :variant_id, :quantity, :price
     json.variant_name line_item.variant.name
     json.variant_size line_item.variant.size
+    json.max_orderable_quantity line_item.variant.max_orderable_quantity
     if line_item.variant.product&.images&.attached?
       json.variant_image_url url_for(line_item.variant.product.images.first)
     else
