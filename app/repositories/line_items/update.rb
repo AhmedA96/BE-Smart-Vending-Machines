@@ -11,7 +11,7 @@ module LineItems
           if new_quantity.zero?
             line_item.destroy!
           else
-            line_item.update!(quantity: quantity)
+            line_item.update!(quantity: new_quantity)
           end
 
           order.recalculate_totals!
