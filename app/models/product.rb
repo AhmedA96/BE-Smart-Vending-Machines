@@ -40,6 +40,9 @@ class Product < ApplicationRecord
   has_many_attached :images, dependent: :destroy
 
   has_many :variants, dependent: :destroy
+  has_many :line_items, through: :variants
+  has_many :orders, through: :line_items
+
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
   has_many :product_translations, dependent: :destroy
@@ -112,5 +115,13 @@ class Product < ApplicationRecord
 
   def master
     variants.find_by(is_master: true)
+  end
+
+  def order_count_for_user(user)
+    line_items.joins(:order).where(orders: { user_id: user.id }).count
+  end
+
+  def last_ordered_by_user(user)
+    orders.where(user_id: user.id).order(created_at: :desc).first&.created_at
   end
 end

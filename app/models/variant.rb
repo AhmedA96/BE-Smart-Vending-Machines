@@ -112,12 +112,4 @@ class Variant < ApplicationRecord
   def full_name
     "#{product.name} - #{name unless product&.name == name} [#{sku}]"
   end
-
-  def order_count_for_user(user)
-    line_items.joins(:order).where(orders: { user_id: user.id }).count
-  end
-
-  def last_ordered_by_user(user)
-    orders.where(user_id: user.id).order(created_at: :desc).first&.created_at
-  end
 end
