@@ -43,6 +43,8 @@ class Product < ApplicationRecord
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
   has_many :product_translations, dependent: :destroy
+  has_many :user_favorites, dependent: :destroy
+  has_many :users_who_favorited, through: :user_favorites, source: :user
 
   belongs_to :brand, optional: true
 

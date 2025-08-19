@@ -71,7 +71,7 @@ class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_many :line_items, through: :orders
   has_many :user_favorites, dependent: :destroy
-  has_many :favorite_variants, through: :user_favorites, source: :variant
+  has_many :favorite_products, through: :user_favorites, source: :variant
   has_many :users_roles, dependent: :destroy
   has_many :mobile_verifications, dependent: :destroy
   has_many :addresses, dependent: :destroy
