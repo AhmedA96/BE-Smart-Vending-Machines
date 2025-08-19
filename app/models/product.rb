@@ -90,7 +90,7 @@ class Product < ApplicationRecord
   scope :with_stock_availability, lambda { |machine, quantity|
     joins(variants: :machine_items)
       .where(machine_items: { machine_id: machine.id })
-      .where('machine_items.stock > ?', quantity)
+      .where('(COALESCE(machine_items.stock,0) - COALESCE(machine_items.reserved_stock,0)) > ?', quantity)
   }
 
   scope :alternatives, lambda { |category_id, product_id|
