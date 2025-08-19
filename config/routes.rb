@@ -34,8 +34,8 @@ Rails.application.routes.draw do
       resources :users do
         collection do
           get :most_ordered_items
-          post 'favorites/:variant_id', to: 'user_favorites#create'
-          delete 'favorites/:variant_id', to: 'user_favorites#destroy'
+          post 'favorites/:product_id', to: 'user_favorites#create'
+          delete 'favorites/:product_id', to: 'user_favorites#destroy'
           get :favorite_items
           get :profile
           patch :update_profile
