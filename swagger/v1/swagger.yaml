@@ -33,7 +33,7 @@ paths:
                       example: "A ALI"
                     mobile_number:
                       type: string
-                      example: "+201000000001"
+                      example: "+201000000002"
                     password:
                       type: string
                       format: password
@@ -70,7 +70,7 @@ paths:
               properties:
                 mobile_number:
                   type: string
-                  example: "+201000000001"
+                  example: "+201000000002"
                 password:
                   type: string
                   example: Password!234
@@ -165,7 +165,7 @@ paths:
                   example: password
                 mobile_number:
                   type: string
-                  example: "+201000000001"
+                  example: "+201000000002"
                 password:
                   type: string
                   example: Password!234
@@ -232,7 +232,7 @@ paths:
               properties:
                 mobile_number:
                   type: string
-                  example: "+201000000001"
+                  example: "+201000000002"
       responses:
         '200':
           description: Verification code sent successfully
@@ -262,7 +262,7 @@ paths:
               properties:
                 mobile_number:
                   type: string
-                  example: "+201000000001"
+                  example: "+201000000002"
                 verification_code:
                   type: string
                   example: "123456"
@@ -798,6 +798,261 @@ paths:
         '404':
           description: Brand not found
 
+  # Cart endpoints
+  /api/v1/carts:
+    get:
+      tags:
+        - Cart
+      summary: List all carts for the current user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of carts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+
+    post:
+      tags:
+        - Cart
+      summary: Create a new empty cart
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                machine_id:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Cart created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+
+  /api/v1/carts/{id}:
+    get:
+      tags:
+        - Cart
+      summary: Get cart details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Cart details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Cart not found
+
+    patch:
+      tags:
+        - Cart
+      summary: Update cart owner
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Cart owner updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Cart not found
+
+  /api/v1/carts/{cart_id}/line_items:
+    post:
+      tags:
+        - Cart
+      summary: Add item to cart
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - line_item
+              properties:
+                line_item:
+                  type: object
+                  required:
+                    - variant_id
+                    - quantity
+                  properties:
+                    variant_id:
+                      type: integer
+                      example: 1
+                    quantity:
+                      type: integer
+                      example: 2
+      responses:
+        '201':
+          description: Item added to cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Cart not found
+
+  /api/v1/carts/{cart_id}/line_items/{id}:
+    patch:
+      tags:
+        - Cart
+      summary: Update line item in cart
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - line_item
+              properties:
+                line_item:
+                  type: object
+                  required:
+                    - quantity
+                  properties:
+                    quantity:
+                      type: integer
+                      example: 3
+      responses:
+        '200':
+          description: Line item updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Cart or line item not found
+
+    delete:
+      tags:
+        - Cart
+      summary: Remove line item from cart
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: cart_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Line item removed from cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Order'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Cart or line item not found
+
   # Orders endpoints
   /api/v1/orders:
     get:
@@ -834,59 +1089,6 @@ paths:
         '401':
           description: Unauthorized
 
-    post:
-      tags:
-        - Orders
-      summary: Create a new order
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - machine_id
-                - cart_items
-              properties:
-                machine_id:
-                  type: integer
-                  example: 1
-                cart_items:
-                  type: array
-                  items:
-                    type: object
-                    required:
-                      - variant_id
-                      - quantity
-                    properties:
-                      variant_id:
-                        type: integer
-                        example: 1
-                      quantity:
-                        type: integer
-                        minimum: 1
-                        example: 2
-      responses:
-        '201':
-          description: Order created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/Order'
-        '401':
-          description: Unauthorized
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
   /api/v1/orders/{id}:
     get:
       tags:
@@ -916,10 +1118,12 @@ paths:
         '404':
           description: Order not found
 
-    patch:
+  
+  /api/v1/orders/{id}/checkout:
+    put:
       tags:
         - Orders
-      summary: Update order
+      summary: Checkout an order
       security:
         - BearerAuth: []
       parameters:
@@ -929,31 +1133,9 @@ paths:
           schema:
             type: integer
             example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                cart_items:
-                  type: array
-                  items:
-                    type: object
-                    required:
-                      - variant_id
-                      - quantity
-                    properties:
-                      variant_id:
-                        type: integer
-                        example: 1
-                      quantity:
-                        type: integer
-                        minimum: 1
-                        example: 2
       responses:
         '200':
-          description: Order updated successfully
+          description: Checkout successful
           content:
             application/json:
               schema:
@@ -965,9 +1147,6 @@ paths:
           description: Unauthorized
         '404':
           description: Order not found
-        '422':
-          description: Validation error
-
   /api/v1/orders/{id}/reorder:
     post:
       tags:
@@ -1125,7 +1304,7 @@ paths:
                       example: "Acme Corp"
                     phone_number:
                       type: string
-                      example: "+201000000001"
+                      example: "+201000000002"
       responses:
         '201':
           description: Contact request submitted successfully
