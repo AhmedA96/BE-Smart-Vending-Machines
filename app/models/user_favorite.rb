@@ -7,32 +7,32 @@
 #  id         :bigint           not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  product_id :bigint
 #  user_id    :bigint           not null
-#  variant_id :bigint           not null
 #
 # Indexes
 #
 #  index_user_favorites_on_created_at              (created_at)
+#  index_user_favorites_on_product_id              (product_id)
 #  index_user_favorites_on_user_id                 (user_id)
-#  index_user_favorites_on_user_id_and_variant_id  (user_id,variant_id) UNIQUE
-#  index_user_favorites_on_variant_id              (variant_id)
+#  index_user_favorites_on_user_id_and_product_id  (user_id,product_id) UNIQUE
 #
 # Foreign Keys
 #
+#  fk_rails_...  (product_id => products.id)
 #  fk_rails_...  (user_id => users.id)
-#  fk_rails_...  (variant_id => variants.id)
 #
 class UserFavorite < ApplicationRecord
   belongs_to :user
-  belongs_to :variant
+  belongs_to :product
 
-  validates :user_id, uniqueness: { scope: :variant_id }
+  validates :user_id, uniqueness: { scope: :product_id }
 
   scope :recent, -> { order(created_at: :desc) }
 
   def display_name
-    if user && variant
-      "#{user.name} Likes #{variant.product&.name} - #{variant.name}"
+    if user && product
+      "#{user.name} Likes #{product&.name}"
     else
       "Favorite ##{id}"
     end

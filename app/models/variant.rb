@@ -25,6 +25,7 @@
 #  index_variants_on_active        (active)
 #  index_variants_on_created_at    (created_at)
 #  index_variants_on_deleted_at    (deleted_at)
+#  index_variants_on_goods_uuid    (goods_uuid) UNIQUE
 #  index_variants_on_position      (position)
 #  index_variants_on_product_id    (product_id)
 #  index_variants_on_product_size  (product_id,size) UNIQUE
@@ -54,8 +55,6 @@ class Variant < ApplicationRecord
   has_many :line_items, dependent: :destroy
   has_many :orders, through: :line_items
   has_many :variant_translations, dependent: :destroy
-  has_many :user_favorites, dependent: :destroy
-  has_many :users_who_favorited, through: :user_favorites, source: :user
 
   scope :active, -> { where(active: true) }
 
@@ -112,13 +111,5 @@ class Variant < ApplicationRecord
 
   def full_name
     "#{product.name} - #{name unless product&.name == name} [#{sku}]"
-  end
-
-  def order_count_for_user(user)
-    line_items.joins(:order).where(orders: { user_id: user.id }).count
-  end
-
-  def last_ordered_by_user(user)
-    orders.where(user_id: user.id).order(created_at: :desc).first&.created_at
   end
 end

@@ -6,13 +6,14 @@ module Api
       before_action :current_user
 
       def create
-        @favorite = @current_user.user_favorites.build(variant_id: params[:variant_id])
+        @favorite = @current_user.user_favorites.build(product_id: params[:product_id])
 
         if @favorite.save
           render json: {
             message: 'Item added to favorites',
             favorite: {
-              variant_id: @favorite.variant_id,
+              product_id: @favorite.product_id,
+              product_name: @favorite.product.name,
               favorited_at: @favorite.created_at
             }
           }, status: :created
@@ -24,7 +25,7 @@ module Api
       end
 
       def destroy
-        @favorite = @current_user.user_favorites.find_by(variant_id: params[:variant_id])
+        @favorite = @current_user.user_favorites.find_by(product_id: params[:product_id])
 
         if @favorite
           @favorite.destroy
