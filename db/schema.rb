@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_27_000002) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_12_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -196,6 +196,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_27_000002) do
     t.datetime "updated_at", null: false
     t.bigint "variant_id", null: false
     t.integer "line_number"
+    t.integer "reserved_stock", default: 0, null: false
     t.index ["machine_id", "variant_id"], name: "index_machine_items_on_machine_id_and_variant_id", unique: true
     t.index ["machine_id"], name: "index_machine_items_on_machine_id"
     t.index ["variant_id"], name: "index_machine_items_on_variant_id"

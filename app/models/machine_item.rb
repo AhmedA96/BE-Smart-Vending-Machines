@@ -4,13 +4,14 @@
 #
 # Table name: machine_items
 #
-#  id          :bigint           not null, primary key
-#  line_number :integer
-#  stock       :integer          default(0)
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  machine_id  :bigint           not null
-#  variant_id  :bigint           not null
+#  id             :bigint           not null, primary key
+#  line_number    :integer
+#  reserved_stock :integer          default(0), not null
+#  stock          :integer          default(0)
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  machine_id     :bigint           not null
+#  variant_id     :bigint           not null
 #
 # Indexes
 #
@@ -29,6 +30,7 @@ class MachineItem < ApplicationRecord
   has_one :product, through: :variant
 
   validates :stock, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :reserved_stock, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   # This validation is backed by a unique index on (machine_id, variant_id)
   validates :variant_id, uniqueness: { scope: :machine_id }
 end
