@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_120000) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_19_091226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -410,10 +410,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_120000) do
     t.string "status", default: "pending", null: false
     t.integer "card_id"
     t.integer "order_id"
-    t.integer "payment_method_id"
     t.string "token_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "payment_method_id"
   end
 
   create_table "price_list_items", force: :cascade do |t|
@@ -497,13 +497,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_120000) do
 
   create_table "user_favorites", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "variant_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "product_id"
     t.index ["created_at"], name: "index_user_favorites_on_created_at"
-    t.index ["user_id", "variant_id"], name: "index_user_favorites_on_user_id_and_variant_id", unique: true
+    t.index ["product_id"], name: "index_user_favorites_on_product_id"
+    t.index ["user_id", "product_id"], name: "index_user_favorites_on_user_id_and_product_id", unique: true
     t.index ["user_id"], name: "index_user_favorites_on_user_id"
-    t.index ["variant_id"], name: "index_user_favorites_on_variant_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -648,8 +648,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_120000) do
   add_foreign_key "product_categories", "products"
   add_foreign_key "product_translations", "products"
   add_foreign_key "products", "brands"
+  add_foreign_key "user_favorites", "products"
   add_foreign_key "user_favorites", "users"
-  add_foreign_key "user_favorites", "variants"
   add_foreign_key "variant_translations", "variants"
   add_foreign_key "wallet_transactions", "wallets"
   add_foreign_key "wallets", "users"

@@ -213,6 +213,186 @@ paths:
         '401':
           description: Unauthorized - Invalid or missing token
 
+   # --- Users ---
+  /api/v1/users/favorites:
+    get:
+      tags:
+        - User
+      summary: Get user favorite items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of favorite items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+  /api/v1/users/most_ordered:
+    get:
+      tags:
+        - User
+      summary: Get user's most ordered items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: List of most ordered items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+  /api/v1/users/profile:
+    get:
+      tags:
+        - User
+      summary: Get current user profile
+      responses:
+        '200':
+          description: User profile
+
+
+  /api/v1/users/update_profile:
+    put:
+      tags:
+        - User
+    summary: Update current user profile
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "Tech User"
+                  avatar:
+                    type: string
+                    example: "https://example.com/avatar.png"
+                  email:
+                    type: string
+                    example: "tech@example.com"
+                  date_of_birth:
+                    type: string
+                    format: date
+                    example: "1990-01-01"
+                  locale:
+                    type: string
+                    example: "en"
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
+
+  /api/v1/users/destroy:
+    delete:
+      tags:
+        - User
+      summary: Delete current user account
+      responses:
+        '200':
+          description: Account deleted
+        '422':
+          description: Could not delete account
+
+  # User Favorites endpoints
+  /api/v1/users/favorites/{product_id}:
+    post:
+      tags:
+        - User Favorites
+      summary: Add item to user favorites
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Item added to favorites successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User or product not found
+
+    delete:
+      tags:
+        - User Favorites
+      summary: Remove item from user favorites
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Item removed from favorites successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User or product not found
+          
   # Mobile verification endpoints
   /api/v1/mobile_verifications/send_code:
     post:
@@ -1720,147 +1900,7 @@ paths:
         '401':
           description: Unauthorized - Invalid or missing token
 
-  # User Favorites endpoints
-  /api/v1/users/{id}/favorites/{variant_id}:
-    post:
-      tags:
-        - User Favorites
-      summary: Add item to user favorites
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: variant_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-      responses:
-        '200':
-          description: Item added to favorites successfully
-        '401':
-          description: Unauthorized
-        '404':
-          description: User or variant not found
-
-    delete:
-      tags:
-        - User Favorites
-      summary: Remove item from user favorites
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: variant_id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-      responses:
-        '200':
-          description: Item removed from favorites successfully
-        '401':
-          description: Unauthorized
-        '404':
-          description: User or variant not found
-
-  /api/v1/users/{id}/favorite_items:
-    get:
-      tags:
-        - User Favorites
-      summary: Get user favorite items
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: page
-          in: query
-          schema:
-            type: integer
-            example: 1
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            example: 10
-      responses:
-        '200':
-          description: List of favorite items
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Product'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
-        '401':
-          description: Unauthorized
-        '404':
-          description: User not found
-
-  /api/v1/users/{id}/most_ordered_items:
-    get:
-      tags:
-        - Users
-      summary: Get user's most ordered items
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            example: 1
-        - name: page
-          in: query
-          schema:
-            type: integer
-            example: 1
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            example: 10
-      responses:
-        '200':
-          description: List of most ordered items
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Product'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMeta'
-        '401':
-          description: Unauthorized
-        '404':
-          description: User not found
+  
 
 components:
   securitySchemes:

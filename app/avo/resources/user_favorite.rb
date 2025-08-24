@@ -4,14 +4,13 @@ module Avo
   module Resources
     class UserFavorite < Avo::BaseResource
       self.title = :display_name
-      self.includes = [:user, :variant, { variant: :product }]
+      self.includes = [:user, :product, { product: :variants }]
       self.search = {
         query: lambda {
-          query.joins(:user, variant: :product)
+          query.joins(:user, product: :variants)
                .ransack(
                  user_email_cont: params[:q],
                  user_name_cont: params[:q],
-                 variant_name_cont: params[:q],
                  variant_product_name_cont: params[:q],
                  m: 'or'
                ).result(distinct: false)
@@ -25,26 +24,26 @@ module Avo
                      placeholder: 'Select a user',
                      display_with: -> { record.user&.email || 'No user' }
 
-        field :variant, as: :belongs_to,
+        field :product, as: :belongs_to,
                         searchable: true,
-                        placeholder: 'Select a variant',
+                        placeholder: 'Select a product',
                         display_with: lambda {
-                          if record.variant
-                            "#{record.variant.product&.name} - #{record.variant.name}"
+                          if record.product
+                            "#{record.product.name} - #{record.product.variants.map(&:name).join(', ')}"
                           else
-                            'No variant'
+                            'No product'
                           end
                         }
 
         # field to show product info
         field :product_name, as: :text, readonly: true, hide_on: %i[new edit] do
-          record.variant&.product&.name
+          record.product&.name
         end
 
         # Show order count for this user-variant combination
         field :user_order_count, as: :number, readonly: true, hide_on: %i[new edit] do
-          if record.user && record.variant
-            record.variant.order_count_for_user(record.user)
+          if record.user && record.product
+            record.product.order_count_for_user(record.user)
           else
             0
           end
@@ -52,7 +51,7 @@ module Avo
 
         # Show last ordered date
         field :last_ordered, as: :date_time, readonly: true, hide_on: %i[new edit] do
-          record.variant.last_ordered_by_user(record.user) if record.user && record.variant
+          record.product.last_ordered_by_user(record.user) if record.user && record.product
         end
 
         field :created_at, as: :date_time, readonly: true,
