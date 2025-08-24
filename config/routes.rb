@@ -33,13 +33,13 @@ Rails.application.routes.draw do
 
       resources :users do
         collection do
-          get :most_ordered_items
-          post 'favorites/:product_id', to: 'user_favorites#create'
-          delete 'favorites/:product_id', to: 'user_favorites#destroy'
-          get :favorite_items
           get :profile
           patch :update_profile
           delete :destroy
+          post 'favorites/:product_id', to: 'user_favorites#create'
+          delete 'favorites/:product_id', to: 'user_favorites#destroy'
+          get :most_ordered
+          get :favorites
         end
       end
       resources :machines, only: %i[index show] do

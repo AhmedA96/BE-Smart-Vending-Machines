@@ -5,11 +5,11 @@ module Api
     class UsersController < ApplicationController
       before_action :current_user
 
-      def most_ordered_items
+      def most_ordered
         @items = @current_user.most_ordered_products(limit: params[:limit] || 10)
       end
 
-      def favorite_items
+      def favorites
         @favorites = @current_user.user_favorites.includes(product: :variants)
                                   .recent
                                   .limit(params[:limit] || 20)
