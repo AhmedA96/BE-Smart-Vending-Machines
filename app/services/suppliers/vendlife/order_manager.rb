@@ -120,6 +120,9 @@ module Suppliers
 
       def create(machine, order)
         order_params = build_pickup_params(machine, order)
+
+        Rails.logger.info("[PickupOrderCreator] Request params: #{order_params.to_json}")
+
         result = @client.make_request(:post, '/commpick/productionpick', {}, order_params)
 
         unless result['result'] == '200'
@@ -141,7 +144,7 @@ module Suppliers
           machineUuid: machine.machineuuid.to_i,
           orderNo: order.number,
           orderTime: order.created_at.iso8601,
-          price: order.total.to_f,
+          price: order.items_total.to_f,
           lock: 1,
           timeOut: 10
         }
