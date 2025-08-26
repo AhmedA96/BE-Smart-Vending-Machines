@@ -10,6 +10,15 @@ module Orders
       def process_order_payments(order, user)
         payments = order.payments.pending
 
+        total_pending = payments.sum(:amount)
+        if total_pending > order.items_total
+          payments.each do |payment|
+            payment.failed!
+            payment.update!(message: 'Total pending payments exceed order total')
+          end
+          return false
+        end
+
         payment_results = payments.map do |payment|
           process_single_payment(payment, user)
         end
