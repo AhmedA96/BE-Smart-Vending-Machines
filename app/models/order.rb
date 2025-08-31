@@ -66,6 +66,15 @@ class Order < ApplicationRecord
 
     event :process_payment do
       transitions from: :cart, to: :pending_payment, guard: :user_present?
+      after do
+        payment_successful = Orders::ProcessPayment.call(self, user)
+
+        if payment_successful
+          mark_paid!
+        else
+          fail!
+        end
+      end
     end
 
     event :mark_paid do
