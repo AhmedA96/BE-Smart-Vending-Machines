@@ -109,6 +109,14 @@ class Variant < ApplicationRecord
       .pick('machine_items.stock') || 0
   end
 
+  def machine_available_stock(machine)
+    return 0 unless machine&.id
+
+    MachineItem
+      .where(variant_id: id, machine_id: machine)
+      .pick(Arel.sql('COALESCE(machine_items.stock,0) - COALESCE(machine_items.reserved_stock,0)')).to_i
+  end
+
   def full_name
     "#{product.name} - #{name unless product&.name == name} [#{sku}]"
   end

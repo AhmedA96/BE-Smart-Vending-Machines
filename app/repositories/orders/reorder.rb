@@ -38,8 +38,6 @@ module Orders
           quantity: item.quantity,
           price: price
         )
-
-        Stock::Management.call(item.variant_id, item.quantity, new_order.machine.id)
       end
     end
   end

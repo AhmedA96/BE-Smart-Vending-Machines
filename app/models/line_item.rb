@@ -76,6 +76,6 @@ class LineItem < ApplicationRecord
   end
 
   def available_quantity
-    Variant.find(variant_id).machine_stock(order.machine)
+    Variant.find(variant_id).machine_available_stock(order.machine)
   end
 end

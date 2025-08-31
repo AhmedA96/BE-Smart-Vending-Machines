@@ -5,10 +5,10 @@ Rails.logger.debug 'Cleaning database...'
 
 # Clear main tables first
 Order.destroy_all
-MachineType.destroy_all
 MachineStatus.destroy_all
 MachineItem.destroy_all
 Machine.destroy_all
+MachineType.destroy_all
 Vendor.destroy_all
 MachineCategory.destroy_all
 ProductCategory.destroy_all

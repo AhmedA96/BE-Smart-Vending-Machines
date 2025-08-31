@@ -24,6 +24,7 @@ module Avo
       def fields
         field :id, as: :id
         field :name, as: :text
+        field :goods_uuid, as: :text
         field :sku, as: :text
         field :is_master, as: :boolean
         field :points, as: :number, only_on: %i[index show]

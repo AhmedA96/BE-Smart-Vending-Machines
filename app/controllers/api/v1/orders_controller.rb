@@ -4,9 +4,8 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show reorder]
+      before_action :find_order, only: %i[show reorder checkout]
       before_action :authorize_order_access, only: %i[show reorder]
-      before_action :find_cart, only: %i[checkout]
 
       def index
         orders = policy_scope(Order)
@@ -27,9 +26,9 @@ module Api
       end
 
       def checkout
-        @cart.process_payment!
+        @order.process_payment!
 
-        render json: { order_id: @cart.id, total: @cart.items_total }
+        render :show, status: :ok
       end
 
       private
@@ -40,10 +39,6 @@ module Api
 
       def authorize_order_access
         authorize @order
-      end
-
-      def find_cart
-        @cart = current_user.orders.find(params[:id])
       end
     end
   end

@@ -8,7 +8,6 @@ RSpec.describe LineItems::Create do
   let(:variant) { variants(:coke_classic_12oz) }
 
   before do
-    allow(Stock::Management).to receive(:call)
     allow(order).to receive(:recalculate_totals!)
   end
 
