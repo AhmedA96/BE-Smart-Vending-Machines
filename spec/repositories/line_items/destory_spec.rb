@@ -7,7 +7,6 @@ RSpec.describe LineItems::Destroy do
   let(:order) { line_item.order }
 
   before do
-    allow(Stock::Management).to receive(:call)
     allow(order).to receive(:recalculate_totals!)
     allow(order).to receive(:reload).and_return(order)
   end

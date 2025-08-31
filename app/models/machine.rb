@@ -75,7 +75,7 @@ class Machine < ApplicationRecord
   scope :stocked, lambda {
     joins(machine_items: :variant)
       .where(variants: { active: true })
-      .where('machine_items.stock > 0')
+      .where('(COALESCE(machine_items.stock,0) - COALESCE(machine_items.reserved_stock,0)) > 0')
       .distinct
   }
 
@@ -97,7 +97,7 @@ class Machine < ApplicationRecord
   def stocked?
     machine_items.joins(:variant)
                  .where(variants: { active: true })
-                 .where('machine_items.stock > 0')
+                 .where('(COALESCE(machine_items.stock,0) - COALESCE(machine_items.reserved_stock,0)) > 0')
                  .exists?
   end
 end

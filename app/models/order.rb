@@ -54,6 +54,9 @@ class Order < ApplicationRecord
   scope :user_orders, -> { where.not(user_id: nil) }
   scope :cart, -> { where(status: 'cart') }
   scope :completed, -> { where(status: %w[paid dispensed]) }
+  scope :expired_carts, lambda { |timeout_minutes = 10|
+    where(status: 'cart').where(created_at: ...timeout_minutes.minutes.ago)
+  }
 
   aasm column: 'status' do
     state :cart, initial: true
@@ -67,6 +70,8 @@ class Order < ApplicationRecord
     event :process_payment do
       transitions from: :cart, to: :pending_payment, guard: :user_present?
       after do
+        Stock::Reservation.reserve_order!(self)
+
         payment_successful = Orders::ProcessPayment.call(self, user)
 
         if payment_successful
@@ -80,6 +85,7 @@ class Order < ApplicationRecord
     event :mark_paid do
       transitions from: :pending_payment, to: :paid
       after do
+        Stock::Reservation.commit_order!(self)
         generate_pickup_code
       end
     end
@@ -97,6 +103,9 @@ class Order < ApplicationRecord
 
     event :fail do
       transitions from: %i[pending_payment paid pending_dispense], to: :failed
+      after do
+        Stock::Reservation.release_order!(self)
+      end
     end
 
     event :cancel do

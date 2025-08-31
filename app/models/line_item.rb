@@ -35,7 +35,6 @@ class LineItem < ApplicationRecord
   validate :variant_available_for_machine
   validate :sufficient_stock, on: %i[create update]
   validate :within_machine_item_limit, on: %i[create update]
-  validate :within_max_orderable_quantity
 
   def price_list
     order.machine.price_list
@@ -63,32 +62,6 @@ class LineItem < ApplicationRecord
                I18n.t('errors.orders.exceeds_machine_max_items_limit', count: order.machine.max_items_per_order))
   end
 
-  def within_max_orderable_quantity
-    return unless variant&.product&.max_orderable_quantity &&
-                  order.machine.machine_items.exists?(variant: variant)
-
-    product = variant.product
-    variant_ids_for_product = product.variants.ids
-
-    current_product_total = order.line_items
-                                 .where(variant_id: variant_ids_for_product)
-                                 .where.not(id: id)
-                                 .sum(:quantity)
-
-    total_quantity = current_product_total + quantity.to_i
-
-    return unless total_quantity > product.max_orderable_quantity
-
-    errors.add(
-      :quantity,
-      I18n.t(
-        'errors.orders.exceeds_variant_max_orderable_quantity',
-        limit: product.max_orderable_quantity,
-        product_name: product.presentation
-      )
-    )
-  end
-
   def sufficient_stock
     return unless order&.machine &&
                   variant &&
@@ -103,6 +76,6 @@ class LineItem < ApplicationRecord
   end
 
   def available_quantity
-    Variant.find(variant_id).machine_stock(order.machine)
+    Variant.find(variant_id).machine_available_stock(order.machine)
   end
 end

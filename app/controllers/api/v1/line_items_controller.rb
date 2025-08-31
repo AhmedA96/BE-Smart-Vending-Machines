@@ -15,6 +15,8 @@ module Api
 
       def update
         LineItems::Update.call(@line_item, update_params)
+        @line_items = @cart.line_items.includes(variant: :product).order(:created_at)
+
         render 'api/v1/cart/show', status: :ok
       end
 
