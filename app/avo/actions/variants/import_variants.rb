@@ -20,7 +20,7 @@ module Avo
                                 default: false
         end
 
-        def handle(**args)
+        def handle(**args) # rubocop:disable Metrics/CyclomaticComplexity
           fields = args[:fields] || args[:arguments] || {}
           file = fields['file'] || fields[:file]
           allow_updates = fields['allow_updates'] || fields[:allow_updates]
