@@ -7,7 +7,7 @@ module Avo
 
       self.title = :full_name
       self.includes = %i[translations]
-      self.visible_on_sidebar = false
+      self.visible_on_sidebar = true
       self.search = {
         query: lambda {
           query.ransack(name_cont: params[:q], sku_cont: params[:q],
@@ -41,6 +41,10 @@ module Avo
         tabs id: :many_relation_tabs do
           field :variant_translations, as: :has_many, reloadable: true
         end
+      end
+
+      def actions
+        action Avo::Actions::Variants::ImportVariants, arguments: { confirm_text: 'Are you sure you want to import variants?' }
       end
     end
   end
