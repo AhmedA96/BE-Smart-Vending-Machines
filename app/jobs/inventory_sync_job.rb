@@ -4,7 +4,6 @@ class InventorySyncJob < ApplicationJob
   queue_as :inventory_sync
 
   RATE_LIMIT_DELAY = 1.2
-  RECURRING_INTERVAL = 5.minutes
 
   def perform
     machines = Machine.joins(:supplier)
@@ -16,8 +15,6 @@ class InventorySyncJob < ApplicationJob
 
       sleep(RATE_LIMIT_DELAY) if index < machines.count - 1
     end
-
-    InventorySyncJob.set(wait: RECURRING_INTERVAL).perform_later
   end
 
   private
