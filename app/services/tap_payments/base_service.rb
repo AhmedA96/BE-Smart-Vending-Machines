@@ -36,7 +36,7 @@ module TapPayments
       end
 
       def tap_credentials
-        Rails.application.credentials.tap_payment
+        Rails.application.credentials[Rails.env.to_sym][:tap_payment]
       end
     end
   end

@@ -110,6 +110,9 @@ Rails.application.routes.draw do
           get :trending
         end
       end
+
+      resources :tap_webhook, only: [:create]
+      resources :tap_redirect, only: :index
     end
   end
 

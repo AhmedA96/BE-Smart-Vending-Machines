@@ -3,32 +3,58 @@
 module TapPayments
   class CreateCardCharge < BaseService
     class << self
-      def call(payment, token_id, card_id, user)
+      def call(source_type, payment, token_id, card_id, user)
         handle_customer_creation(user)
 
-        body = prepare_order_params(payment, token_id, card_id, user)
+        body = build_charge_params(source_type, payment, token_id, card_id, user)
         make_request(:post, tap_credentials[:create_charge_url], body)
       end
 
       private
 
-      def prepare_order_params(payment, token_id, card_id, user)
+      def build_charge_params(source_type, payment, token_id, card_id, user)
         card = user.payment_customer.payment_cards.find(card_id)
-        order = payment.order
         currency = payment.currency
-        {
+
+        base_params = {
           amount: payment.amount,
-          currency:,
-          customer_initiated: false,
+          currency: currency,
+          customer_initiated: true,
           threeDSecure: true,
           save_card: false,
-          reference: { order: order.number },
-          receipt: { email: false, sms: false },
           customer: { id: user.payment_customer.payment_customer_number },
           source: { id: token_id },
           post: { url: tap_credentials[:post_url] },
           redirect: { url: tap_credentials[:redirect_url] },
           payment_agreement: { id: card.payment_agreement_id }
+        }
+
+        case source_type
+        when PAYMENT_OPERATION_TYPES[:order_payment]
+          base_params.merge(order_specific_params(payment))
+        when PAYMENT_OPERATION_TYPES[:wallet_refill]
+          base_params.merge(wallet_specific_params(payment))
+        else
+          raise FailedRequestError, "Unsupported source_type: #{source_type}"
+        end
+      end
+
+      def order_specific_params(payment)
+        {
+          description: 'VNDG Payment',
+          reference: { order: payment.order.number },
+          receipt: { email: false, sms: false }
+        }
+      end
+
+      def wallet_specific_params(payment)
+        {
+          description: 'VNDG Payment',
+          reference: {
+            source_type: 'Wallet Refill',
+            source_id: payment.id
+          },
+          receipt: { email: true, sms: true }
         }
       end
     end
