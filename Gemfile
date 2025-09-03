@@ -91,6 +91,9 @@ gem 'rails-i18n'
 gem 'avo', '>= 3.11'
 # gem "avo-advanced", ">= 3.11", source: "https://packager.dev/avo-hq/"
 
+# Spreadsheets Reader
+gem 'roo'
+
 # Development Tools
 group :development do
   gem "actual_db_schema"
