@@ -551,6 +551,9 @@ GEM
       activerecord (>= 5.0)
       rgeo (>= 1.0.0)
     rolify (6.0.1)
+    roo (2.10.1)
+      nokogiri (~> 1)
+      rubyzip (>= 1.3.0, < 3.0.0)
     rouge (4.6.0)
     rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
@@ -795,6 +798,7 @@ DEPENDENCIES
   rails-i18n
   ransack
   rolify
+  roo
   rspec-rails
   rswag-api
   rswag-specs
