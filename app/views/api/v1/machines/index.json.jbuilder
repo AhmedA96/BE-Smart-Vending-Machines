@@ -7,6 +7,10 @@ json.machines do
   end
 end
 
+json.categories @categories do |category|
+  json.extract! category, :id, :name
+end
+
 json.pagination do
   json.partial! 'api/v1/shared/pagination', collection: @machines
 end
