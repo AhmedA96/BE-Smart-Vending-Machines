@@ -45,6 +45,9 @@ Rails.application.routes.draw do
           get :most_ordered
           get :favorites
         end
+        member do
+          resources :payment_cards, only: %i[create]
+        end
       end
       resources :machines, only: %i[index show] do
         collection do
