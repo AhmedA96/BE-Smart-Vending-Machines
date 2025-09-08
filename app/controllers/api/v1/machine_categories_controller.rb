@@ -4,9 +4,13 @@ module Api
   module V1
     class MachineCategoriesController < ApplicationController
       before_action :set_category, only: %i[show]
-      before_action :set_location, only: %i[index]
       def index
-        @machine_categories = paginate(MachineCategory.by_location(params[:location_id]))
+        categories = MachineCategory.for_nearby_machines(
+          latitude: params[:latitude],
+          longitude: params[:longitude]
+        ).includes(:translations, :logo_attachment)
+
+        @machine_categories = paginate(categories)
       end
 
       def show; end
@@ -15,10 +19,6 @@ module Api
 
       def set_category
         @machine_category = MachineCategory.find(params[:id])
-      end
-
-      def set_location
-        @location = Location.find(params[:location_id])
       end
     end
   end
