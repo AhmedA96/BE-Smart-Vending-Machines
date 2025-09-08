@@ -79,6 +79,13 @@ class Machine < ApplicationRecord
       .distinct
   }
 
+  scope :with_categories, lambda {
+    select(:category_id)
+      .distinct
+      .includes(:category)
+      .map(&:category)
+  }
+
   def self.nearby(latitude:, longitude:)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
     distance_sql = "ST_Distance(coordinates, #{point_sql})"
