@@ -27,7 +27,7 @@ RSpec.describe Api::V1::UserFavoritesController, type: :request do
       post "/api/v1/users/favorites/#{product.id}",
            headers: { Authorization: "Bearer #{access_token.token}" }
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       body = response.parsed_body
       expect(body['errors']).to include('User has already been taken')
     end
