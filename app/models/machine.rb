@@ -79,13 +79,15 @@ class Machine < ApplicationRecord
       .distinct
   }
 
-  def self.nearby(latitude:, longitude:)
+  def self.nearby(latitude:, longitude:, radius_in_meters: 5000)
     point_sql = 'ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)'
     distance_sql = "ST_Distance(coordinates, #{point_sql})"
+    within_sql = "ST_DWithin(coordinates, #{point_sql}, :radius)"
 
-    binds = { latitude: latitude, longitude: longitude }
+    binds = { latitude: latitude, longitude: longitude, radius: radius_in_meters }
 
     active
+      .where(ActiveRecord::Base.sanitize_sql_array([within_sql, binds]))
       .select(Arel.sql(ActiveRecord::Base.sanitize_sql_array(["*, #{distance_sql} as distance", binds])))
       .order(:distance)
   end
