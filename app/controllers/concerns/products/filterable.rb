@@ -33,8 +33,32 @@ module Products
       products.with_stock_availability(@machine, stock_availability_param.to_i)
     end
 
+    def category_id_param_present?
+      params[:q] && category_id_param.present?
+    end
+
+    def apply_category_filter(products)
+      products.by_category(category_id_param)
+    end
+
+    def machine_id_param_present?
+      params[:q] && machine_id_param.present?
+    end
+
+    def apply_machine_filter(products)
+      products.filtered_by_machine(machine_id_param)
+    end
+
+    def machine_id_param
+      params[:q][:machine_id]
+    end
+
     def stock_availability_param
       params[:q][:stock_availability]
+    end
+
+    def category_id_param
+      params[:q][:category_id]
     end
   end
 end
