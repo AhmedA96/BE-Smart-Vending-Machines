@@ -3,7 +3,6 @@
 module Api
   module V1
     class PaymentCardsController < ApplicationController
-      rescue_from StandardError, with: :render_invalid
       skip_before_action :doorkeeper_authorize!, only: :create
       before_action :find_card, only: %w[destroy toggle_default]
 
@@ -52,8 +51,7 @@ module Api
       end
 
       def valid_request?
-        client_id = params.dig(:metadata, :client_id) || request_user.client_id
-        TapPayments::ValidateRequest.new(params, request.headers, client_id).call
+        TapPayments::ValidateRequest.new(params, request.headers).call
       end
 
       def valid_transaction?

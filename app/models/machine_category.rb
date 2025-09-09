@@ -24,10 +24,18 @@ class MachineCategory < ApplicationRecord
   validates :name, presence: true, length: { minimum: 2, maximum: 255 }
   validates :description, length: { maximum: 500 }, allow_blank: true
 
-  # returns distinct machines categories for only active machines with a given location id
-  scope :by_location, lambda { |location_id|
-    joins(:machines).where(machines: { location_id: location_id })
-                    .merge(Machine.active)
-                    .distinct
+  scope :for_machines, lambda { |machine_ids|
+    joins(:machines)
+      .where(machines: { id: machine_ids })
+      .distinct
+  }
+
+  scope :for_nearby_machines, lambda { |latitude:, longitude:|
+    nearby_machine_ids = Machine.nearby(
+      latitude: latitude,
+      longitude: longitude
+    ).reorder('').ids
+
+    for_machines(nearby_machine_ids)
   }
 end

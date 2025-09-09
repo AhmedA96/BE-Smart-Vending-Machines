@@ -45,8 +45,12 @@ Rails.application.routes.draw do
           get :most_ordered
           get :favorites
         end
+        member do
+          resources :payment_cards, only: %i[create]
+        end
       end
       resources :machines, only: %i[index show] do
+        resources :categories, only: [:index]
         collection do
           get :nearby
         end
@@ -58,6 +62,8 @@ Rails.application.routes.draw do
           get :with_brands
         end
       end
+
+      resources :product_categories
 
       resources :products do
         collection do

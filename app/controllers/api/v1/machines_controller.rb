@@ -28,8 +28,6 @@ module Api
         machines_query = machines_query.stocked if params[:stocked] == 'true'
 
         @machines = paginate(machines_query.includes(:category, :location, :machine_type))
-        @categories = machines_query.with_categories
-
         render :index
       end
 
