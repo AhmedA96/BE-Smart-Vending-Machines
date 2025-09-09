@@ -26,8 +26,13 @@ module Api
       end
 
       def checkout
-        @order.process_payment!
+        unless @order.ensure_machine_online?
+          render json: { errors: I18n.t('errors.orders.machine_offline') },
+                 status: :unprocessable_content
+          return
+        end
 
+        @order.process_payment!
         render :show, status: :ok
       end
 

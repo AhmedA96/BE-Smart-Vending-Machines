@@ -106,3 +106,4 @@ en:
         other: "You can only checkout only %{count} items from this machine per order"
       exceeds_variant_max_orderable_quantity: "You can only order up to %{limit} units of %{product_name}"
       variant_not_available_for_machine: "Variant is not available for this machine"
+      machine_offline: "Machine is offline and cannot accept new orders"

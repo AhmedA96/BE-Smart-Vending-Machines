@@ -15,16 +15,31 @@ development:
     queue: inventory_sync
     schedule: every 5 minutes
 
+  machine_status_sync:
+    class: MachineStatusSyncJob
+    queue: machine_status_sync
+    schedule: every 5 minutes
+
 staging:
   inventory_sync:
     class: InventorySyncJob
     queue: inventory_sync
     schedule: every 5 minutes
 
+  machine_status_sync:
+    class: MachineStatusSyncJob
+    queue: machine_status_sync
+    schedule: every 5 minutes
+
 production:
   inventory_sync:
     class: InventorySyncJob
     queue: inventory_sync
+    schedule: every 5 minutes
+
+  machine_status_sync:
+    class: MachineStatusSyncJob
+    queue: machine_status_sync
     schedule: every 5 minutes
 
   clear_solid_queue_finished_jobs:

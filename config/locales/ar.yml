@@ -100,3 +100,4 @@ ar:
         other: "يمكنك الاحتفاظ فقط ب %{count} وحدات من هذه الماكينة في كل طلب"
       exceeds_variant_max_orderable_quantity: "يمكنك طلب حتى %{limit} وحدات فقط من %{product_name}"
       variant_not_available_for_machine: "المنتج غير متوفر لهذه الماكينة"
+      machine_offline: "الماكينة غير متصلة ولا يمكنها قبول طلبات جديدة"

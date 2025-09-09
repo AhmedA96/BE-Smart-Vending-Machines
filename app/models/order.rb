@@ -134,6 +134,19 @@ class Order < ApplicationRecord
     status == 'paid'
   end
 
+  def ensure_machine_online?
+    return false if machine.blank?
+
+    service = Suppliers::VendlifeService.new(machine.supplier)
+    response = service.get_machine_status(machine.machineuuid)
+
+    status = response.dig('data', 0, 'netStat')
+    status == 1
+  rescue StandardError => e
+    Rails.logger.error("Machine status check failed: #{e.message}")
+    false
+  end
+
   private
 
   def user_present?
