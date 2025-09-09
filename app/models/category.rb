@@ -35,4 +35,10 @@ class Category < ApplicationRecord
       }
     end
   end
+
+  scope :for_machine, lambda { |machine|
+    joins(product_categories: { product: { variants: { machine_items: :machine } } })
+      .where(machine_items: { machine_id: machine.id })
+      .distinct
+  }
 end
