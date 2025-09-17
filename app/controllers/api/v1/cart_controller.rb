@@ -12,10 +12,13 @@ module Api
         @carts = paginate(carts.cart)
       end
 
-      def show; end
+      def show
+        @line_items = @cart.line_items.includes(variant: :product).order(:created_at)
+      end
 
       def create
         @cart = Cart::CreateEmptyCart.call(cart_params)
+        @line_items = @cart.line_items.includes(variant: :product).order(:created_at)
         render :show, status: :created
       end
 
