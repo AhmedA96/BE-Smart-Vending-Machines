@@ -49,13 +49,13 @@ module Avo
               sortable: false,
               format_using: lambda {
                 if record.stocked?
-                  # Green dot and label
                   view_context.raw('<span style="color: #22c55e; font-weight: bold;">● Stocked</span>')
                 else
-                  # Red dot and label
                   view_context.raw('<span style="color: #ef4444; font-weight: bold;">● Empty</span>')
                 end
-              }
+              },
+              read_only: true
+
         field :coordinates, as: :text, hide_on: %i[index],
                             help: 'Enter coordinates in format: POINT (40.7128 74.0060)'
         field :installed_at, as: :date_time, hide_on: %i[index]

@@ -102,4 +102,8 @@ class Machine < ApplicationRecord
                  .where('(COALESCE(machine_items.stock,0) - COALESCE(machine_items.reserved_stock,0)) > 0')
                  .exists?
   end
+
+  def stock_indicator
+    stocked? ? 'Stocked' : 'Empty'
+  end
 end
