@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
-require 'solid_queue_monitor'
-
 Rails.application.routes.draw do
   get '/', to: redirect('/admin')
   authenticate :user, ->(u) { u.admin? } do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
-    mount SolidQueueMonitor::Engine => '/solid_queue'
-    mount SolidQueueDashboard::Engine, at: '/solid-queue'
   end
   authenticate :user do
     mount Avo::Engine, at: Avo.configuration.root_path
@@ -45,12 +41,8 @@ Rails.application.routes.draw do
           get :most_ordered
           get :favorites
         end
-        member do
-          resources :payment_cards, only: %i[create]
-        end
       end
       resources :machines, only: %i[index show] do
-        resources :categories, only: [:index]
         collection do
           get :nearby
         end
@@ -62,8 +54,6 @@ Rails.application.routes.draw do
           get :with_brands
         end
       end
-
-      resources :product_categories
 
       resources :products do
         collection do
@@ -116,9 +106,6 @@ Rails.application.routes.draw do
           get :trending
         end
       end
-
-      resources :tap_webhook, only: [:create]
-      resources :tap_redirect, only: :index
     end
   end
 

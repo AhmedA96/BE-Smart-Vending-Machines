@@ -1,47 +1,18 @@
-# examples:
+
+# production:
 #   periodic_cleanup:
 #     class: CleanSoftDeletedRecordsJob
 #     queue: background
 #     args: [ 1000, { batch_size: 500 } ]
 #     schedule: every hour
-#   periodic_cleanup_with_command:
+#   periodic_command:
 #     command: "SoftDeletedRecord.due.delete_all"
 #     priority: 2
 #     schedule: at 5am every day
 
-development:
-  inventory_sync:
-    class: InventorySyncJob
-    queue: inventory_sync
-    schedule: every 5 minutes
+sync_products:
+  class: "Suppliers::SyncProductsJob"
+  cron: "*/10 * * * *" # Every 10 minutes
+  queue: "suppliers"
+  description: "Sync products from all suppliers every 10 minutes"
 
-  machine_status_sync:
-    class: MachineStatusSyncJob
-    queue: machine_status_sync
-    schedule: every 5 minutes
-
-staging:
-  inventory_sync:
-    class: InventorySyncJob
-    queue: inventory_sync
-    schedule: every 5 minutes
-
-  machine_status_sync:
-    class: MachineStatusSyncJob
-    queue: machine_status_sync
-    schedule: every 5 minutes
-
-production:
-  inventory_sync:
-    class: InventorySyncJob
-    queue: inventory_sync
-    schedule: every 5 minutes
-
-  machine_status_sync:
-    class: MachineStatusSyncJob
-    queue: machine_status_sync
-    schedule: every 5 minutes
-
-  clear_solid_queue_finished_jobs:
-    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
-    schedule: every hour at minute 12
