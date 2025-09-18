@@ -56,8 +56,7 @@ module Avo
               },
               read_only: true
 
-        field :coordinates, as: :text, hide_on: %i[index],
-                            help: 'Enter coordinates in format: POINT (40.7128 74.0060)'
+        field :coordinates, as: :text, hide_on: %i[index edit new]
         field :installed_at, as: :date_time, hide_on: %i[index]
         field :last_service_date, as: :date_time, hide_on: %i[index]
 
