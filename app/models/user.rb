@@ -38,15 +38,21 @@
 #  verified               :boolean          default(FALSE), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  country_id             :bigint
 #  profile_id             :bigint
 #
 # Indexes
 #
+#  index_users_on_country_id            (country_id)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_locale                (locale)
 #  index_users_on_mobile_number         (mobile_number) UNIQUE
 #  index_users_on_qr_code_token         (qr_code_token)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (country_id => countries.id)
 #
 class User < ApplicationRecord
   rolify
@@ -65,7 +71,6 @@ class User < ApplicationRecord
   validate :new_and_old_password_must_be_different
 
   has_one :payment_customer, dependent: :destroy
-  has_many :payment_cards, through: :payment_customer
   has_one :wallet, dependent: :destroy
 
   has_many :orders, dependent: :destroy
@@ -75,6 +80,9 @@ class User < ApplicationRecord
   has_many :users_roles, dependent: :destroy
   has_many :mobile_verifications, dependent: :destroy
   has_many :addresses, dependent: :destroy
+  has_many :payment_cards, through: :payment_customer
+
+  belongs_to :country
 
   before_create :generate_qr_code_token
   after_create :create_wallet

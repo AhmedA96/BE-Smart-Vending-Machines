@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_19_091226) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_22_233916) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -463,10 +463,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_091226) do
     t.string "slug"
     t.datetime "deleted_at"
     t.float "total_rate"
-    t.integer "max_orderable_quantity"
     t.integer "position", default: 1
     t.bigint "brand_id"
     t.string "presentation"
+    t.integer "max_orderable_quantity"
     t.index ["brand_id"], name: "index_products_on_brand_id"
     t.index ["created_at"], name: "index_products_on_created_at"
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
@@ -541,6 +541,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_091226) do
     t.string "hashed_password"
     t.bigint "profile_id"
     t.string "qr_code_token"
+    t.bigint "country_id"
+    t.index ["country_id"], name: "index_users_on_country_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locale"], name: "index_users_on_locale"
     t.index ["mobile_number"], name: "index_users_on_mobile_number", unique: true
@@ -650,6 +652,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_091226) do
   add_foreign_key "products", "brands"
   add_foreign_key "user_favorites", "products"
   add_foreign_key "user_favorites", "users"
+  add_foreign_key "users", "countries"
   add_foreign_key "variant_translations", "variants"
   add_foreign_key "wallet_transactions", "wallets"
   add_foreign_key "wallets", "users"
