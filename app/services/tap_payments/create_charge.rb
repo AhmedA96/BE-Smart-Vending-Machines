@@ -3,10 +3,10 @@
 module TapPayments
   class CreateCharge < BaseService
     class << self
-      def call(payment, user)
+      def call(source_type, payment, user)
         handle_customer_creation(user)
 
-        body = prepare_params(payment, user)
+        body = prepare_params(source_type, payment, user)
         response = make_request(:post, tap_credentials[:create_charge_url], body)
 
         parsed_response = JSON.parse(response.body)
@@ -19,7 +19,7 @@ module TapPayments
           raise StandardError, I18n.t('errors.card.failed_to_capture_charge')
         end
 
-        payment.complete!
+        payment.complete! if source_type == PAYMENT_OPERATION_TYPES[:order_payment]
         TapPayments::SaveChargeRecord.call(response, user.payment_customer.id, payment.id)
         response.success?
       end
@@ -32,14 +32,16 @@ module TapPayments
 
       private
 
-      def prepare_params(payment, user)
+      def prepare_params(source_type, payment, user)
+        reference_id = source_type == PAYMENT_OPERATION_TYPES[:order_payment] ? payment.order_number : payment.id
+
         {
           amount: payment.amount,
           currency: payment.currency,
           customer_initiated: true,
           threeDSecure: true,
           save_card: false,
-          reference: { order: payment.id },
+          reference: { order: reference_id },
           receipt: { email: false, sms: false },
           customer: { id: user.payment_customer.payment_customer_number },
           source: { id: payment.token_id },
