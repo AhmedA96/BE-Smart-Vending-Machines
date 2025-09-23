@@ -25,10 +25,12 @@
 class WalletRefill < ApplicationRecord
   include AASM
 
+  VALID_TOP_UP_AMOUNTS = [25, 50, 100].freeze
+
   belongs_to :wallet, optional: false
   belongs_to :payment_method, optional: false
 
-  validates :amount, presence: true
+  validates :amount, presence: true, inclusion: { in: VALID_TOP_UP_AMOUNTS }
   validates :status, presence: true
 
   aasm column: 'status', whiny_transitions: false do
