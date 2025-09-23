@@ -105,7 +105,11 @@ Rails.application.routes.draw do
         end
       end
       get 'my_wallet', to: 'wallets#my_wallet'
-      resources :wallet_refills, only: %i[create]
+      resources :wallet_refills, only: %i[create] do
+        collection do
+          get :valid_amounts
+        end
+      end
       resources :wallet_transactions, only: %i[index show]
     end
   end

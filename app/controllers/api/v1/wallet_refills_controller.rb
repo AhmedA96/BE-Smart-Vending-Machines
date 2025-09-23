@@ -12,6 +12,10 @@ module Api
         complete_charge_operation
       end
 
+      def valid_amounts
+        render json: { valid_top_up_amounts: WalletRefill::VALID_TOP_UP_AMOUNTS }
+      end
+
       private
 
       def complete_charge_operation
