@@ -5,13 +5,10 @@ module Api
     class WalletsController < ApplicationController
       before_action :current_user
 
-      def index
-        if current_user.wallet.present?
-          @wallet = current_user.wallet
-          render json: @wallet
-        else
-          render json: { error: 'Wallet not found' }, status: :not_found
-        end
+      def my_wallet
+        @user_wallet = @current_user.wallet
+
+        render json: @user_wallet, status: :ok
       end
     end
   end
