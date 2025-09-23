@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_22_234622) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_013712) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -613,6 +613,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_22_234622) do
     t.string "status", default: "pending"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "message"
     t.index ["wallet_id"], name: "index_wallet_refills_on_wallet_id"
   end
 

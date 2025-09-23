@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  amount            :decimal(10, 2)   not null
+#  message           :string
 #  status            :string           default("pending")
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
@@ -37,6 +38,19 @@ class WalletRefill < ApplicationRecord
     state :pending, initial: true
     state :failed
     state :completed
+
+    event :failed do
+      transitions from: :pending, to: :failed
+    end
+
+    event :complete do
+      transitions from: :pending, to: :completed, guard: :payment_successful?
+
+      after do
+        add_wallet_balance_transaction
+        add_wallet_cashback_transaction if client_provides_cashback?
+      end
+    end
   end
 
   def currency
