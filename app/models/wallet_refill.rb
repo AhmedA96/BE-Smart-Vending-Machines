@@ -37,9 +37,9 @@ class WalletRefill < ApplicationRecord
     state :pending, initial: true
     state :failed
     state :completed
+  end
 
-    def en_currency
-      wallet.user.country.country_translations.find_by(locale: 'en')&.currency
-    end
+  def currency
+    wallet.user.country.country_translations.find_by(locale: 'en')&.currency
   end
 end
