@@ -15,6 +15,7 @@ module Avo
         field :presentation, as: :text
         field :description, as: :text
         field :active, as: :boolean
+        field :image, as: :file, is_image: true, accept: 'image/*', direct_upload: true
       end
     end
   end

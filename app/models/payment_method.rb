@@ -13,6 +13,8 @@
 #  updated_at   :datetime         not null
 #
 class PaymentMethod < ApplicationRecord
+  has_one_attached :image, dependent: :destroy
+
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payments, dependent: :nullify
 
