@@ -48,12 +48,21 @@ class WalletRefill < ApplicationRecord
 
       after do
         add_wallet_balance_transaction
-        add_wallet_cashback_transaction if client_provides_cashback?
       end
     end
   end
 
   def currency
     wallet.user.country.country_translations.find_by(locale: 'en')&.currency
+  end
+
+  private
+
+  def payment_successful?
+    Wallets::ProcessRefillPayment.call(self, wallet.user)
+  end
+
+  def add_wallet_balance_transaction
+    WalletTransactions::Create.call(amount, 'top_up', wallet)
   end
 end
