@@ -7,10 +7,6 @@ module Api
       before_action :find_wallet, only: %i[create]
 
       def create
-        render_error(
-          I18n.t('errors.wallet.not_working_now'),
-          :unprocessable_content
-        )
         @wallet_refill = WalletRefills::Create.call(params, @user_wallet)
 
         complete_charge_operation
