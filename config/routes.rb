@@ -106,6 +106,8 @@ Rails.application.routes.draw do
           get :trending
         end
       end
+      
+      resources :wallet_refills, only: %i[create]
     end
   end
 
