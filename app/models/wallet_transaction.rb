@@ -23,5 +23,12 @@
 class WalletTransaction < ApplicationRecord
   belongs_to :wallet
 
+  TYPES = %w[top_up purchase].freeze
+
   validates :amount, numericality: { greater_than: 0 }
+  validates :transaction_type, inclusion: { in: TYPES }
+
+  scope :top_ups, -> { where(transaction_type: 'top_up') }
+  scope :purchases, -> { where(transaction_type: 'purchase') }
+  scope :recent, -> { order(created_at: :desc) }
 end
