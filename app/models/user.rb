@@ -82,7 +82,7 @@ class User < ApplicationRecord
   has_many :addresses, dependent: :destroy
   has_many :payment_cards, through: :payment_customer
 
-  belongs_to :country
+  belongs_to :country, optional: true
 
   before_create :generate_qr_code_token
   after_create :create_wallet

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_22_233916) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_22_234622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -604,6 +604,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_22_233916) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "wallet_refills", force: :cascade do |t|
+    t.bigint "wallet_id", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "payment_method_id"
+    t.integer "card_id"
+    t.string "token_id"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wallet_id"], name: "index_wallet_refills_on_wallet_id"
+  end
+
   create_table "wallet_transactions", force: :cascade do |t|
     t.bigint "wallet_id", null: false
     t.decimal "amount", precision: 15, scale: 2, null: false
@@ -654,6 +666,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_22_233916) do
   add_foreign_key "user_favorites", "users"
   add_foreign_key "users", "countries"
   add_foreign_key "variant_translations", "variants"
+  add_foreign_key "wallet_refills", "wallets"
   add_foreign_key "wallet_transactions", "wallets"
   add_foreign_key "wallets", "users"
 end
