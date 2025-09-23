@@ -9,7 +9,11 @@ module Api
       def create
         @wallet_refill = WalletRefills::Create.call(params, @user_wallet)
 
-        complete_charge_operation
+        if complete_charge_operation
+          render :create, status: :created
+        else
+          render json: { errors: @wallet_refill.message }, status: :unprocessable_entity
+        end
       end
 
       def valid_amounts
