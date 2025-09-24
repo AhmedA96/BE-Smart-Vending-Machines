@@ -68,6 +68,8 @@ class Machine < ApplicationRecord
 
   delegate :capacity, to: :machine_type
 
+  after_create :sync_machine_coordinates
+
   scope :by_supplier, ->(supplier) { where(supplier_id: supplier.id) }
 
   scope :active, -> { where(status: 'Active') }
@@ -105,5 +107,14 @@ class Machine < ApplicationRecord
 
   def stock_indicator
     stocked? ? 'Stocked' : 'Empty'
+  end
+
+  def sync_machine_coordinates
+    return unless supplier&.name&.downcase == 'vendlife'
+
+    service = Suppliers::VendlifeService.new(supplier)
+    service.sync_machine_data(self)
+  rescue StandardError => e
+    Rails.logger.error "Failed to sync coordinates for machine #{machineuuid}: #{e.message}"
   end
 end

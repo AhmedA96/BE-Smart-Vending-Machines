@@ -25,12 +25,23 @@ module Suppliers
         return if machine_data['data'].blank?
 
         data = machine_data['data'].first
-        machine.update!(
+
+        update_attrs = {
           name: data['machineName'],
           status: map_vendlife_status(data['isActive'], data['onlineState']),
           installed_at: parse_datetime(data['actTime']),
           last_service_date: Time.current
-        )
+        }
+
+        # Set coordinates using current location if available
+        if current_coordinates_available?(data)
+          update_attrs[:coordinates] = build_coordinates(data['nowLongitude'], data['nowLatitude'])
+        elsif original_coordinates_available?(data)
+          # Fallback to original coordinates if current ones aren't available
+          update_attrs[:coordinates] = build_coordinates(data['longItude'], data['latitude'])
+        end
+
+        machine.update!(update_attrs)
 
         # Update machine status record
         machine.machine_statuses.create!(
@@ -57,6 +68,20 @@ module Suppliers
       end
 
       private
+
+      def current_coordinates_available?(data)
+        data['nowLongitude'].present? && data['nowLatitude'].present? &&
+          !data['nowLongitude'].to_f.zero? && !data['nowLatitude'].to_f.zero?
+      end
+
+      def original_coordinates_available?(data)
+        data['longItude'].present? && data['latitude'].present? &&
+          !data['longItude'].to_f.zero? && !data['latitude'].to_f.zero?
+      end
+
+      def build_coordinates(longitude, latitude)
+        "POINT(#{longitude} #{latitude})"
+      end
 
       def map_vendlife_status(is_active, online_state)
         return 'Inactive' unless is_active == 1
