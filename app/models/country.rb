@@ -23,6 +23,7 @@ class Country < ApplicationRecord
   has_many :machines, through: :locations
   has_many :country_translations, dependent: :destroy
   has_many :addresses, dependent: :destroy
+  has_many :users, dependent: :nullify
 
   enum :name,
        { UAE: 'uae', KSA: 'saudi' }

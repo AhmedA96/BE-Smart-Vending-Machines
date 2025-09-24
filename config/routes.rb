@@ -98,14 +98,19 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :wallets, only: %i[index]
-
       resources :items, only: [] do
         collection do
           get :popular
           get :trending
         end
       end
+      get 'my_wallet', to: 'wallets#my_wallet'
+      resources :wallet_refills, only: %i[create] do
+        collection do
+          get :valid_amounts
+        end
+      end
+      resources :wallet_transactions, only: %i[index show]
     end
   end
 

@@ -23,5 +23,25 @@
 class WalletTransaction < ApplicationRecord
   belongs_to :wallet
 
+  TYPES = %w[top_up purchase].freeze
+
   validates :amount, numericality: { greater_than: 0 }
+  validates :transaction_type, inclusion: { in: TYPES }
+
+  after_create :update_wallet_balance
+
+  scope :top_ups, -> { where(transaction_type: 'top_up') }
+  scope :purchases, -> { where(transaction_type: 'purchase') }
+  scope :recent, -> { order(created_at: :desc) }
+
+  private
+
+  def update_wallet_balance
+    return unless transaction_type == 'top_up'
+
+    wallet.with_lock do
+      wallet.balance += amount
+      wallet.save!
+    end
+  end
 end

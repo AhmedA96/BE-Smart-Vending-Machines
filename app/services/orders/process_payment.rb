@@ -52,7 +52,7 @@ module Orders
       def process_credit_payment(payment, order, user)
         return fail_payment(payment, 'No card selected') if payment.card_id.blank?
 
-        Orders::CreateCreditCharge.call(order, user)
+        Orders::CreateCreditCharge.call('Order Payment', order, user)
         true
       rescue StandardError => e
         fail_payment(payment, e.message)

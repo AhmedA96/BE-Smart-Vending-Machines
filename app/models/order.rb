@@ -147,6 +147,13 @@ class Order < ApplicationRecord
     false
   end
 
+  def last_pending_credit_payment
+    payments.joins(:payment_method)
+            .where(status: 'pending', payment_methods: { name: 'credit_card' })
+            .order(created_at: :desc)
+            .first
+  end
+
   private
 
   def user_present?
