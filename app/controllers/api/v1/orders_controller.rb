@@ -4,7 +4,7 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :current_user
-      before_action :find_order, only: %i[show reorder checkout]
+      before_action :find_order, only: %i[show reorder checkout status]
       before_action :authorize_order_access, only: %i[show reorder]
 
       def index
@@ -34,6 +34,13 @@ module Api
 
         @order.process_payment!
         render :show, status: :ok
+      end
+
+      def status
+        status_data = Orders::CheckOrderStatus.call(@order)
+        render json: { order_number: @order.number, status: status_data }
+      rescue SupplierApiError
+        render json: { error: 'Failed to check order status' }, status: :unprocessable_content
       end
 
       private
