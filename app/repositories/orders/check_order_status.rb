@@ -7,7 +7,7 @@ module Orders
       service = service_for_supplier(supplier)
       service.get_order_status(order.number)
     rescue StandardError => e
-      Rails.logger.error "[CheckOrderStatus] Failed to fetch status for order #{order.id} (#{order.number}): #{e.message}"
+      Rails.logger.error "[CheckOrderStatus] Failed to fetch status for order #{order.number}: #{e.message}"
       raise SupplierApiError.new('Failed to check order status', supplier_type: supplier&.supplier_type,
                                                                  context: 'order_status')
     end
