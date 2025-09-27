@@ -141,6 +141,7 @@ group :development, :test do
   gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov'
   gem "spring"
+  gem "strong_migrations"
   gem 'vcr'
   gem 'webmock'
 end
