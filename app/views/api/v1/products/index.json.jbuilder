@@ -4,7 +4,7 @@ json.products do
   json.array! @products do |product|
     json.partial! 'product', product: product
 
-    total_stock = product.variants.sum { |variant| variant.machine_stock(@machine) }
+    total_stock = product.variants.sum { |variant| variant.machine_stock(@machine).to_i }
     json.stock_available total_stock.positive?
     json.total_stock total_stock
 
