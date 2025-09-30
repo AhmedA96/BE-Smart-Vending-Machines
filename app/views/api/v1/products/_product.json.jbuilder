@@ -29,6 +29,7 @@ end
 json.variants do
   json.array! product.variants do |variant|
     json.extract! variant, :id, :name, :sku, :is_master
+    json.stock variant.machine_stock(machine)
 
     if location&.price_list
       price_list_item = location.price_list.price_list_items.find { |item| item.variant_id == variant.id }
