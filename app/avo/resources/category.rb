@@ -23,7 +23,10 @@ module Avo
         field :id, as: :id
         field :name, as: :text, required: true
         field :position, as: :number, default: 0, hide_on: %i[index]
+        field :presentation, as: :text, required: true
+        field :description, as: :textarea, hide_on: %i[index]
         field :active, as: :boolean, default: true, hide_on: %i[index]
+        field :logo, as: :file, hide_on: %i[index]
         field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
         field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
 

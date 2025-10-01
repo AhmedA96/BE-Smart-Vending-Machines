@@ -17,6 +17,8 @@ class Category < ApplicationRecord
 
   translates :presentation, :description
 
+  has_one_attached :logo, dependent: :destroy
+
   has_many :product_categories, dependent: :destroy
   has_many :products, through: :product_categories
   has_many :category_translations, dependent: :destroy

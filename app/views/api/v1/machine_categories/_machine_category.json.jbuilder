@@ -7,3 +7,13 @@ if machine_category.logo.attached?
 else
   json.logo_url nil
 end
+
+json.machines machine_category.machines do |machine|
+  json.id machine.id
+  json.name machine.name
+
+  json.location do
+    json.id machine.location.id
+    json.name machine.location.name
+  end
+end

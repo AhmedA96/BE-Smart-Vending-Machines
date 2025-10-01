@@ -43,6 +43,8 @@ Rails.application.routes.draw do
         end
       end
       resources :machines, only: %i[index show] do
+        resources :categories, only: %i[index show]
+
         collection do
           get :nearby
         end
@@ -54,6 +56,8 @@ Rails.application.routes.draw do
           get :with_brands
         end
       end
+
+      resources :categories, only: %i[index show]
 
       resources :products do
         collection do
