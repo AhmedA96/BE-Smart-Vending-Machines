@@ -47,6 +47,10 @@ module Api
       def set_product
         @product = Product.find(params[:id])
       end
+
+      def find_machine
+        @machine = Machine.find_by(id: params.dig(:q, :machine_id))
+      end
     end
   end
 end

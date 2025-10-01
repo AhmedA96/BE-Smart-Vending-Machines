@@ -6,20 +6,15 @@ json.product do
   json.partial! 'product', product: @product
 
   json.variants @product.variants.where(id: available_variant_ids) do |variant|
-    json.id variant.id
-    json.sku variant.sku
-    json.name variant.name
-    json.presentation variant.presentation
-    json.is_master variant.is_master
-    json.cost_price variant.cost_price
-    json.weight variant.weight
-    json.created_at variant.created_at
-    json.max_orderable_quantity variant.max_orderable_quantity
-    json.size variant.size
+    json.extract! variant, :id, :sku, :name, :presentation, :is_master,
+                  :cost_price, :weight, :created_at, :max_orderable_quantity, :size
+
     json.stock variant.machine_stock(@machine)
 
-    location = @machine&.location
-    price_item = location&.price_list&.price_list_items&.find { |item| item.variant_id == variant.id }
-    json.price price_item&.price
+    if @machine&.price_list
+      price_item = @machine.price_list.price_list_items.find_by(variant_id: variant.id)
+      json.price price_item&.price
+      json.currency @machine.location.country.currency
+    end
   end
 end
