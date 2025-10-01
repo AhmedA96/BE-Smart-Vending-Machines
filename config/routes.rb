@@ -115,9 +115,10 @@ Rails.application.routes.draw do
         end
       end
       resources :wallet_transactions, only: %i[index show]
+
+      resources :tap_webhook, only: [:create]
     end
   end
-
   # Health check endpoint for deployment monitoring
   get '/up', to: 'rails/health#show', as: :rails_health_check
 end
