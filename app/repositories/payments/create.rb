@@ -3,8 +3,12 @@
 module Payments
   class Create
     def self.call(payment_data, order)
-      amount = order.items_total
+      if order.payments.completed.exists?
+        raise FailedRequestError,
+              'This order has already been paid and cannot accept new payments.'
+      end
 
+      amount = order.items_total
       return if amount <= 0
 
       create_payment(amount, payment_data, order)
