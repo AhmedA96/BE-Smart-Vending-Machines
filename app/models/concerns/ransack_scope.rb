@@ -6,10 +6,8 @@ module RansackScope
   included do
     scope :ransack_filter, lambda { |params|
       q = ransack(params[:q] || {})
-
       q.sorts = params[:sorts] if params[:sorts]
-
-      q.result.uniq(&:id)
+      q.result.distinct
     }
   end
 end
