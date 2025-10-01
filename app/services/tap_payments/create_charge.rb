@@ -33,7 +33,7 @@ module TapPayments
       private
 
       def prepare_params(source_type, payment, user)
-        reference_id = source_type == PAYMENT_OPERATION_TYPES[:order_payment] ? payment.order_number : payment.id
+        reference_id = source_type == PAYMENT_OPERATION_TYPES[:order_payment] ? payment.order.number : payment.id
 
         {
           amount: payment.amount,
