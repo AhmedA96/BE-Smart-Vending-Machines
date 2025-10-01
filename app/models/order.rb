@@ -53,63 +53,52 @@ class Order < ApplicationRecord
   scope :guest_orders, -> { where(user_id: nil) }
   scope :user_orders, -> { where.not(user_id: nil) }
   scope :cart, -> { where(status: 'cart') }
-  scope :completed, -> { where(status: %w[paid dispensed]) }
+  scope :completed, -> { where(status: %w[completed dispensed]) }
   scope :expired_carts, lambda { |timeout_minutes = 10|
     where(status: 'cart').where(created_at: ...timeout_minutes.minutes.ago)
   }
 
   aasm column: 'status' do
     state :cart, initial: true
-    state :pending_payment
-    state :paid
-    state :pending_dispense
+    state :payment
+    state :completed
     state :dispensed
-    state :failed
-    state :cancelled
 
     event :process_payment do
-      transitions from: :cart, to: :pending_payment, guard: :user_present?
+      transitions from: :cart, to: :payment, guard: :user_present?
       after do
         Stock::Reservation.reserve_order!(self)
 
         payment_successful = Orders::ProcessPayment.call(self, user)
 
         if payment_successful
-          mark_paid!
+          mark_completed!
         else
-          fail!
+          return_to_cart!
         end
       end
     end
 
-    event :mark_paid do
-      transitions from: :pending_payment, to: :paid
+    event :mark_completed do
+      transitions from: :payment, to: :completed
       after do
         Stock::Reservation.commit_order!(self)
         generate_pickup_code
       end
     end
 
-    event :start_dispense do
-      transitions from: :paid, to: :pending_dispense
-    end
-
-    event :complete_dispense do
-      transitions from: :pending_dispense, to: :dispensed
-      after do
-        update(completed_at: Time.current)
-      end
-    end
-
-    event :fail do
-      transitions from: %i[pending_payment paid pending_dispense], to: :failed
+    event :return_to_cart do
+      transitions from: :payment, to: :cart
       after do
         Stock::Reservation.release_order!(self)
       end
     end
 
-    event :cancel do
-      transitions from: %i[cart pending_payment], to: :cancelled
+    event :mark_dispensed do
+      transitions from: :completed, to: :dispensed
+      after do
+        update(dispense_status: 'dispensed')
+      end
     end
   end
 
@@ -131,7 +120,7 @@ class Order < ApplicationRecord
   end
 
   def completed?
-    status == 'paid'
+    status == 'completed'
   end
 
   def ensure_machine_online?
