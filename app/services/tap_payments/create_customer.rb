@@ -17,8 +17,7 @@ module TapPayments
 
       def customer_data(user)
         {
-          first_name: user.email,
-          email: user.email,
+          first_name: user.name,
           phone: {
             number: user.mobile_number
           }
