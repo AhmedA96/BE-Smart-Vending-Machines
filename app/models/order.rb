@@ -148,10 +148,7 @@ class Order < ApplicationRecord
   end
 
   def last_pending_credit_payment
-    payments.joins(:payment_method)
-            .where(status: 'pending', payment_methods: { name: 'credit_card' })
-            .order(created_at: :desc)
-            .first
+    payments.with_method('credit_card').pending.order(created_at: :desc).first
   end
 
   private
