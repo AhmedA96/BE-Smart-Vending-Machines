@@ -4,32 +4,28 @@ module Orders
   class ProcessPayment
     class << self
       def call(order, user)
-        process_order_payments(order, user)
+        process_order_payment(order, user)
       end
 
       private
 
-      def process_order_payments(order, user)
-        payments = order.payments.pending
+      def process_order_payment(order, user)
+        payment = order.payments.last_pending
+        return false if payment.blank?
 
-        return false unless validate_payment_total(payments, order)
+        return false unless validate_payment_total(payment, order)
 
-        payment_results = payments.map do |payment|
-          process_single_payment(payment, order, user)
-        end
-
-        handle_payment_response(order, payments, payment_results)
+        result = process_single_payment(payment, order, user)
+        handle_payment_response(order, payment, result)
       end
 
-      def validate_payment_total(payments, order)
-        total_pending = payments.sum(:amount)
-        return true if total_pending <= order.items_total
-
-        payments.each do |payment|
+      def validate_payment_total(payment, order)
+        if payment.amount > order.items_total
           payment.failed!
-          payment.update!(message: 'Total pending payments exceed order total')
+          payment.update!(message: 'Payment amount exceeds order total')
+          return false
         end
-        false
+        true
       end
 
       def process_single_payment(payment, order, user)
@@ -52,14 +48,14 @@ module Orders
       def process_credit_payment(payment, order, user)
         return fail_payment(payment, 'No card selected') if payment.card_id.blank?
 
-        Orders::CreateCreditCharge.call('Order Payment', order, user)
+        Orders::CreateCreditCharge.call(order, user)
         true
       rescue StandardError => e
         fail_payment(payment, e.message)
       end
 
       def process_digital_wallet_payment(payment, user)
-        TapPayments::CreateCharge.call(payment, user)
+        TapPayments::CreateCharge.call('Order Payment', payment, user)
         true
       rescue StandardError => e
         fail_payment(payment, e.message)
@@ -71,10 +67,8 @@ module Orders
         false
       end
 
-      def handle_payment_response(order, payments, _payment_results)
-        payments.reload
-
-        completed_payments = payments.completed
+      def handle_payment_response(order, _payment, _result)
+        completed_payments = order.payments.completed
         total_paid = completed_payments.sum(:amount)
 
         total_paid >= order.items_total && completed_payments.any?
