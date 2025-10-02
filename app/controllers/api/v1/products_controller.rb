@@ -12,7 +12,7 @@ module Api
       def index
         products = main_products.includes(:variants).includes(:translations)
         products = apply_filters(products)
-        products.ransack_filter(filtered_params)
+        products = products.ransack_filter(filtered_params)
         @products = paginate(products)
       end
 
@@ -46,6 +46,10 @@ module Api
 
       def set_product
         @product = Product.find(params[:id])
+      end
+
+      def find_machine
+        @machine = Machine.find_by(id: params.dig(:q, :machine_id))
       end
     end
   end
