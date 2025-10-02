@@ -29,6 +29,9 @@ class Payment < ApplicationRecord
   validates :amount, presence: true
   validates :status, presence: true
 
+  scope :with_method, ->(method_name) { joins(:payment_method).where(payment_methods: { name: method_name }) }
+  scope :last_pending, -> { pending.order(created_at: :desc).first }
+
   aasm column: 'status', whiny_transitions: false do
     state :pending, initial: true
     state :completed
