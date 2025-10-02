@@ -10,14 +10,16 @@ json.products do
 
     master_variant = product.variants.find(&:is_master)
 
-    json.master_variant do
-      json.extract! master_variant, :id, :name, :sku, :is_master, :max_orderable_quantity
-      json.stock master_variant.machine_stock(@machine)
+    if master_variant
+      json.master_variant do
+        json.extract! master_variant, :id, :name, :sku, :is_master, :max_orderable_quantity
+        json.stock master_variant.machine_stock(@machine).to_i
 
-      if @machine&.price_list
-        price_item = @machine.price_list.price_list_items.find_by(variant_id: master_variant.id)
-        json.price price_item&.price
-        json.currency @machine.location.country.currency
+        if @machine&.price_list
+          price_item = @machine.price_list.price_list_items.find_by(variant_id: master_variant.id)
+          json.price price_item&.price
+          json.currency @machine.location.country.currency
+        end
       end
     end
   end
