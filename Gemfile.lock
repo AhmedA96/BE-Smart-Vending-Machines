@@ -177,6 +177,9 @@ GEM
     brakeman (7.1.0)
       racc
     builder (3.3.0)
+    bullet (8.0.8)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
     bundle-audit (0.1.0)
       bundler-audit
     bundler-audit (0.9.2)
@@ -691,6 +694,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
+    uniform_notifier (1.18.0)
     uri (1.0.3)
     useragent (0.16.11)
     vcr (6.3.1)
@@ -753,6 +757,7 @@ DEPENDENCIES
   bootsnap
   bootstrap (~> 5.3.5)
   brakeman
+  bullet
   bundle-audit
   byebug
   capybara
