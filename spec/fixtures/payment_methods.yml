@@ -5,7 +5,7 @@ cash:
   active: true
 
 credit_card:
-  name: "Credit Card"
+  name: "credit_card"
   description: "Payment by credit card"
   presentation: "Credit/Debit Card"
   active: true

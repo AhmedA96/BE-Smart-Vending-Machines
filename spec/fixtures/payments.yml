@@ -1,0 +1,11 @@
+credit_card_payment:
+  order: order_004
+  payment_method: credit_card
+  status: pending
+  amount: 50.0
+
+completed_payment:
+  order: order_004
+  payment_method: credit_card
+  status: completed
+  amount: 100.0
