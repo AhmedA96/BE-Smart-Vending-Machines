@@ -1,0 +1,9 @@
+top_up_tx:
+  wallet: one
+  amount: 50.00
+  transaction_type: top_up
+
+purchase_tx:
+  wallet: two
+  amount: 30.00
+  transaction_type: purchase

@@ -1,0 +1,7 @@
+one:
+  user: user_one
+  balance: 100.0
+
+two:
+  user: user_two
+  balance: 0.0
