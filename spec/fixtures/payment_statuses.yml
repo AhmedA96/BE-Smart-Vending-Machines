@@ -1,0 +1,7 @@
+pending_status:
+  payment_transaction: txn_one
+  status: pending
+
+captured_status:
+  payment_transaction: txn_one
+  status: CAPTURED
