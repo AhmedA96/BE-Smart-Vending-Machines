@@ -13,7 +13,7 @@ if order.machine.present?
   end
 end
 
-json.payments order.payments do |payment|
+json.payments order.payments.completed do |payment|
   json.id payment.id
   json.status payment.status
   json.amount payment.amount

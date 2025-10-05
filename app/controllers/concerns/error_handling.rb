@@ -28,17 +28,15 @@ module ErrorHandling
   end
 
   def render_unprocessable_content_response(exception)
-    render_json(:unprocessable_content, exception.record.errors)
+    render_json(:unprocessable_content, { message: exception.record.errors.full_messages.join(', ') })
   end
 
   def render_not_found_response(exception)
-    render_json(:not_found, I18n.t('errors.not_found', model: exception.model, id: exception.id))
+    render_json(:not_found, { message: I18n.t('errors.not_found', model: exception.model, id: exception.id) })
   end
 
   def request_error(exception)
-    error_response = {
-      message: exception.message
-    }
+    error_response = { message: exception.message }
 
     error_response.merge!(exception.data) if exception.respond_to?(:data) && exception.data.present?
 
@@ -52,7 +50,8 @@ module ErrorHandling
     if code.to_s.start_with?('2')
       render json: { code: code, status: 'success', data: data, error: [] }, status: code
     else
-      render json: { code: code, status: 'failure', data: [], error: data }, status: code
+      normalized_error = data.is_a?(Hash) ? data : { message: Array(data).join(', ') }
+      render json: { code: code, status: 'failure', data: [], error: normalized_error }, status: code
     end
   end
 
