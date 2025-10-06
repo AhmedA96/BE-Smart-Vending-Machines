@@ -19,6 +19,7 @@ module TapPayments
         {
           first_name: user.name,
           phone: {
+            country_code: user.country.country_code,
             number: user.mobile_number
           }
         }
