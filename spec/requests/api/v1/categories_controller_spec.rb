@@ -8,9 +8,11 @@ RSpec.describe Api::V1::CategoriesController, type: :request do
 
   describe 'GET /api/v1/categories' do
     let!(:category) { categories(:beverages) }
+    let!(:machine) { machines(:machine_001) } # rubocop:disable Naming/VariableNumber
 
-    xit 'returns all categories' do
-      get '/api/v1/categories', headers: { Authorization: "Bearer #{access_token.token}" }
+    it 'returns all categories for the machine' do
+      get '/api/v1/categories', params: { machine_id: machine.id },
+                                headers: { Authorization: "Bearer #{access_token.token}" }
 
       json_response = response.parsed_body
       expect(response).to have_http_status(:ok)

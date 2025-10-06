@@ -1,0 +1,4 @@
+txn_one:
+  payment: credit_card_payment
+  payment_customer: customer_one
+  charge_id: ch_12345

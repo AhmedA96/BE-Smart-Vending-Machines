@@ -1,5 +1,3 @@
-
-
 downtown_office:
   name: "Downtown Office Complex"
   address: "789 Business Blvd"
@@ -8,6 +6,7 @@ downtown_office:
   zip_code: "10022"
   price_list: standard_pricing
   country: saudi_arabia
+  coordinates: "POINT(55.4038 25.3573)" 
 
 mall_location:
   name: "Shopping Mall Food Court"
@@ -17,7 +16,7 @@ mall_location:
   zip_code: "90210"
   price_list: premium_pricing
   country: saudi_arabia
-
+  coordinates: "POINT(55.2708 25.2048)" 
 
 no_price_list:
   name: "No Price List"
@@ -26,4 +25,6 @@ no_price_list:
   landmark: "N/A"
   zip_code: "00000"
   country: uae
+  coordinates: "POINT(54.3667 24.4667)" 
+
 

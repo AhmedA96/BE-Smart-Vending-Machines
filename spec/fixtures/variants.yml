@@ -30,3 +30,15 @@ kit_kat_42g:
   active: true
   position: 1
   cost_price: 0.60
+
+
+sprite_12oz:
+  sku: "SPRITE-12OZ"
+  name: "Sprite 12oz"
+  product: coke_classic  
+  points: 90
+  weight: 355.0
+  is_master: true
+  active: true
+  position: 2
+  cost_price: 0.70
