@@ -20,6 +20,7 @@ Category.destroy_all
 PriceList.destroy_all
 Location.destroy_all
 Supplier.destroy_all
+PaymentMethod.destroy_all
 
 # Clear users_roles join table using delete_all to bypass model callbacks
 ActiveRecord::Base.connection.execute('DELETE FROM users_roles')
@@ -645,6 +646,44 @@ user_records = users.map do |user_data|
 end
 
 Rails.logger.debug { "Created #{user_records.count} Users." }
+
+# ---------------------------- #
+# Payment Methods
+# ---------------------------- #
+Rails.logger.debug 'Creating Payment Methods ...'
+
+payment_methods = [
+  {
+    name: 'cash',
+    active: true,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Cash', description: 'Pay with cash at the machine' },
+      { locale: 'ar', presentation: 'نقدا', description: 'الدفع نقدا في الجهاز' }
+    ]
+  },
+  {
+    name: 'credit_card',
+    active: true,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Credit Card', description: 'Pay using credit or debit card' },
+      { locale: 'ar', presentation: 'بطاقة ائتمان', description: 'الدفع باستخدام بطاقة ائتمان أو خصم' }
+    ]
+  },
+  {
+    name: 'mobile_wallet',
+    active: true,
+    translations_attributes: [
+      { locale: 'en', presentation: 'Mobile Wallet',
+        description: 'Pay using mobile payment apps like Fawry or Vodafone Cash' },
+      { locale: 'ar', presentation: 'محفظة إلكترونية',
+        description: 'الدفع باستخدام تطبيقات الدفع عبر الهاتف المحمول مثل فوري أو فودافون كاش' }
+    ]
+  }
+]
+
+payment_method_records = PaymentMethod.create!(payment_methods)
+
+Rails.logger.debug { "Created #{payment_method_records.count} Payment Methods." }
 
 # ---------------------------- #
 # Summary
