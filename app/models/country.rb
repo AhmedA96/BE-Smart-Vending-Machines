@@ -5,6 +5,7 @@
 # Table name: countries
 #
 #  id             :bigint           not null, primary key
+#  country_code   :string           default(""), not null
 #  currency       :string
 #  iso2           :string
 #  name           :string
