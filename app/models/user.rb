@@ -84,7 +84,7 @@ class User < ApplicationRecord
 
   belongs_to :country, optional: true
 
-  before_validation :set_country_from_mobile, if: -> { mobile_number.present? && country.nil? }
+  before_create :set_country_from_mobile, if: -> { mobile_number.present? && country.nil? }
   before_create :generate_qr_code_token
   after_create :create_wallet
 
