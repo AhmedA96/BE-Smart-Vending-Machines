@@ -8,7 +8,7 @@ module Api
       def index
         # Fetch all active payment methods for the machine if provided
         # Otherwise, fetch all active payment methods
-        @payment_methods = paginate(PaymentMethod.active_for_machine(@machine&.id))
+        @payment_methods = paginate(PaymentMethod.active_for_machine(@machine&.id).includes(:image_attachment))
       end
 
       def show; end

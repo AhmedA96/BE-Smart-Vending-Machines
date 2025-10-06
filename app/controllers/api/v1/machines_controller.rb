@@ -27,7 +27,17 @@ module Api
         # Filter stocked machines
         machines_query = machines_query.stocked if params[:stocked] == 'true'
 
-        @machines = paginate(machines_query.includes(:category, :location, :machine_type))
+        @machines = paginate(
+          machines_query.includes(
+            :category,
+            :machine_type,
+            :supplier,
+            :translations,
+            :image_attachment,
+            location: :translations
+          )
+        )
+
         render :index
       end
 

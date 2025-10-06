@@ -5,7 +5,11 @@ available_variant_ids = @machine&.machine_items&.pluck(:variant_id)
 json.product do
   json.partial! 'product', product: @product
 
-  json.variants @product.variants.where(id: available_variant_ids) do |variant|
+  variants = @product.variants
+                     .where(id: available_variant_ids)
+                     .includes(:translations)
+
+  json.variants variants do |variant|
     json.extract! variant, :id, :sku, :name, :presentation, :is_master,
                   :cost_price, :weight, :created_at, :max_orderable_quantity, :size
 

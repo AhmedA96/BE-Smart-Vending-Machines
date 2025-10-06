@@ -8,9 +8,15 @@ module Api
         categories = MachineCategory.for_nearby_machines(
           latitude: params[:latitude],
           longitude: params[:longitude]
-        ).includes(:translations, :logo_attachment)
+        )
 
-        @machine_categories = paginate(categories)
+        @machine_categories = paginate(
+          categories.includes(
+            :translations,
+            :logo_attachment,
+            machines: [:translations, { location: :translations }]
+          )
+        )
       end
 
       def show; end
@@ -18,7 +24,14 @@ module Api
       private
 
       def set_category
-        @machine_category = MachineCategory.find(params[:id])
+        @machine_category = MachineCategory.includes(
+          :translations,
+          :logo_attachment,
+          machines: [
+            :translations,
+            { location: :translations }
+          ]
+        ).find(params[:id])
       end
     end
   end

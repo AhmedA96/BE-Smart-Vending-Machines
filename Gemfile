@@ -122,6 +122,7 @@ end
 group :development, :test do
   gem 'avo_upgrade'
   gem 'brakeman', require: false
+  gem 'bullet'
   gem 'bundle-audit'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'debug', platforms: %i[mri mingw x64_mingw]
