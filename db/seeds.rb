@@ -674,9 +674,9 @@ payment_methods = [
     active: true,
     translations_attributes: [
       { locale: 'en', presentation: 'Mobile Wallet',
-        description: 'Pay using mobile payment apps like Fawry or Vodafone Cash' },
+        description: 'Pay using mobile payment apps like Google Pay or Apple Pay' },
       { locale: 'ar', presentation: 'محفظة إلكترونية',
-        description: 'الدفع باستخدام تطبيقات الدفع عبر الهاتف المحمول مثل فوري أو فودافون كاش' }
+        description: 'الدفع باستخدام تطبيقات الدفع عبر الهاتف المحمول مثل جوجل باي أو أبل باي' }
     ]
   }
 ]
