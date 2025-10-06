@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_23_013712) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_06_102138) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -116,6 +116,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_013712) do
     t.decimal "vat_percentage", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "country_code", default: "", null: false
   end
 
   create_table "country_translations", force: :cascade do |t|
