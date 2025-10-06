@@ -6,7 +6,7 @@ module Api
       before_action :set_machine, only: %i[index]
       before_action :set_category, only: %i[show]
       def index
-        @categories = paginate(Category.for_machine(@machine))
+        @categories = paginate(Category.for_machine(@machine).includes(:translations, :logo_attachment))
       end
 
       def show; end

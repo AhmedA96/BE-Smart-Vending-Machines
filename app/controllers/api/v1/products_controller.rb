@@ -10,10 +10,10 @@ module Api
       before_action :set_product, only: %i[show]
 
       def index
-        products = main_products.includes(:variants).includes(:translations)
+        products = main_products
         products = apply_filters(products)
         products = products.ransack_filter(filtered_params)
-        @products = paginate(products)
+        @products = paginate(products.includes(:translations, :images_attachments, variants: :translations))
       end
 
       def machine_products
@@ -45,7 +45,7 @@ module Api
       end
 
       def set_product
-        @product = Product.find(params[:id])
+        @product = Product.includes(:translations).find(params[:id])
       end
 
       def find_machine

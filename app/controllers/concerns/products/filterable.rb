@@ -5,10 +5,21 @@ module Products
     extend ActiveSupport::Concern
 
     def filtered_params
-      params.permit(:machine_id, :order_id, :category_id, :page, :per_page, :sorts, :sort_price, :format,
-                    q: %i[product_translations_presentation_cont product_translations_description_cont brand_id_eq
-                          product_translations_presentation_start product_translations_description_start
-                          price_for_price_list_gteq price_for_price_list_lteq stock_availability])
+      params.permit(
+        :order_id, :page, :per_page, :sorts, :sort_price, :format,
+        q: %i[
+          machine_id
+          product_translations_presentation_cont
+          product_translations_description_cont
+          brand_id_eq
+          product_translations_presentation_start
+          product_translations_description_start
+          price_for_price_list_gteq
+          price_for_price_list_lteq
+          stock_availability
+          category_id
+        ]
+      )
     end
 
     def price_range_params_present?

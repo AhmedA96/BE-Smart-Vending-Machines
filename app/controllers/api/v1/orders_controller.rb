@@ -9,7 +9,10 @@ module Api
 
       def index
         orders = policy_scope(Order)
-        @orders = paginate(orders.completed)
+        @orders = paginate(
+          orders.completed
+                .includes(:machine)
+        )
       end
 
       def show
