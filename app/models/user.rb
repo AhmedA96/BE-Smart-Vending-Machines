@@ -63,7 +63,7 @@ class User < ApplicationRecord
          password_length: 8..128
 
   validates :mobile_number,
-            phone: { possible: false, allow_blank: false },
+            phone: { possible: true, allow_blank: false },
             presence: true,
             uniqueness: { case_sensitive: false }
 
