@@ -6,7 +6,7 @@ module Avo
       include ResourceHelpers
 
       self.title = :name
-      self.includes = %i[machines translations]
+      self.includes = %i[translations]
       self.attachments = []
       self.record_selector = false
       self.search = {

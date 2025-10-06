@@ -5,6 +5,8 @@ module Avo
     class LineItem < Avo::BaseResource
       self.includes = []
       self.attachments = []
+      self.visible_on_sidebar = false
+
       self.search = {
         query: -> { query.ransack(id_eq: params[:q], m: 'or').result(distinct: false) }
       }

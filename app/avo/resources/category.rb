@@ -3,30 +3,40 @@
 module Avo
   module Resources
     class Category < Avo::BaseResource
+      self.includes = %i[logo_attachment]
+      self.attachments = []
       self.title = :name
-      self.includes = %i[products translations]
       self.default_sort_column = :position
       self.default_sort_direction = :asc
       self.default_view_type = :grid
+
+      # Enhanced search with name and description
       self.search = {
-        query: -> { query.ransack(name_cont: params[:q], m: 'or').result(distinct: false) },
-        item: lambda {
-                {
-                  title: record&.name&.to_s,
-                  description: "Contains #{record.products.count} products"
-                }
-              },
-        help: -> { 'Search by category' }
+        query: lambda {
+          query.ransack(
+            id_eq: params[:q],
+            name_cont: params[:q],
+            description_cont: params[:q],
+            m: 'or'
+          ).result(distinct: false)
+        }
       }
 
       def fields
-        field :id, as: :id
-        field :name, as: :text, required: true
-        field :position, as: :number, default: 0, hide_on: %i[index]
-        field :presentation, as: :text, required: true
+        field :id, as: :id, link_to_record: true
+
+        field :logo, as: :file, is_image: true, link_to_record: true
+
+        field :name, as: :text, required: true, sortable: true
+
+        field :presentation, as: :text, required: true, hide_on: %i[index]
+
         field :description, as: :textarea, hide_on: %i[index]
+
+        field :position, as: :number, default: 0, hide_on: %i[index]
+
         field :active, as: :boolean, default: true, hide_on: %i[index]
-        field :logo, as: :file, hide_on: %i[index]
+
         field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
         field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
 
@@ -34,9 +44,9 @@ module Avo
       end
 
       def many_relation_tabs
-        tabs id: :many_relations do
-          field :products, as: :has_many, reloadable: true, linkable: true
-          field :category_translations, as: :has_many, reloadable: true, linkable: true
+        tabs do
+          field :products, as: :has_many, reloadable: true, linkable: true, searchable: true
+          field :category_translations, as: :has_many, reloadable: true, searchable: true, linkable: true
         end
       end
     end
