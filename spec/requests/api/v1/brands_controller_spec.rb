@@ -8,9 +8,12 @@ RSpec.describe Api::V1::BrandsController, type: :request do
 
   describe 'GET /api/v1/brands' do
     let!(:brand) { brands(:coca_cola) }
+    let!(:location) { locations(:downtown_office) }
 
-    xit 'returns all brands' do
-      get '/api/v1/brands', headers: { Authorization: "Bearer #{access_token.token}" }
+    it 'returns all brands' do
+      get '/api/v1/brands', params: { location_id: location.id },
+                            headers: { Authorization: "Bearer #{access_token.token}" }
+
       json_response = response.parsed_body
 
       expect(response).to have_http_status(:ok)
