@@ -13,7 +13,12 @@
 #  updated_at   :datetime         not null
 #
 class PaymentMethod < ApplicationRecord
+  extend Mobility
+
   has_one_attached :image, dependent: :destroy
+
+  translates :presentation, :description
+  accepts_nested_attributes_for :translations, allow_destroy: true
 
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payments, dependent: :nullify
