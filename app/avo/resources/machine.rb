@@ -6,9 +6,10 @@ module Avo
       include ResourceHelpers
 
       self.title = :name
-      self.includes = %i[machine_statuses machine_items translations machine_payment_methods]
+      self.includes = %i[]
       self.record_selector = true
       self.attachments = %i[image]
+      self.default_view_type = :grid
 
       self.search = {
         results_count: 5,
@@ -26,6 +27,24 @@ module Avo
                 }
               },
         help: -> { 'Search by Machine name' }
+      }
+
+      self.grid_view = {
+        card: lambda {
+          {
+            cover_url: (main_app.url_for(record.image) if record.image.attached?),
+            title: record.name,
+            body: ActionView::Base.full_sanitizer.sanitize(record&.name)&.to_s&.truncate(100),
+            badge_label: "#{record.status} • #{record.stocked? ? 'Stocked' : 'Empty'}",
+            badge_color: if record.status == 'Active' && record.stocked?
+                           'green'
+                         elsif record.status == 'Active' && !record.stocked?
+                           'yellow'
+                         else
+                           'red'
+                         end
+          }
+        }
       }
 
       def fields

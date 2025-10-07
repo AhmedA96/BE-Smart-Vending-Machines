@@ -6,6 +6,7 @@ module Avo
       include ResourceHelpers
 
       self.includes = %i[wallet]
+      self.visible_on_sidebar = false
 
       def fields
         field :id, as: :id

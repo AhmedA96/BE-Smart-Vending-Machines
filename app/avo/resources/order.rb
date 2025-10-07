@@ -3,6 +3,8 @@
 module Avo
   module Resources
     class Order < Avo::BaseResource
+      include ResourceHelpers
+
       ORDER_EVENTS = ::Order.aasm&.states&.map(&:name)
 
       self.includes = %i[user machine]
@@ -31,8 +33,20 @@ module Avo
         field :payment_method, as: :text, name: 'Payment Method' do
           record.payments.last&.payment_method&.name || '—'
         end
+
+        limited_field :machine, as: :belongs_to, searchable: true
+        limited_field :user, as: :belongs_to, searchable: true
         field :created_at, as: :date_time, sortable: true
         field :updated_at, as: :date_time, sortable: true
+
+        many_relations
+      end
+
+      def many_relations
+        tabs id: :many_relations_tabs do
+          field :line_items, as: :has_many, reloadable: true, linkable: true, searchable: true
+          field :payments, as: :has_many, reloadable: true, linkable: true, searchable: true
+        end
       end
     end
   end
