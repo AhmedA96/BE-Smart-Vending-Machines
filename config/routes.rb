@@ -117,6 +117,15 @@ Rails.application.routes.draw do
       resources :wallet_transactions, only: %i[index show]
 
       resources :tap_webhook, only: [:create]
+
+      resources :notifications, only: %i[index destroy] do
+        member do
+          put :mark_as_read
+        end
+        collection do
+          put :mark_all_as_read
+        end
+      end
     end
   end
   # Health check endpoint for deployment monitoring
