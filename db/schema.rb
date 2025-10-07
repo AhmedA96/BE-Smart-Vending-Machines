@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_23_013712) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_07_211007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -278,6 +278,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_013712) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_mobile_verifications_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "notifiable_type"
+    t.bigint "notifiable_id"
+    t.string "notification_type", null: false
+    t.string "title", null: false
+    t.text "body", null: false
+    t.jsonb "metadata", default: {}
+    t.boolean "read", default: false
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["notification_type"], name: "index_notifications_on_notification_type"
+    t.index ["user_id", "created_at"], name: "index_notifications_on_user_id_and_created_at"
+    t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -654,6 +673,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_013712) do
   add_foreign_key "machines", "machine_types"
   add_foreign_key "machines", "suppliers"
   add_foreign_key "machines", "vendors"
+  add_foreign_key "notifications", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "orders", "machines"
   add_foreign_key "orders", "users"
