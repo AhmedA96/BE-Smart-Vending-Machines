@@ -12,11 +12,11 @@ order_payment:
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
 
-order_completed:
+order_ready:
   user: user_one
   notifiable_type: Order
   notifiable_id: 2
-  notification_type: order_completed
+  notification_type: order_ready
   title: "Order Confirmed"
   body: "Your order #2 has been confirmed."
   read: false
@@ -25,11 +25,11 @@ order_completed:
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
 
-order_ready:
+order_dispensed:
   user: user_one
   notifiable_type: Order
   notifiable_id: 3
-  notification_type: order_ready
+  notification_type: order_dispensed
   title: "Order Ready! 🎉"
   body: "Your order is ready at Machine A."
   read: true

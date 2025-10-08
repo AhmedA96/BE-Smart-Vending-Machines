@@ -34,10 +34,9 @@ class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
 
   TYPES = {
-    order_placed: 'order_placed',
     order_payment: 'order_payment',
-    order_completed: 'order_completed',
     order_ready: 'order_ready',
+    order_dispensed: 'order_dispensed',
     order_failed: 'order_failed',
     machine_offline: 'machine_offline',
     promotion: 'promotion'
