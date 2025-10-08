@@ -76,6 +76,7 @@ class Order < ApplicationRecord
         else
           return_to_cart!
         end
+        notify_payment_initiated
       end
     end
 
@@ -84,6 +85,7 @@ class Order < ApplicationRecord
       after do
         Stock::Reservation.commit_order!(self)
         generate_pickup_code
+        notify_order_ready
       end
     end
 
@@ -98,6 +100,7 @@ class Order < ApplicationRecord
       transitions from: :completed, to: :dispensed
       after do
         update(dispense_status: 'dispensed')
+        notify_order_dispensed
       end
     end
   end
@@ -157,5 +160,17 @@ class Order < ApplicationRecord
     return unless total_items > machine.max_items_per_order
 
     errors.add(:base, "Maximum #{machine.max_items_per_order} item allowed per order")
+  end
+
+  def notify_payment_initiated
+    NotificationService::OrderNotifications.new(self).payment_initiated
+  end
+
+  def notify_order_ready
+    NotificationService::OrderNotifications.new(self).ready
+  end
+
+  def notify_order_dispensed
+    NotificationService::OrderNotifications.new(self).dispensed
   end
 end
