@@ -5,6 +5,8 @@ module Avo
     class UserFavorite < Avo::BaseResource
       self.title = :display_name
       self.includes = [:user, :product, { product: :variants }]
+      self.visible_on_sidebar = false
+
       self.search = {
         query: lambda {
           query.joins(:user, product: :variants)

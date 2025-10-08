@@ -7,7 +7,7 @@ module Avo
 
       self.title = :full_name
       self.includes = %i[translations]
-      self.visible_on_sidebar = true
+      self.visible_on_sidebar = false
       self.search = {
         query: lambda {
           query.ransack(name_cont: params[:q], sku_cont: params[:q],

@@ -8,7 +8,7 @@ module Avo
       self.title = :address
       self.includes = %i[country]
       self.record_selector = false
-      self.visible_on_sidebar = true
+      self.visible_on_sidebar = false
       self.search = {
         query: lambda {
           query.ransack(address_cont: params[:q], name_cont: params[:q], m: 'or').result(distinct: true)

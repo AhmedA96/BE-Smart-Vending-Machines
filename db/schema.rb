@@ -375,6 +375,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_102138) do
     t.index ["payment_customer_number", "user_id"], name: "index_payment_customers_on_payment_customer_number_and_user_id", unique: true
   end
 
+  create_table "payment_method_translations", force: :cascade do |t|
+    t.string "presentation"
+    t.text "description"
+    t.string "locale", null: false
+    t.bigint "payment_method_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["locale"], name: "index_payment_method_translations_on_locale"
+    t.index ["payment_method_id", "locale"], name: "index_pm_translations_on_payment_method_id_and_locale", unique: true
+  end
+
   create_table "payment_methods", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "description"
@@ -658,6 +669,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_102138) do
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "orders", "machines"
   add_foreign_key "orders", "users"
+  add_foreign_key "payment_method_translations", "payment_methods"
   add_foreign_key "price_list_items", "price_lists"
   add_foreign_key "price_list_items", "variants"
   add_foreign_key "product_categories", "categories"
