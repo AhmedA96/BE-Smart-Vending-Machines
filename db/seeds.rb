@@ -299,6 +299,7 @@ countries = [
   {
     name: 'UAE',
     iso2: 'AE',
+    country_code: '971',
     vat_percentage: 5.0,
     translations_attributes: [
       { locale: 'en', presentation: 'United Arab Emirates', currency: 'AED' },
@@ -308,6 +309,7 @@ countries = [
   {
     name: 'KSA',
     iso2: 'SA',
+    country_code: '966',
     vat_percentage: 15.0,
     translations_attributes: [
       { locale: 'en', presentation: 'Kingdom of Saudi Arabia', currency: 'SAR' },
