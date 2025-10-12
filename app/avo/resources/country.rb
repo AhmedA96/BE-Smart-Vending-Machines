@@ -6,7 +6,7 @@ module Avo
       include ResourceHelpers
 
       self.title = :name
-      self.includes = %i[machines translations]
+      self.includes = %i[translations]
       self.attachments = []
       self.record_selector = false
       self.search = {
@@ -29,12 +29,12 @@ module Avo
 
       def fields
         field :id, as: :id
-        field :name, as: :text, hide_on: :forms
         field :name, as: :select, enum: ::Country.names, required: true, only_on: :forms
         field :presentation, as: :text
         field :iso2, as: :text, required: true
         field :vat_percentage, as: :number, step: 0.1, min: 0, max: 100, required: true
         field :currency, as: :select, enum: ::Country.currencies, required: true
+        field :country_code, as: :text, required: true
 
         field :time_zone, as: :select, options: time_zone_options
 

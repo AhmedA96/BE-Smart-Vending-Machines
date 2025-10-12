@@ -107,6 +107,9 @@ en:
       exceeds_variant_max_orderable_quantity: "You can only order up to %{limit} units of %{product_name}"
       variant_not_available_for_machine: "Variant is not available for this machine"
       machine_offline: "Machine is offline and cannot accept new orders"
+      
+  active: Active
+  inactive: Inactive
   
   notifications:
     marked_as_read: "Notification marked as read"

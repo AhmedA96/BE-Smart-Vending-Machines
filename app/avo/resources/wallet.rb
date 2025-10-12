@@ -25,6 +25,14 @@ module Avo
         field :id, as: :id
         field :balance, as: :number, required: true, only_on: %i[index show]
         limited_field :user, as: :belongs_to, searchable: true
+        many_relations
+      end
+
+      def many_relations
+        tabs id: :many_relation_tabs do
+          field :wallet_transactions, as: :has_many, reloadable: true
+          field :wallet_refills, as: :has_many, reloadable: true
+        end
       end
     end
   end

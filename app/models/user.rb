@@ -85,6 +85,7 @@ class User < ApplicationRecord
 
   belongs_to :country, optional: true
 
+  before_create :set_country_from_mobile, if: -> { mobile_number.present? && country.nil? }
   before_create :generate_qr_code_token
   after_create :create_wallet
 
@@ -174,6 +175,16 @@ class User < ApplicationRecord
       part3 = SecureRandom.alphanumeric(4).upcase
       token = "#{part1}-#{part2}-#{part3}"
       break token unless User.exists?(qr_code_token: token)
+    end
+  end
+
+  def set_country_from_mobile
+    parsed = Phonelib.parse(mobile_number)
+    if parsed.valid?
+      self.country = Country.find_by(iso2: parsed.country)
+      Rails.logger.info "Setting country #{country&.iso2} for #{mobile_number}"
+    else
+      Rails.logger.warn "Invalid phone number #{mobile_number}"
     end
   end
 end
