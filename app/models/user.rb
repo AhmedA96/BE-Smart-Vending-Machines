@@ -81,6 +81,7 @@ class User < ApplicationRecord
   has_many :mobile_verifications, dependent: :destroy
   has_many :addresses, dependent: :destroy
   has_many :payment_cards, through: :payment_customer
+  has_many :notifications, dependent: :destroy
 
   belongs_to :country, optional: true
 
@@ -155,6 +156,10 @@ class User < ApplicationRecord
            .select('DISTINCT ON (products.id) products.*, orders.created_at AS order_created_at')
            .order('products.id, orders.created_at DESC')
            .limit(limit)
+  end
+
+  def unread_notifications_count
+    notifications.unread.count
   end
 
   private
