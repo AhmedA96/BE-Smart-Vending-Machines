@@ -122,3 +122,29 @@ jobs:
         uses: kentaro-m/auto-assign-action@v2.0.0
         with:
           configuration-path: ".github/auto_assign.yml"
+          
+  integration_tests:
+    name: API Integration Tests
+    needs: test  
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Newman
+        run: |
+          npm install -g newman
+
+      - name: Run Postman Integration Tests
+        run: |
+          newman run newman/VNDG_API_Integration.json \
+            -e newman/staging_environment.json \
+            -r cli
