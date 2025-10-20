@@ -82,6 +82,7 @@ class User < ApplicationRecord
   has_many :addresses, dependent: :destroy
   has_many :payment_cards, through: :payment_customer
   has_many :notifications, dependent: :destroy
+  has_many :devices, dependent: :destroy
 
   belongs_to :country, optional: true
 
