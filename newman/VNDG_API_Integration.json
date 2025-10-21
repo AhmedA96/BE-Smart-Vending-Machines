@@ -662,7 +662,7 @@
 							"variable": [
 								{
 									"key": "order_id",
-									"value": "{{order_id}}"
+									"value": "{{cart_id}}"
 								}
 							]
 						}

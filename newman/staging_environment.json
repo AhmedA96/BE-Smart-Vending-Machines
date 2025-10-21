@@ -11,6 +11,7 @@
     { "key": "machine_id", "value": "", "enabled": true },
     { "key": "product_id", "value": "", "enabled": true },
     { "key": "order_id", "value": "", "enabled": true },
-    { "key": "payment_id", "value": "", "enabled": true }
+    { "key": "payment_id", "value": "", "enabled": true },
+    { "key": "TAP_SECRET_KEY", "value": "sk_test_XKokBfNWv6FIYuTMg5sLPjhJ", "enabled": true }
   ]
 }
