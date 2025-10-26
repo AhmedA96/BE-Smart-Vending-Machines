@@ -64,11 +64,17 @@ class Order < ApplicationRecord
     state :completed
     state :dispensed
 
-    event :process_payment do
+    event :start_payment do
       transitions from: :cart, to: :payment, guard: :user_present?
       after do
         Stock::Reservation.reserve_order!(self)
+        notify_payment_initiated
+      end
+    end
 
+    event :process_payment do
+      transitions from: :payment, to: :payment, guard: :user_present?
+      after do
         payment_successful = Orders::ProcessPayment.call(self, user)
 
         if payment_successful
@@ -76,7 +82,6 @@ class Order < ApplicationRecord
         else
           return_to_cart!
         end
-        notify_payment_initiated
       end
     end
 

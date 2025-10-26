@@ -11,7 +11,11 @@ module Payments
       amount = order.items_total
       return if amount <= 0
 
-      create_payment(amount, payment_data, order)
+      payment = create_payment(amount, payment_data, order)
+
+      transition_order_to_payment(order)
+
+      payment
     end
 
     def self.create_payment(amount, payment_data, order)
@@ -22,8 +26,15 @@ module Payments
         card_id: payment_data[:card_id],
         token_id: payment_data[:token_id]
       }
-
       Payment.create!(attributes)
+    end
+
+    def self.transition_order_to_payment(order)
+      if order.may_start_payment?
+        order.start_payment!
+      else
+        Rails.logger.info("Order ##{order.id} is in '#{order.status}' state, skipping transition")
+      end
     end
   end
 end
