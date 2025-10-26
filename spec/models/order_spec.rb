@@ -105,14 +105,11 @@ RSpec.describe Order, type: :model do
       order.update!(user: users(:user_one))
       order.line_items.create!(variant: variants(:pepsi_cola_12oz), quantity: 1, price: 2.0)
 
-      order.payments.create!(
-        status: 'pending',
-        payment_method: payment_methods(:credit_card),
-        amount: 2.0
-      )
+      allow(Stock::Reservation).to receive(:reserve_order!).and_return(true)
+      allow_any_instance_of(NotificationService::OrderNotifications).to receive(:payment_initiated)
 
-      expect { order.process_payment }.to change { order.reload.status }
-        .from('cart').to('payment').or change { order.reload.status }.from('cart').to('completed')
+      expect { order.start_payment! }.to change { order.reload.status }
+        .from('cart').to('payment')
     end
 
     it 'can transition from payment to completed' do
