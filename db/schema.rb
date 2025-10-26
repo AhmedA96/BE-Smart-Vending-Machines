@@ -379,7 +379,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_211007) do
     t.string "scheme"
     t.string "card_id", null: false
     t.string "payment_agreement_id"
-    t.integer "payment_customer_id"
+    t.integer "payment_customer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["card_id"], name: "index_payment_cards_on_card_id", unique: true
