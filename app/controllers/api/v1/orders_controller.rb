@@ -40,6 +40,12 @@ module Api
       end
 
       def status
+        unless Rails.env.production?
+          render json: { order_number: @order.number, status: 'ready',
+                         message: 'Order is ready to be dispensed (mocked)' }
+          return
+        end
+
         status_data = Orders::CheckOrderStatus.call(@order)
         render json: { order_number: @order.number, status: status_data }
       rescue SupplierApiError
