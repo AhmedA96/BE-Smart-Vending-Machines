@@ -4,12 +4,10 @@ module Api
   module V1
     class PaymentCardsController < ApplicationController
       skip_before_action :doorkeeper_authorize!, only: :create
-      before_action :find_card, only: %w[destroy toggle_default]
+      before_action :find_card, only: %i[destroy toggle_default]
 
       def index
-        @payment_cards = PaymentCard.joins(:payment_customer)
-                                    .where(payment_customer: { user_id: current_user.id })
-                                    .ransack_filter(params)
+        @payment_cards = current_user.payment_cards.ransack_filter(params)
       end
 
       def create
@@ -17,6 +15,9 @@ module Api
 
         @payment_card = TapPayments::SaveCardRecord.call(params)
         clean_up_card unless @payment_card.persisted?
+
+        assign_default_if_first_card(@payment_card)
+
         render :show, status: :created
       end
 
@@ -24,7 +25,7 @@ module Api
         if @payment_card.default?
           @payment_card.update(default: false)
         else
-          reset_all_user_cards_default
+          current_user.payment_cards.find_each { |card| card.update(default: false) }
           @payment_card.update(default: true)
         end
 
@@ -32,7 +33,11 @@ module Api
       end
 
       def destroy
+        was_default = @payment_card.default?
         @payment_card.destroy!
+
+        assign_next_default_if_needed if was_default
+
         render json: { message: 'Payment card deleted successfully' }, status: :ok
       end
 
@@ -47,27 +52,23 @@ module Api
       end
 
       def find_card
-        @payment_card = PaymentCard.find(params[:id])
-      end
-
-      def valid_request?
-        TapPayments::ValidateRequest.new(params, request.headers).call
+        @payment_card = current_user.payment_cards.find(params[:id])
       end
 
       def valid_transaction?
         params[:status] == 'VALID' && params.dig('response', 'code') == '001'
       end
 
-      def request_user
-        User.find(params[:user_id])
+      def assign_default_if_first_card(card)
+        # make the first added card default
+        return unless current_user.payment_cards.one?
+
+        card.update(default: true)
       end
 
-      def reset_all_user_cards_default
-        user_cards = PaymentCard.joins(:payment_customer)
-                                .where(payment_customer: { user_id: current_user.id })
-        user_cards.find_each do |card|
-          card.update(default: false)
-        end
+      def assign_next_default_if_needed
+        next_card = current_user.payment_cards.order(:created_at).first
+        next_card&.update(default: true)
       end
     end
   end
