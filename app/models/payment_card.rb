@@ -21,7 +21,7 @@
 #  updated_at           :datetime         not null
 #  card_id              :string           not null
 #  payment_agreement_id :string
-#  payment_customer_id  :integer
+#  payment_customer_id  :integer          not null
 #
 # Indexes
 #
