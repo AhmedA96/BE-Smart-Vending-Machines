@@ -19,7 +19,7 @@ module TapPayments
         base_params = {
           amount: payment.amount,
           currency: currency,
-          customer_initiated: true,
+          customer_initiated: false,
           threeDSecure: true,
           save_card: false,
           customer: { id: user.payment_customer.payment_customer_number },
