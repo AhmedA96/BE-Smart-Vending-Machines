@@ -5,6 +5,8 @@ json.favorites @favorites do |favorite|
 
   json.product_id product.id
   json.product_name product.name
+  json.category_ids product.product_categories.ids
+  json.machine_ids product.variants.first.machines.ids
   json.favorited_at favorite.created_at
   json.order_count product.order_count_for_user(@current_user)
   json.last_ordered product.last_ordered_by_user(@current_user)
