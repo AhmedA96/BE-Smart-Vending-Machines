@@ -7,4 +7,5 @@ if @machine.present?
   end
 end
 
+json.has_more_options product.variants.many?
 json.images product.images.attached? ? product.images.map { |img| url_for(img) } : []

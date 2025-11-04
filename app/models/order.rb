@@ -88,6 +88,7 @@ class Order < ApplicationRecord
     event :mark_completed do
       transitions from: :payment, to: :completed
       after do
+        update!(completed_at: Time.current)
         Stock::Reservation.commit_order!(self)
         generate_pickup_code
         notify_order_ready
