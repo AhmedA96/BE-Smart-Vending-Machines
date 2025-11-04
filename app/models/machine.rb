@@ -60,6 +60,7 @@ class Machine < ApplicationRecord
   has_many :machine_translations, dependent: :destroy
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payment_methods, through: :machine_payment_methods
+  has_many :orders, dependent: :nullify
 
   has_one_attached :image
 
