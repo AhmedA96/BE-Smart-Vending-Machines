@@ -38,7 +38,7 @@ module Api
       private
 
       def profile_params
-        params.expect(user: %i[name avatar email date_of_birth locale])
+        params.expect(user: %i[name avatar email date_of_birth locale mobile_number])
       end
     end
   end
