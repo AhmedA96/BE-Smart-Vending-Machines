@@ -10,7 +10,7 @@ module Notifications
     def call
       validate_type!
 
-      Notification.create!(
+      notification = Notification.create!(
         user: @user,
         notifiable: @attributes[:notifiable],
         notification_type: @attributes[:type],
@@ -18,6 +18,10 @@ module Notifications
         body: @attributes[:body],
         metadata: @attributes[:metadata] || {}
       )
+
+      Notifications::PushJob.perform_later(notification.id)
+
+      notification
     end
 
     private
