@@ -22,6 +22,7 @@ gem 'scenic'
 gem 'devise', '~> 4.9'
 gem 'devise-bootstrap5', '~> 0.1.3'
 gem "doorkeeper", "~> 5.8"
+gem 'googleauth'
 gem 'jwt'
 gem 'omniauth-apple'
 gem 'omniauth-google-oauth2'
@@ -139,7 +140,7 @@ group :development, :test do
   gem 'rubocop-minitest'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov'
   gem "spring"
   gem "strong_migrations"

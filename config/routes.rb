@@ -126,6 +126,7 @@ Rails.application.routes.draw do
           put :mark_all_as_read
         end
       end
+      resources :devices, only: %i[create destroy]
     end
   end
   # Health check endpoint for deployment monitoring
