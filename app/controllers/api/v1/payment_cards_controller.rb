@@ -60,8 +60,8 @@ module Api
       end
 
       def assign_default_if_first_card(card)
-        # make the first added card default
-        return unless current_user.payment_cards.one?
+        user = card.payment_customer&.user
+        return unless user&.payment_cards&.one?
 
         card.update(default: true)
       end

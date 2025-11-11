@@ -130,6 +130,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
     t.index ["locale"], name: "index_country_translations_on_locale"
   end
 
+  create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token", null: false
+    t.string "platform", null: false
+    t.boolean "active", default: true
+    t.datetime "last_used_at"
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_devices_on_token", unique: true
+    t.index ["user_id", "active"], name: "index_devices_on_user_id_and_active"
+    t.index ["user_id", "platform"], name: "index_devices_on_user_id_and_platform"
+    t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
   create_table "line_items", force: :cascade do |t|
     t.integer "quantity", null: false
     t.decimal "price", precision: 10, scale: 2, default: "0.0"
@@ -672,6 +687,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   add_foreign_key "brand_translations", "brands"
   add_foreign_key "category_translations", "categories"
   add_foreign_key "country_translations", "countries"
+  add_foreign_key "devices", "users"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "variants"
   add_foreign_key "location_translations", "locations"
