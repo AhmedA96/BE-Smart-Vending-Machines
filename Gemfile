@@ -7,11 +7,11 @@ ruby '3.4.2'
 
 # Core
 gem 'bootsnap', require: false
-gem 'rails', '~> 8.0'
+gem 'rails', '~> 8.1'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Database
-gem 'activerecord-postgis-adapter', github: "AhmedAliIbrahim/activerecord-postgis-adapter", branch: "rails-8"
+gem "activerecord-postgis-adapter", github: "StreetIQ/activerecord-postgis-adapter", branch: "allow_rails81"
 gem 'pg', '~> 1.6'
 gem "pghero"
 gem 'pg_search'

@@ -20,7 +20,8 @@ module Avo
         field :machine, as: :belongs_to, searchable: true
         field :variant, as: :belongs_to, searchable: true
         field :stock, as: :number, required: true, min: 0
-        field :line_number, as: :number, required: true, hide_on: :index
+        field :reserved_stock, as: :number, readonly: true
+        field :line_number, as: :number, required: true
         field :created_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
         field :updated_at, as: :date_time, readonly: true, hide_on: %i[index edit new]
       end

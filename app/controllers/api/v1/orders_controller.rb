@@ -12,6 +12,7 @@ module Api
         @orders = paginate(
           orders.completed
                 .includes(:machine)
+                .order(completed_at: :desc)
         )
       end
 

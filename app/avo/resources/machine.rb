@@ -88,6 +88,7 @@ module Avo
           field :machine_translations, as: :has_many, reloadable: true, name: 'Machine Translations'
           field :machine_payment_methods, as: :has_many, reloadable: true, name: 'Payment Methods', linkable: true
           field :machine_statuses, as: :has_many, reloadable: true, name: 'Status History', linkable: true
+          field :orders, as: :has_many, reloadable: true, name: 'Orders', linkable: true
         end
       end
     end
