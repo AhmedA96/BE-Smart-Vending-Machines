@@ -9,61 +9,50 @@ module NotificationService
     end
 
     def payment_initiated
-      localized_for_user(@user) do
-        base_call(
-          type: Notification::TYPES[:order_payment],
-          title: I18n.t('notifications.order_payment.title', order_number: @order.number),
-          body: I18n.t('notifications.order_payment.body', order_number: @order.number, machine_name: @machine.name)
-        )
-      end
+      create_notification(
+        type: Notification::TYPES[:order_payment],
+        translation_key: 'notifications.order_payment',
+        translation_params: { order_number: @order.number }
+      )
     end
 
     def ready
-      localized_for_user(@user) do
-        base_call(
-          type: Notification::TYPES[:order_ready],
-          title: I18n.t('notifications.order_ready.title'),
-          body: I18n.t('notifications.order_ready.body', machine_name: @machine.name),
-          metadata: {
-            order_id: @order.id,
-            number: @order.number
-          }
-        )
-      end
+      create_notification(
+        type: Notification::TYPES[:order_ready],
+        translation_key: 'notifications.order_ready',
+        translation_params: {
+          order_number: @order.number,
+          machine_id: @machine.id
+        },
+        metadata: { order_id: @order.id, number: @order.number }
+      )
     end
 
     def dispensed
-      localized_for_user(@user) do
-        base_call(
-          type: Notification::TYPES[:order_dispensed],
-          title: I18n.t('notifications.order_dispensed.title'),
-          body: I18n.t('notifications.order_dispensed.body', machine_name: @machine.name),
-          metadata: {
-            order_id: @order.id,
-            number: @order.number
-          }
-        )
-      end
+      create_notification(
+        type: Notification::TYPES[:order_dispensed],
+        translation_key: 'notifications.order_dispensed',
+        translation_params: {
+          order_number: @order.number,
+          machine_id: @machine.id
+        },
+        metadata: { order_id: @order.id, number: @order.number }
+      )
     end
 
     private
 
-    def base_call(type:, title:, body:, metadata: {})
+    def create_notification(type:, translation_key:, translation_params:, metadata: {})
       Notifications::Create.new(
         user: @user,
         attributes: {
           type: type,
-          title: title,
-          body: body,
+          translation_key: translation_key,
+          translation_params: translation_params,
           notifiable: @order,
           metadata: metadata
         }
       ).call
-    end
-
-    def localized_for_user(user, &)
-      locale = user.locale.presence_in(I18n.available_locales.map(&:to_s)) || I18n.default_locale
-      I18n.with_locale(locale, &)
     end
   end
 end
