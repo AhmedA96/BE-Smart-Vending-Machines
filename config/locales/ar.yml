@@ -105,3 +105,24 @@ ar:
   notifications: 
     marked_as_read: "تم قراءة الإشعار"
     mark_all_as_read: "تم قراءة جميع الإشعارات"
+    order_payment:
+      title: "جاري معالجة الدفع"
+      body: "جاري معالجة دفعتك للطلب رقم #%{order_number}."
+    order_ready:
+      title: "الطلب جاهز!"
+      body: "طلبك جاهز في %{machine_name}. اذهب إلى الماكينة لاستلام مشترياتك!"
+    order_dispensed:
+      title: "تم صرف الطلب"
+      body: "تم صرف طلبك في %{machine_name}."
+    order_failed:
+      title: "فشل الطلب"
+      body: "فشل طلبك رقم #%{order_number}. يرجى الاتصال بالدعم."
+    machine_offline:
+      title: "الماكينة غير متصلة"
+      body: "الماكينة %{machine_name} غير متصلة حالياً."
+    promotion:
+      title: "عرض خاص"
+      body: "%{promotion_text}"
+
+
+ 

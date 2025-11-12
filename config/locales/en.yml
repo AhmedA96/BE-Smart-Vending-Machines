@@ -114,4 +114,22 @@ en:
   notifications:
     marked_as_read: "Notification marked as read"
     mark_all_as_read: "All notifications marked as read"
+    order_payment:
+      title: "Payment Processing"
+      body: "Your payment for order #%{order_number} is being processed."
+    order_ready:
+      title: "Order Ready!"
+      body: "Your order is ready at %{machine_name}. Go to the machine to collect your items!"
+    order_dispensed:
+      title: "Order Dispensed"
+      body: "Your order is dispensed at %{machine_name}."
+    order_failed:
+      title: "Order Failed"
+      body: "Your order #%{order_number} has failed. Please contact support."
+    machine_offline:
+      title: "Machine Offline"
+      body: "The machine %{machine_name} is currently offline."
+    promotion:
+      title: "Special Promotion"
+      body: "%{promotion_text}"
   

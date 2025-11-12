@@ -9,35 +9,41 @@ module NotificationService
     end
 
     def payment_initiated
-      base_call(
-        type: Notification::TYPES[:order_payment],
-        title: 'Payment Processing',
-        body: "Your payment for order ##{@order.number} is being processed."
-      )
+      localized_for_user(@user) do
+        base_call(
+          type: Notification::TYPES[:order_payment],
+          title: I18n.t('notifications.order_payment.title', order_number: @order.number),
+          body: I18n.t('notifications.order_payment.body', order_number: @order.number, machine_name: @machine.name)
+        )
+      end
     end
 
     def ready
-      base_call(
-        type: Notification::TYPES[:order_ready],
-        title: 'Order Ready!',
-        body: "Your order is ready at #{@machine.name}. Go to the machine to collect your items!",
-        metadata: {
-          order_id: @order.id,
-          number: @order.number
-        }
-      )
+      localized_for_user(@user) do
+        base_call(
+          type: Notification::TYPES[:order_ready],
+          title: I18n.t('notifications.order_ready.title'),
+          body: I18n.t('notifications.order_ready.body', machine_name: @machine.name),
+          metadata: {
+            order_id: @order.id,
+            number: @order.number
+          }
+        )
+      end
     end
 
     def dispensed
-      base_call(
-        type: Notification::TYPES[:order_dispensed],
-        title: 'Order Dispensed',
-        body: "Your order is dispensed at #{@machine.name}.",
-        metadata: {
-          order_id: @order.id,
-          number: @order.number
-        }
-      )
+      localized_for_user(@user) do
+        base_call(
+          type: Notification::TYPES[:order_dispensed],
+          title: I18n.t('notifications.order_dispensed.title'),
+          body: I18n.t('notifications.order_dispensed.body', machine_name: @machine.name),
+          metadata: {
+            order_id: @order.id,
+            number: @order.number
+          }
+        )
+      end
     end
 
     private
@@ -53,6 +59,11 @@ module NotificationService
           metadata: metadata
         }
       ).call
+    end
+
+    def localized_for_user(user, &)
+      locale = user.locale.presence_in(I18n.available_locales.map(&:to_s)) || I18n.default_locale
+      I18n.with_locale(locale, &)
     end
   end
 end
