@@ -2,9 +2,10 @@ default: &default
   adapter: postgis
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
-  password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
-  host: <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
+  username: <%= ENV.fetch("DATABASE_USER", ENV.fetch("POSTGRES_USER", "postgres")) %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD", ENV.fetch("POSTGRES_PASSWORD", "postgres")) %>
+  host: <%= ENV.fetch("DATABASE_HOST", ENV.fetch("POSTGRES_HOST", "localhost")) %>
+  port: <%= ENV.fetch("DATABASE_PORT", 5432) %>
 
 development:
   <<: *default
@@ -12,7 +13,7 @@ development:
 
 staging:
   <<: *default
-  database: vndgme_staging
+  database: <%= ENV.fetch("DATABASE_NAME", "vndgme_staging") %>
 
 test:
   <<: *default
@@ -21,18 +22,18 @@ test:
 production:
   primary:
     <<: *default
-    database: vndgme_production
+    database: <%= ENV.fetch("DATABASE_NAME", "vndgme_production") %>
   cache:
     <<: *default
-    database: vndgme_production_cache
+    database: <%= ENV.fetch("DATABASE_NAME", "vndgme_production") %>_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: vndgme_production_queue
+    database: <%= ENV.fetch("DATABASE_NAME", "vndgme_production") %>_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: vndgme_production_cable
+    database: <%= ENV.fetch("DATABASE_NAME", "vndgme_production") %>_cable
     migrations_paths: db/cable_migrate
 
 
