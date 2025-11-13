@@ -65,7 +65,7 @@ class User < ApplicationRecord
   validates :mobile_number,
             phone: { possible: true, allow_blank: false },
             presence: true,
-            uniqueness: { case_sensitive: false, message: I18n.t('user.mobile_number_taken') }
+            uniqueness: { case_sensitive: false }
   validates :email,
             allow_blank: true,
             uniqueness: { case_sensitive: false, message: I18n.t('user.email_taken') }
