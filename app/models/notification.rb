@@ -47,7 +47,6 @@ class Notification < ApplicationRecord
 
   validates :notification_type, presence: true, inclusion: { in: TYPES.values }
   validates :title, :body, presence: true
-  validates :translation_key, presence: true
 
   scope :unread, -> { where(read: false) }
   scope :read, -> { where(read: true) }
