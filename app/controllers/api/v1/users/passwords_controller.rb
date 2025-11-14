@@ -4,9 +4,9 @@ module Api
   module V1
     module Users
       class PasswordsController < ApplicationController
-        rate_limit to: 3, within: 5.minutes,
-                   with: -> { render_rate_limit_error },
-                   only: %i[forgot_password]
+        rate_limit to: 3, within: 5.minutes, with: lambda {
+          render_error(I18n.t('errors.too_many_requests'), :too_many_requests)
+        }, only: %i[forgot_password]
 
         before_action :find_user_by_mobile, only: %i[forgot_password reset_password]
         before_action :current_user, only: %i[change_password]
@@ -81,13 +81,6 @@ module Api
           render json: {
             error: I18n.t('errors.user.mobile_not_found')
           }, status: :not_found
-        end
-
-        def render_rate_limit_error
-          render json: {
-            error: I18n.t('errors.too_many_requests'),
-            message: I18n.t('errors.password_reset.rate_limit_message')
-          }, status: :too_many_requests
         end
       end
     end
