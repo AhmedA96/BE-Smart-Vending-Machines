@@ -31,7 +31,7 @@ module Api
 
       def checkout
         if Rails.env.production? && !@order.ensure_machine_online?
-          render json: { errors: I18n.t('errors.orders.machine_offline') },
+          render json: { errors: I18n.t('orders.errors.machine_offline') },
                  status: :unprocessable_content
           return
         end
