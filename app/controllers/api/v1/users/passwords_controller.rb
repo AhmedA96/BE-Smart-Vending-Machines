@@ -14,7 +14,7 @@ module Api
         def change_password
           unless current_user.valid_password?(params[:current_password])
             return render json: {
-              error: I18n.t('user.password_reset.wrong_current_password')
+              error: I18n.t('user..wrong_current_password')
             }, status: :unauthorized
           end
 
