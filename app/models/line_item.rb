@@ -72,7 +72,7 @@ class LineItem < ApplicationRecord
     return if stock >= quantity.to_i
 
     errors.add(:base,
-               I18n.t('errors.orders.orders.errors.required_quantity_is_not_available_in_the_machine',
+               I18n.t('orders.errors.required_quantity_is_not_available_in_the_machine',
                       product_name: variant.name))
   end
 
