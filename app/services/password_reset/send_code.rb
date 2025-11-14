@@ -2,7 +2,7 @@
 
 module PasswordReset
   class SendCode
-    TOKEN_EXPIRY = 15.minutes
+    TOKEN_EXPIRY = 5.minutes
 
     def self.call(user)
       code = generate_reset_code
