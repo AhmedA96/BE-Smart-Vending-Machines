@@ -6,7 +6,7 @@ module PasswordReset
       if PasswordReset::SendCode.token_expired?(user.reset_password_sent_at)
         return {
           success: false,
-          error: I18n.t('user.password_reset.expired_code')
+          error: I18n.t('user.password_reset.errors.expired_code')
         }
       end
 
@@ -14,7 +14,7 @@ module PasswordReset
       unless user.reset_password_token == code
         return {
           success: false,
-          error: I18n.t('user.password_reset.invalid_code')
+          error: I18n.t('user.password_reset.errors.invalid_code')
         }
       end
 
@@ -22,7 +22,7 @@ module PasswordReset
       unless new_password == password_confirmation
         return {
           success: false,
-          error: I18n.t('user.password_reset.passwords_dont_match')
+          error: I18n.t('user.password_reset.errors.passwords_dont_match')
         }
       end
 

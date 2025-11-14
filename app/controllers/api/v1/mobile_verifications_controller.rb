@@ -27,7 +27,7 @@ module Api
           render json: response_data, status: :ok
         else
           render json: {
-            error: I18n.t('verification.mobile.send_failed'),
+            error: I18n.t('verification.mobile.errors.send_failed'),
             details: result[:error]
           }, status: :unprocessable_entity
         end
@@ -47,14 +47,14 @@ module Api
 
         if @mobile_verification.nil?
           return render_error(
-            I18n.t('verification.mobile.code_not_found'),
+            I18n.t('verification.mobile.errors.code_not_found'),
             :unprocessable_entity
           )
         end
 
         if @mobile_verification.expired?
           return render_error(
-            I18n.t('verification.mobile.code_expired'),
+            I18n.t('verification.mobile.errors.code_expired'),
             :unprocessable_entity
           )
         end
