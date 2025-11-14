@@ -18,7 +18,7 @@ module SmsGateway
       end
 
       def default_provider
-        (ENV['SMS_PROVIDER'] || Rails.application.credentials.dig(:sms, :default_provider) || 'synapse').to_sym
+        (ENV['SMS_PROVIDER'] || Rails.application.credentials.dig(:sms, :default_provider) || 'infobip').to_sym
       end
 
       def available_providers

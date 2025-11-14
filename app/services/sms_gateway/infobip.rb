@@ -2,10 +2,8 @@
 
 module SmsGateway
   class Infobip < Base
-    BASE_URL = 'https://xk4qpe.api.infobip.com/'
-
     def send_sms(mobile_number, message)
-      endpoint = "#{BASE_URL}/sms/2/text/advanced"
+      endpoint = "#{credentials[:base_url]}/sms/2/text/advanced"
 
       body = {
         messages: [
@@ -38,7 +36,8 @@ module SmsGateway
     def credentials
       @credentials ||= {
         api_key: ENV['INFOBIP_API_KEY'] || Rails.application.credentials.dig(:infobip, :api_key),
-        sender_id: ENV['INFOBIP_SMS_SENDER'] || Rails.application.credentials.dig(:infobip, :sender_id)
+        sender_id: ENV['INFOBIP_SMS_SENDER'] || Rails.application.credentials.dig(:infobip, :sender_id),
+        base_url: ENV['INFOBIP_BASE_URL'] || Rails.application.credentials.dig(:infobip, :base_url)
       }
     end
 
