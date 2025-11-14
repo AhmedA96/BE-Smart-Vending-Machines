@@ -4,68 +4,90 @@ module Api
   module V1
     module Users
       class PasswordsController < ApplicationController
-        rate_limit to: 3, within: 5.minutes, with: lambda {
-          render_error(I18n.t('errors.too_many_requests'), :too_many_requests)
-        }, only: %i[forgot_password]
+        rate_limit to: 3, within: 5.minutes,
+                   with: -> { render_rate_limit_error },
+                   only: %i[forgot_password]
 
-        before_action :find_user_by_mobile, only: [:forgot_password]
-        before_action :find_user_by_mobile_and_token, only: [:reset_password]
+        before_action :find_user_by_mobile, only: %i[forgot_password reset_password]
+        before_action :current_user, only: %i[change_password]
 
         def change_password
           unless current_user.valid_password?(params[:current_password])
-            return render json: { error: I18n.t('user.wrong_password') }, status: :unprocessable_content
+            return render json: {
+              error: I18n.t('user.password_reset.wrong_current_password')
+            }, status: :unauthorized
           end
 
-          if current_user.update(change_password_params)
-            render json: { message: I18n.t('user.password_changed_successfully') }
+          if current_user.update(password_params)
+            render json: {
+              message: I18n.t('user.password_changed_successfully')
+            }, status: :ok
           else
-            render json: { error: current_user.errors }, status: :unprocessable_content
+            render json: {
+              error: current_user.errors.full_messages.first
+            }, status: :unprocessable_entity
           end
         end
 
         def forgot_password
-          code = Verification::Mobile.generate_verification_code
-          @user.update!(reset_password_token: code, reset_password_sent_at: Time.current)
+          result = PasswordReset::SendCode.call(@user)
 
-          # Verification::Mobile.send_code(params[:mobile_number], @user)
-          # render json: { message: I18n.t('user.password_reset.code_sent') }
-          #
-          render json: { code: }, status: :ok
+          if result[:success]
+            response_data = {
+              message: I18n.t('user.password_reset.code_sent')
+            }
+
+            response_data[:code] = result[:code] unless Rails.env.development?
+
+            render json: response_data, status: :ok
+          else
+            render json: {
+              error: I18n.t('user.password_reset.send_failed'),
+              details: result[:error]
+            }, status: :unprocessable_entity
+          end
         end
 
         def reset_password
-          if @user.update(change_password_params.merge(reset_password_token: nil, reset_password_sent_at: nil))
-            render json: { success: true }
+          result = PasswordReset::VerifyAndReset.call(
+            user: @user,
+            code: params[:code],
+            new_password: params[:password],
+            password_confirmation: params[:password_confirmation]
+          )
+
+          if result[:success]
+            render json: {
+              message: I18n.t('user.password_reset.reset_successfully')
+            }, status: :ok
           else
-            render json: { error: @user.errors.full_messages.first }, status: :unprocessable_content
+            render json: {
+              error: result[:error]
+            }, status: :unprocessable_entity
           end
         end
 
         private
 
-        def change_password_params
+        def password_params
           params.permit(:password, :password_confirmation)
         end
 
         def find_user_by_mobile
           @user = User.find_by(mobile_number: params[:mobile_number])
-          render json: { error: I18n.t('user.wrong_mobile') }, status: :not_found unless @user
-        end
 
-        def find_user_by_mobile_and_token
-          @user = User.find_by(
-            mobile_number: params[:mobile_number],
-            reset_password_token: params[:code]
-          )
           return if @user
 
           render json: {
-            error: I18n.t('user.password_reset.wrong_or_expired_code')
-          }, status: :unprocessable_content
+            error: I18n.t('errors.user.mobile_not_found')
+          }, status: :not_found
         end
 
-        def handle_rate_limit_exceeded
-          render_error(I18n.t('errors.too_many_requests'), :too_many_requests)
+        def render_rate_limit_error
+          render json: {
+            error: I18n.t('errors.too_many_requests'),
+            message: I18n.t('errors.password_reset.rate_limit_message')
+          }, status: :too_many_requests
         end
       end
     end
