@@ -27,91 +27,138 @@
 #       "yes": yup
 #       enabled: "ON"
 
+# config/locales/en.yml
+# English translations for the application
+
+# config/locales/en.yml
+# English translations for the application
+
+# config/locales/en.yml
+# English translations for VNDG.ME - Vending Machine Mobile App
+
 en:
-  user:
-    wrong_password: "The old password you entered is incorrect"
-    password_changed_successfully: "Password changed successfully"
-    welcome_email:
-      subject: "Welcome to our app"
-    authentication:
-      invalid_login: "Invalid mobile or password"
-    wrong_mobile: "Please enter a valid mobile number"
-    password_reset:
-      wrong_or_expired_code: "Wrong code or code is expired"
-      code_sent: "Code sent successfully"
-    account_deleted: "Your account has been deleted successfully"
-
-  avo:
-    resource_translations:
-      machine_category:
-        name: Machine Category
-        plural: Machine Categories
-        fields:
-          name: Name
-          description: Description
-
-      machine_status:
-        name: Machine Status
-        plural: Machine Statuses
-        fields:
-          machine: Machine
-          status: Status
-          changed_at: Changed At
-          notes: Notes
-
-      machine:
-        name: Machine
-        plural: Machines
-        fields:
-          machineuuid: Manufacturer ID
-          name: Name
-          category: Category
-          vendor: Vendor
-          location_name: Location Name
-          latitude: Latitude
-          longitude: Longitude
-          status: Status
-          installed_at: Installation Date
-          last_service_date: Last Service Date
-
-      vendor:
-        name: Vendor
-        plural: Vendors
-        fields:
-          name: Name
-          contact_person: Contact Person
-          phone_number: Phone Number
-          email: Email
-          address: Address
-          
-  doorkeeper:
-    errors:
-      invalid_credentials: "The entered credentials are incorrect. Please check your mobile number and password."
-  
-  verification:
-    mobile:
-      otp_message: "Your OTP is: %{otp}"
-
-  errors:
-    not_found: "%{model} with id %{id} not found"
-    password_reset:
-      wrong_or_expired_code: "Wrong code or code is expired"
-    contact_us:
-      creation_failed: "Failed to submit contact request. Please check your inputs and try again."
-    too_many_requests: "Too many requests. Please try again later."
-    orders:
-      required_quantity_is_not_available_in_the_machine: "Required quantity for %{product_name} is not available in the machine"
-      exceeds_machine_max_items_limit:
-        one: "You can only checkout one item from this machine per order"
-        other: "You can only checkout only %{count} items from this machine per order"
-      exceeds_variant_max_orderable_quantity: "You can only order up to %{limit} units of %{product_name}"
-      variant_not_available_for_machine: "Variant is not available for this machine"
-      machine_offline: "Machine is offline and cannot accept new orders"
-      
+  # ==============================================================================
+  # COMMON TRANSLATIONS
+  # ==============================================================================
   active: Active
   inactive: Inactive
-  
+
+  # ==============================================================================
+  # USER MANAGEMENT
+  # ==============================================================================
+  user:
+    # Authentication & Login
+    authentication:
+      invalid_login: "Invalid mobile number or password"
+      errors:
+        invalid_credentials: "The credentials you entered are incorrect. Please check your mobile number and password."
+    
+    # Password Management
+    wrong_password: "The current password you entered is incorrect"
+    wrong_current_password: "Current password is incorrect"
+    password_changed_successfully: "Your password has been changed successfully"
+    
+    password_reset:
+      otp_message: "Your VNDG.ME password reset code is %{otp}. Valid for 5 minutes."
+      code_sent: "Verification code sent successfully"
+      reset_successfully: "Password reset successfully. You can now sign in with your new password."
+      errors:
+        wrong_or_expired_code: "Invalid or expired verification code"
+        expired_code: "Verification code has expired. Please request a new one."
+        invalid_code: "Invalid verification code. Please try again."
+        passwords_dont_match: "Passwords don't match. Please try again."
+    
+    # Account Management
+    account_deleted: "Your VNDG.ME account has been deleted successfully"
+    wrong_mobile: "Please enter a valid mobile number"
+    
+    errors:
+      email_taken: "This email is already registered to another account"
+      mobile_number_taken: "This phone number is already registered to another account"
+    
+    # Email Notifications
+    welcome_email:
+      subject: "Welcome to VNDG.ME"
+
+  # ==============================================================================
+  # MOBILE VERIFICATION
+  # ==============================================================================
+  verification:
+    mobile:
+      otp_message: "Welcome to VNDG.ME! Your verification code is %{otp}. Valid for 5 minutes."
+      code_sent: "Verification code sent successfully"
+      verified_successfully: "Mobile number verified successfully. Welcome to VNDG.ME!"
+      errors:
+        send_failed: "Failed to send verification code. Please try again."
+        code_expired: "Verification code has expired. Please request a new one."
+        code_not_found: "Verification code not found. Please request a new code."
+
+  # ==============================================================================
+  # ORDERS & CHECKOUT
+  # ==============================================================================
+  orders:
+    errors:
+      required_quantity_is_not_available_in_the_machine: "Sorry, only limited stock of %{product_name} is available in this machine"
+      exceeds_variant_max_orderable_quantity: "Maximum %{limit} units of %{product_name} allowed per order"
+      variant_not_available_for_machine: "This product is not available in the selected machine"
+      machine_offline: "This vending machine is currently offline. Please try another machine nearby."
+      exceeds_machine_max_items_limit:
+        one: "You can only order 1 item from this machine per transaction"
+        other: "You can only order up to %{count} items from this machine per transaction"
+
+  # ==============================================================================
+  # NOTIFICATIONS
+  # ==============================================================================
   notifications:
     marked_as_read: "Notification marked as read"
     mark_all_as_read: "All notifications marked as read"
-  
+    
+    # Order Notifications
+    order_payment:
+      title: "Processing Payment"
+      body: "We're processing your payment for order #%{order_number}. You'll be notified once confirmed."
+    
+    order_ready:
+      title: "Your Order is Ready! 🎉"
+      body: "Head to %{machine_name} now to collect your items. Enjoy!"
+    
+    order_dispensed:
+      title: "Items Dispensed"
+      body: "Your order has been dispensed at %{machine_name}. Thank you for using VNDG.ME!"
+    
+    order_failed:
+      title: "Order Issue"
+      body: "We couldn't complete order #%{order_number}. Please contact support for assistance."
+    
+    # Machine Notifications
+    machine_offline:
+      title: "Machine Unavailable"
+      body: "%{machine_name} is currently offline. Please choose another nearby machine."
+    
+    # Promotional Notifications
+    promotion:
+      title: "Special Offer 🎁"
+      body: "%{promotion_text}"
+
+  # ==============================================================================
+  # CONTACT & SUPPORT
+  # ==============================================================================
+  contact_us:
+    errors:
+      creation_failed: "Failed to submit your message. Please check your information and try again."
+
+  # ==============================================================================
+  # GLOBAL ERROR MESSAGES
+  # ==============================================================================
+  errors:
+    not_found: "%{model} with id %{id} not found"
+    too_many_requests: "Too many requests. Please wait a moment and try again."
+    unauthorized: "You don't have permission to perform this action"
+    server_error: "Something went wrong. Please try again later."
+    
+  # ==============================================================================
+  # DOORKEEPER (OAuth)
+  # ==============================================================================
+  doorkeeper:
+    errors:
+      invalid_credentials: "Invalid credentials. Please check your mobile number and password."

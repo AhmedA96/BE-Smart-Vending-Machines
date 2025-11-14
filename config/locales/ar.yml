@@ -1,107 +1,142 @@
+
 ar:
+  # ==============================================================================
+  # ترجمات شائعة
+  # COMMON TRANSLATIONS
+  # ==============================================================================
+  active: نشط
+  inactive: غير نشط
+
+  # ==============================================================================
+  # إدارة المستخدمين
+  # USER MANAGEMENT
+  # ==============================================================================
   user:
-    wrong_password: "كلمة مرور خاطئة"
-    change_password: "تغيير كلمة المرور"
+    # المصادقة وتسجيل الدخول
+    # Authentication & Login
     authentication:
-      invalid_login: "رقم الجوال أو كلمة المرور غير صالحة"
-    account_deleted: "تم حذف حسابك بنجاح"
-  avo:
-    resource_translations:
-      machine_category:
-        name: "فئة الماكينة"
-        plural: "فئات الماكينات"
-        fields:
-          name: "الاسم"
-          description: "الوصف"
-
-      machine_status:
-        name: "حالة الماكينة"
-        plural: "حالات الماكينات"
-        fields:
-          machine: "ماكينة البيع"
-          status: "الحالة"
-          changed_at: "تاريخ التغيير"
-          notes: "ملاحظات"
-
-      role:
-        name: "الدور"
-        plural: "الأدوار"
-        fields:
-          name: "الاسم"
-          resource_type: "نوع المورد"
-          resource_id: "معرف المورد"
-
-      user:
-        name: "المستخدم"
-        plural: "المستخدمين"
-        fields:
-          email: "البريد الإلكتروني"
-          name: "الاسم"
-          avatar: "الصورة الشخصية"
-          date_of_birth: "تاريخ الميلاد"
-          locale: "اللغة"
-          mobile_number: "رقم الجوال"
-          verified: "موثق"
-          last_active_at: "آخر نشاط"
-          deleted_at: "تاريخ الحذف"
-          sign_in_count: "عدد مرات الدخول"
-          current_sign_in_at: "وقت الدخول الحالي"
-          last_sign_in_at: "وقت آخر دخول"
-          current_sign_in_ip: "عنوان IP الحالي"
-          last_sign_in_ip: "آخر عنوان IP"
-          confirmed_at: "تاريخ التأكيد"
-          email_notification: "إشعارات البريد"
-          sms_notification: "إشعارات الرسائل"
-          provider: "مزود الخدمة"
-          profile: "الملف الشخصي"
-
-      machine:
-        name: "ماكينة البيع"
-        plural: "ماكينات البيع"
-        fields:
-          machineuuid: "معرف المصنع"
-          name: "الاسم"
-          category: "الفئة"
-          vendor: "المورد"
-          location_name: "اسم الموقع"
-          latitude: "خط العرض"
-          longitude: "خط الطول"
-          status: "الحالة"
-          installed_at: "تاريخ التركيب"
-          last_service_date: "تاريخ آخر صيانة"
-
-      vendor:
-        name: "المورد"
-        plural: "الموردين"
-        fields:
-          name: "الاسم"
-          contact_person: "الشخص المسؤول"
-          phone_number: "رقم الهاتف"
-          email: "البريد الإلكتروني"
-          address: "العنوان"
-
-  doorkeeper:
+      invalid_login: "رقم الجوال أو كلمة المرور غير صحيحة"
+      errors:
+        invalid_credentials: "البيانات المدخلة غير صحيحة. يرجى التحقق من رقم الجوال وكلمة المرور."
+    
+    # إدارة كلمات المرور
+    # Password Management
+    wrong_password: "كلمة المرور الحالية غير صحيحة"
+    wrong_current_password: "كلمة المرور الحالية غير صحيحة"
+    change_password: "تغيير كلمة المرور"
+    password_changed_successfully: "تم تغيير كلمة المرور بنجاح"
+    
+    password_reset:
+      otp_message: "رمز إعادة تعيين كلمة المرور الخاص بك في VNDG.ME هو %{otp}. صالح لمدة 5 دقائق."
+      code_sent: "تم إرسال رمز التحقق بنجاح"
+      reset_successfully: "تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة."
+      errors:
+        wrong_or_expired_code: "رمز تحقق غير صحيح أو منتهي الصلاحية"
+        expired_code: "انتهت صلاحية رمز التحقق. يرجى طلب رمز جديد."
+        invalid_code: "رمز تحقق غير صحيح. يرجى المحاولة مرة أخرى."
+        passwords_dont_match: "كلمات المرور غير متطابقة. يرجى المحاولة مرة أخرى."
+    
+    # إدارة الحساب
+    # Account Management
+    account_deleted: "تم حذف حسابك في VNDG.ME بنجاح"
+    wrong_mobile: "يرجى إدخال رقم جوال صحيح"
+    
     errors:
-      invalid_credentials: "البيانات المدخلة غير صحيحة. يرجى التحقق من رقم الموبايل وكلمة المرور."
+      email_taken: "البريد الإلكتروني مسجل بالفعل في حساب آخر"
+      mobile_number_taken: "رقم الجوال مسجل بالفعل في حساب آخر"
+    
+    # إشعارات البريد الإلكتروني
+    # Email Notifications
+    welcome_email:
+      subject: "مرحباً بك في VNDG.ME"
 
+  # ==============================================================================
+  # التحقق من الجوال
+  # MOBILE VERIFICATION
+  # ==============================================================================
   verification:
     mobile:
-      otp_message: "رمز التحقق الخاص بك هو: %{otp}"
-  
-  errors:
-    password_reset:
-      wrong_or_expired_code: "رمز خاطئ أو منتهي الصلاحية"
-    contact_us:
-      creation_failed: "فشل في إرسال طلب الاتصال. يرجى التحقق من البيانات والمحاولة مرة أخرى."
-    orders:
-      required_quantity_is_not_available_in_the_machine: "الكمية المطلوبة غير متوفرة في الماكينة"
-      exceeds_machine_max_items_limit:
-        one: "يمكنك الاحتفاظ بوحدة واحدة فقط من هذه الماكينة في كل طلب"
-        other: "يمكنك الاحتفاظ فقط ب %{count} وحدات من هذه الماكينة في كل طلب"
-      exceeds_variant_max_orderable_quantity: "يمكنك طلب حتى %{limit} وحدات فقط من %{product_name}"
-      variant_not_available_for_machine: "المنتج غير متوفر لهذه الماكينة"
-      machine_offline: "الماكينة غير متصلة ولا يمكنها قبول طلبات جديدة"
+      otp_message: "مرحباً بك في VNDG.ME! رمز التحقق الخاص بك هو %{otp}. صالح لمدة 5 دقائق."
+      code_sent: "تم إرسال رمز التحقق بنجاح"
+      verified_successfully: "تم التحقق من رقم الجوال بنجاح. مرحباً بك في VNDG.ME!"
+      errors:
+        send_failed: "فشل إرسال رمز التحقق. يرجى المحاولة مرة أخرى."
+        code_expired: "انتهت صلاحية رمز التحقق. يرجى طلب رمز جديد."
+        code_not_found: "رمز التحقق غير موجود. يرجى طلب رمز جديد."
 
-  notifications: 
-    marked_as_read: "تم قراءة الإشعار"
-    mark_all_as_read: "تم قراءة جميع الإشعارات"
+  # ==============================================================================
+  # الطلبات والشراء
+  # ORDERS & CHECKOUT
+  # ==============================================================================
+  orders:
+    errors:
+      required_quantity_is_not_available_in_the_machine: "عذراً، الكمية المتوفرة من %{product_name} في هذه الماكينة محدودة"
+      exceeds_variant_max_orderable_quantity: "الحد الأقصى %{limit} وحدات من %{product_name} لكل طلب"
+      variant_not_available_for_machine: "هذا المنتج غير متوفر في الماكينة المختارة"
+      machine_offline: "هذه الماكينة غير متصلة حالياً. يرجى تجربة ماكينة قريبة أخرى."
+      exceeds_machine_max_items_limit:
+        one: "يمكنك طلب منتج واحد فقط من هذه الماكينة في كل عملية"
+        other: "يمكنك طلب حتى %{count} منتجات من هذه الماكينة في كل عملية"
+
+  # ==============================================================================
+  # الإشعارات
+  # NOTIFICATIONS
+  # ==============================================================================
+  notifications:
+    marked_as_read: "تم تعليم الإشعار كمقروء"
+    mark_all_as_read: "تم تعليم جميع الإشعارات كمقروءة"
+    
+    # إشعارات الطلبات
+    # Order Notifications
+    order_payment:
+      title: "جاري معالجة الدفع"
+      body: "نقوم بمعالجة الدفع للطلب رقم #%{order_number}. سيتم إشعارك عند التأكيد."
+    
+    order_ready:
+      title: "طلبك جاهز! 🎉"
+      body: "توجه إلى %{machine_name} الآن لاستلام مشترياتك. استمتع!"
+    
+    order_dispensed:
+      title: "تم صرف الطلب"
+      body: "تم صرف طلبك في %{machine_name}. شكراً لاستخدامك VNDG.ME!"
+    
+    order_failed:
+      title: "مشكلة في الطلب"
+      body: "لم نتمكن من إتمام الطلب رقم #%{order_number}. يرجى التواصل مع الدعم للمساعدة."
+    
+    # إشعارات الماكينة
+    # Machine Notifications
+    machine_offline:
+      title: "الماكينة غير متاحة"
+      body: "%{machine_name} غير متصلة حالياً. يرجى اختيار ماكينة قريبة أخرى."
+    
+    # الإشعارات الترويجية
+    # Promotional Notifications
+    promotion:
+      title: "عرض خاص 🎁"
+      body: "%{promotion_text}"
+
+  # ==============================================================================
+  # التواصل والدعم
+  # CONTACT & SUPPORT
+  # ==============================================================================
+  contact_us:
+    errors:
+      creation_failed: "فشل إرسال رسالتك. يرجى التحقق من بياناتك والمحاولة مرة أخرى."
+
+  # ==============================================================================
+  # رسائل الأخطاء العامة
+  # GLOBAL ERROR MESSAGES
+  # ==============================================================================
+  errors:
+    not_found: "%{model} بالمعرف %{id} غير موجود"
+    too_many_requests: "طلبات كثيرة جداً. يرجى الانتظار قليلاً والمحاولة مرة أخرى."
+    unauthorized: "ليس لديك صلاحية لتنفيذ هذا الإجراء"
+    server_error: "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً."
+
+  # ==============================================================================
+  # DOORKEEPER (OAuth)
+  # ==============================================================================
+  doorkeeper:
+    errors:
+      invalid_credentials: "بيانات دخول غير صحيحة. يرجى التحقق من رقم الجوال وكلمة المرور."
