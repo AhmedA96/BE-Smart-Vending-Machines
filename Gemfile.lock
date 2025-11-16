@@ -122,7 +122,7 @@ GEM
     auto_increment (1.6.2)
       activerecord (>= 6.0)
       activesupport (>= 6.0)
-    avo (3.26.2)
+    avo (3.26.4)
       actionview (>= 6.1)
       active_link_to
       activerecord (>= 6.1)
@@ -144,7 +144,7 @@ GEM
       zeitwerk
     aws-eventstream (1.4.0)
     aws-partitions (1.1181.0)
-    aws-sdk-core (3.236.0)
+    aws-sdk-core (3.237.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -155,7 +155,7 @@ GEM
     aws-sdk-kms (1.117.0)
       aws-sdk-core (~> 3, >= 3.234.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.203.0)
+    aws-sdk-s3 (1.203.1)
       aws-sdk-core (~> 3, >= 3.234.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -236,7 +236,7 @@ GEM
     down (5.4.2)
       addressable (~> 2.8)
     drb (2.2.3)
-    erb (5.1.3)
+    erb (6.0.0)
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
@@ -564,7 +564,7 @@ GEM
     redis-client (0.26.1)
       connection_pool
     regexp_parser (2.11.3)
-    reline (0.6.2)
+    reline (0.6.3)
       io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
@@ -699,7 +699,7 @@ GEM
       rails (>= 4.2)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    stringio (3.1.7)
+    stringio (3.1.8)
     strong_migrations (2.5.1)
       activerecord (>= 7.1)
     test-prof (1.4.4)
@@ -727,7 +727,8 @@ GEM
     vcr (6.3.1)
       base64
     version_gem (1.1.9)
-    view_component (4.1.0)
+    view_component (4.1.1)
+      actionview (>= 7.1.0, < 8.2)
       activesupport (>= 7.1.0, < 8.2)
       concurrent-ruby (~> 1)
     warden (1.2.9)
