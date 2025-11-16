@@ -21,6 +21,8 @@
 #  fk_rails_...  (location_id => locations.id)
 #
 class LocationTranslation < ApplicationRecord
+  self.ignored_columns += ['name']
+
   belongs_to :location
 
   validates :name, :locale, presence: true
