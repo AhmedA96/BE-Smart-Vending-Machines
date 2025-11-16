@@ -78,6 +78,7 @@ module Avo
         field :coordinates, as: :text, hide_on: %i[index edit new]
         field :installed_at, as: :date_time, hide_on: %i[index]
         field :last_service_date, as: :date_time, hide_on: %i[index]
+        field :machine_type, as: :belongs_to, hide_on: %i[index]
 
         many_relations
       end
