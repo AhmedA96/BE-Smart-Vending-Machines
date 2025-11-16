@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 json.extract! order, :id, :number, :user_id, :machine_id, :status, :pick_up_code,
-              :items_total, :created_at, :completed_at
+              :items_total, :created_at, :completed_at, :dispense_status
 
 json.currency order.country.currency
 
 if order.machine.present?
   json.machine do
     json.id order.machine.id
-    json.name order.machine.name
+    json.name order.machine.presentation
     json.location do
       json.id order.machine.location.id
       json.name order.machine.location.name
