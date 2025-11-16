@@ -11,7 +11,7 @@ if order.machine.present?
     json.name order.machine.presentation
     json.location do
       json.id order.machine.location.id
-      json.name order.machine.location.name
+      json.name order.machine.location.presentation
     end
     json.image do
       json.url(order.machine.image.attached? ? url_for(order.machine.image) : nil)

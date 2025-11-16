@@ -4,12 +4,12 @@
 #
 # Table name: location_translations
 #
-#  id          :bigint           not null, primary key
-#  locale      :string           not null
-#  name        :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  location_id :bigint           not null
+#  id           :bigint           not null, primary key
+#  locale       :string           not null
+#  presentation :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  location_id  :bigint           not null
 #
 # Indexes
 #
@@ -25,6 +25,6 @@ class LocationTranslation < ApplicationRecord
 
   belongs_to :location
 
-  validates :name, :locale, presence: true
+  validates :presentation, :locale, presence: true
   validates :locale, uniqueness: { scope: :location_id }
 end

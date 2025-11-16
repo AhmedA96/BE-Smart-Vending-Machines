@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_16_163234) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_16_215557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -164,7 +164,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_16_163234) do
     t.datetime "created_at", null: false
     t.string "locale", null: false
     t.bigint "location_id", null: false
-    t.string "name"
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_location_translations_on_locale"
     t.index ["location_id", "locale"], name: "index_location_translations_on_location_id_and_locale", unique: true
@@ -178,6 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_16_163234) do
     t.datetime "created_at", null: false
     t.string "landmark"
     t.string "name"
+    t.string "presentation"
     t.bigint "price_list_id"
     t.string "state"
     t.datetime "updated_at", null: false
