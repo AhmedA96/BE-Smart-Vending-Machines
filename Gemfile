@@ -38,7 +38,9 @@ gem 'rswag-ui'
 
 # File Storage & Processing
 gem 'activestorage'
+gem 'aws-sdk-kms'
 gem 'aws-sdk-s3'
+gem 'aws-sdk-secretsmanager'
 gem 'down'
 gem "image_processing", "~> 1.2"
 gem 'mini_magick'
@@ -47,6 +49,7 @@ gem 'mini_magick'
 gem 'solid_queue'
 
 # Caching & Performance
+gem 'concurrent-ruby', '~> 1.2'
 gem 'kredis'
 gem 'puma', '>= 6.4.2'
 gem 'rack', '>= 3.1.10'

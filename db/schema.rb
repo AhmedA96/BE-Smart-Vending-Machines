@@ -16,24 +16,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   enable_extension "postgis"
 
   create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.string "service_name", null: false
     t.bigint "byte_size", null: false
     t.string "checksum"
+    t.string "content_type"
     t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -48,97 +48,97 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
     t.string "appart_number", default: "N/A", null: false
     t.string "building_number", default: "N/A", null: false
     t.string "city"
+    t.integer "country_id"
+    t.datetime "created_at", null: false
     t.boolean "default", default: false, null: false
     t.string "floor_number", default: "N/A", null: false
     t.string "name", default: "", null: false
-    t.integer "country_id"
-    t.integer "user_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
   end
 
   create_table "brand_translations", force: :cascade do |t|
-    t.string "presentation"
-    t.text "description"
-    t.string "locale", null: false
     t.bigint "brand_id", null: false
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "locale", null: false
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["brand_id", "locale"], name: "index_brand_translations_on_brand_id_and_locale", unique: true
     t.index ["locale"], name: "index_brand_translations_on_locale"
   end
 
   create_table "brands", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.string "logo"
     t.string "background"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "logo"
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "categories", force: :cascade do |t|
-    t.string "name"
     t.boolean "active", default: true, null: false
-    t.string "presentation"
-    t.integer "position", default: 0
     t.datetime "created_at", null: false
+    t.string "name"
+    t.integer "position", default: 0
+    t.string "presentation"
     t.datetime "updated_at", null: false
   end
 
   create_table "category_translations", force: :cascade do |t|
-    t.string "presentation"
-    t.text "description"
-    t.string "locale", null: false
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "locale", null: false
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["category_id", "locale"], name: "index_category_translations_on_category_id_and_locale", unique: true
     t.index ["locale"], name: "index_category_translations_on_locale"
   end
 
   create_table "contact_us_requests", force: :cascade do |t|
-    t.string "full_name"
-    t.string "email"
-    t.string "phone_number"
     t.string "company_name"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "email"
+    t.string "full_name"
+    t.string "phone_number"
     t.boolean "read", default: false, null: false
+    t.datetime "updated_at", null: false
     t.index ["read"], name: "index_contact_us_requests_on_read"
   end
 
   create_table "countries", force: :cascade do |t|
-    t.string "name"
-    t.string "iso2"
-    t.string "currency"
-    t.string "time_zone"
-    t.decimal "vat_percentage", precision: 10, scale: 2, default: "0.0"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "country_code", default: "", null: false
+    t.datetime "created_at", null: false
+    t.string "currency"
+    t.string "iso2"
+    t.string "name"
+    t.string "time_zone"
+    t.datetime "updated_at", null: false
+    t.decimal "vat_percentage", precision: 10, scale: 2, default: "0.0"
   end
 
   create_table "country_translations", force: :cascade do |t|
-    t.string "presentation"
-    t.string "currency"
-    t.string "locale", null: false
     t.bigint "country_id", null: false
     t.datetime "created_at", null: false
+    t.string "currency"
+    t.string "locale", null: false
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["country_id", "locale"], name: "index_country_translations_on_country_id_and_locale", unique: true
     t.index ["locale"], name: "index_country_translations_on_locale"
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "token", null: false
-    t.string "platform", null: false
     t.boolean "active", default: true
+    t.datetime "created_at", null: false
     t.datetime "last_used_at"
     t.jsonb "metadata", default: {}
-    t.datetime "created_at", null: false
+    t.string "platform", null: false
+    t.string "token", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["token"], name: "index_devices_on_token", unique: true
     t.index ["user_id", "active"], name: "index_devices_on_user_id_and_active"
     t.index ["user_id", "platform"], name: "index_devices_on_user_id_and_platform"
@@ -146,83 +146,83 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "line_items", force: :cascade do |t|
-    t.integer "quantity", null: false
-    t.decimal "price", precision: 10, scale: 2, default: "0.0"
-    t.boolean "processed", default: false, null: false
-    t.decimal "price_after_discount", precision: 10, scale: 2
     t.decimal "buyx_gety_discount", precision: 10, scale: 2
     t.datetime "created_at", null: false
+    t.bigint "order_id"
+    t.decimal "price", precision: 10, scale: 2, default: "0.0"
+    t.decimal "price_after_discount", precision: 10, scale: 2
+    t.boolean "processed", default: false, null: false
+    t.integer "quantity", null: false
     t.datetime "updated_at", null: false
     t.bigint "variant_id"
-    t.bigint "order_id"
     t.index ["order_id"], name: "index_line_items_on_order_id"
     t.index ["variant_id", "order_id"], name: "index_line_items_on_variant_id_and_order_id"
     t.index ["variant_id"], name: "index_line_items_on_variant_id"
   end
 
   create_table "location_translations", force: :cascade do |t|
-    t.string "name"
+    t.datetime "created_at", null: false
     t.string "locale", null: false
     t.bigint "location_id", null: false
-    t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_location_translations_on_locale"
     t.index ["location_id", "locale"], name: "index_location_translations_on_location_id_and_locale", unique: true
   end
 
   create_table "locations", force: :cascade do |t|
-    t.string "name"
     t.string "address"
     t.string "city"
-    t.string "landmark"
-    t.string "state"
-    t.string "zip_code"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "price_list_id"
     t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
     t.bigint "country_id"
+    t.datetime "created_at", null: false
+    t.string "landmark"
+    t.string "name"
+    t.bigint "price_list_id"
+    t.string "state"
+    t.datetime "updated_at", null: false
+    t.string "zip_code"
     t.index ["coordinates"], name: "index_locations_on_coordinates", using: :gist
     t.index ["country_id"], name: "index_locations_on_country_id"
     t.index ["price_list_id"], name: "index_locations_on_price_list_id"
   end
 
   create_table "machine_categories", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "machine_category_translations", force: :cascade do |t|
-    t.string "presentation"
+    t.datetime "created_at", null: false
     t.text "description"
     t.string "locale", null: false
     t.bigint "machine_category_id", null: false
-    t.datetime "created_at", null: false
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_machine_category_translations_on_locale"
     t.index ["machine_category_id", "locale"], name: "index_mc_translations_on_machine_category_id_and_locale", unique: true
   end
 
   create_table "machine_items", force: :cascade do |t|
-    t.bigint "machine_id", null: false
-    t.integer "stock", default: 0
     t.datetime "created_at", null: false
+    t.integer "line_number"
+    t.bigint "machine_id", null: false
+    t.integer "reserved_stock", default: 0, null: false
+    t.integer "stock", default: 0
     t.datetime "updated_at", null: false
     t.bigint "variant_id", null: false
-    t.integer "line_number"
-    t.integer "reserved_stock", default: 0, null: false
     t.index ["machine_id", "variant_id"], name: "index_machine_items_on_machine_id_and_variant_id", unique: true
     t.index ["machine_id"], name: "index_machine_items_on_machine_id"
     t.index ["variant_id"], name: "index_machine_items_on_variant_id"
   end
 
   create_table "machine_payment_methods", force: :cascade do |t|
-    t.integer "machine_id"
-    t.integer "payment_method_id"
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
+    t.integer "machine_id"
+    t.integer "payment_method_id"
     t.datetime "updated_at", null: false
     t.index ["machine_id", "payment_method_id"], name: "index_mach_pay_methods_on_machine_id_and_payment_method_id", unique: true
     t.index ["machine_id"], name: "index_machine_payment_methods_on_machine_id"
@@ -230,51 +230,51 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "machine_statuses", force: :cascade do |t|
-    t.bigint "machine_id", null: false
-    t.string "status"
     t.datetime "changed_at"
-    t.text "notes"
     t.datetime "created_at", null: false
+    t.bigint "machine_id", null: false
+    t.text "notes"
+    t.string "status"
     t.datetime "updated_at", null: false
     t.index ["machine_id"], name: "index_machine_statuses_on_machine_id"
   end
 
   create_table "machine_translations", force: :cascade do |t|
-    t.string "name"
+    t.datetime "created_at", null: false
     t.string "locale", null: false
     t.bigint "machine_id", null: false
-    t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_machine_translations_on_locale"
     t.index ["machine_id", "locale"], name: "index_machine_translations_on_machine_id_and_locale", unique: true
   end
 
   create_table "machine_types", force: :cascade do |t|
-    t.string "name", null: false
     t.integer "capacity", null: false
-    t.boolean "has_temperature_control", default: false
     t.datetime "created_at", null: false
+    t.boolean "has_temperature_control", default: false
+    t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_machine_types_on_name", unique: true
   end
 
   create_table "machines", force: :cascade do |t|
-    t.string "machineuuid"
-    t.string "name"
     t.bigint "category_id", null: false
-    t.bigint "vendor_id", null: false
-    t.string "status"
+    t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
+    t.datetime "created_at", null: false
+    t.integer "floor_no"
     t.datetime "installed_at"
     t.datetime "last_service_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
-    t.datetime "location_updated_at"
     t.bigint "location_id"
-    t.integer "floor_no"
-    t.bigint "supplier_id"
-    t.integer "max_items_per_order"
+    t.datetime "location_updated_at"
     t.bigint "machine_type_id"
+    t.string "machineuuid"
+    t.integer "max_items_per_order"
+    t.string "name"
+    t.string "status"
+    t.bigint "supplier_id"
+    t.datetime "updated_at", null: false
+    t.bigint "vendor_id", null: false
     t.index ["category_id"], name: "index_machines_on_category_id"
     t.index ["coordinates"], name: "index_machines_on_coordinates", using: :gist
     t.index ["location_id"], name: "index_machines_on_location_id"
@@ -285,29 +285,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "mobile_verifications", force: :cascade do |t|
-    t.bigint "user_id"
     t.string "code"
+    t.datetime "created_at", null: false
     t.boolean "expired", default: false, null: false
     t.datetime "expires_at"
     t.string "mobile_number"
-    t.boolean "verified", default: false, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.boolean "verified", default: false, null: false
     t.index ["user_id"], name: "index_mobile_verifications_on_user_id"
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "notifiable_type"
-    t.bigint "notifiable_id"
-    t.string "notification_type", null: false
-    t.string "title", null: false
     t.text "body", null: false
+    t.datetime "created_at", null: false
     t.jsonb "metadata", default: {}
+    t.bigint "notifiable_id"
+    t.string "notifiable_type"
+    t.string "notification_type", null: false
     t.boolean "read", default: false
     t.datetime "read_at"
-    t.datetime "created_at", null: false
+    t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["notification_type"], name: "index_notifications_on_notification_type"
     t.index ["user_id", "created_at"], name: "index_notifications_on_user_id_and_created_at"
@@ -316,29 +316,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
-    t.bigint "resource_owner_id", null: false
     t.bigint "application_id", null: false
-    t.string "token", null: false
+    t.datetime "created_at", null: false
     t.integer "expires_in", null: false
     t.text "redirect_uri", null: false
-    t.string "scopes", default: "", null: false
-    t.datetime "created_at", null: false
+    t.bigint "resource_owner_id", null: false
     t.datetime "revoked_at"
+    t.string "scopes", default: "", null: false
+    t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
   create_table "oauth_access_tokens", force: :cascade do |t|
-    t.bigint "resource_owner_id"
     t.bigint "application_id"
-    t.string "token", null: false
-    t.string "refresh_token"
-    t.integer "expires_in"
-    t.string "scopes"
     t.datetime "created_at", null: false
-    t.datetime "revoked_at"
+    t.integer "expires_in"
     t.string "previous_refresh_token", default: "", null: false
+    t.string "refresh_token"
+    t.bigint "resource_owner_id"
+    t.datetime "revoked_at"
+    t.string "scopes"
+    t.string "token", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
@@ -346,34 +346,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "oauth_applications", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "uid", null: false
-    t.string "secret", null: false
-    t.text "redirect_uri", null: false
-    t.string "scopes", default: "", null: false
     t.boolean "confidential", default: true, null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.text "redirect_uri", null: false
+    t.string "scopes", default: "", null: false
+    t.string "secret", null: false
+    t.string "uid", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
   create_table "orders", force: :cascade do |t|
-    t.string "number", null: false
-    t.decimal "total", precision: 10, scale: 2, default: "0.0"
-    t.decimal "items_total", precision: 10, scale: 2, default: "0.0"
-    t.decimal "total_tax", precision: 10, scale: 2, default: "0.0"
-    t.decimal "total_discounts", precision: 10, scale: 2, default: "0.0"
-    t.string "payment_method"
-    t.string "status"
-    t.string "dispense_status"
-    t.jsonb "machine_response"
     t.datetime "completed_at"
-    t.datetime "deleted_at"
     t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.string "dispense_status"
+    t.decimal "items_total", precision: 10, scale: 2, default: "0.0"
+    t.bigint "machine_id", null: false
+    t.jsonb "machine_response"
+    t.string "number", null: false
+    t.string "payment_method"
+    t.string "pick_up_code"
+    t.string "status"
+    t.decimal "total", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_discounts", precision: 10, scale: 2, default: "0.0"
+    t.decimal "total_tax", precision: 10, scale: 2, default: "0.0"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.bigint "machine_id", null: false
-    t.string "pick_up_code"
     t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id", "created_at"], name: "index_orders_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -381,7 +381,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
 
   create_table "payment_cards", force: :cascade do |t|
     t.string "brand"
+    t.string "card_id", null: false
     t.string "category"
+    t.datetime "created_at", null: false
     t.boolean "default", default: false
     t.integer "exp_month"
     t.integer "exp_year"
@@ -391,31 +393,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
     t.string "funding"
     t.string "last_four"
     t.string "name"
-    t.string "scheme"
-    t.string "card_id", null: false
     t.string "payment_agreement_id"
     t.integer "payment_customer_id", null: false
-    t.datetime "created_at", null: false
+    t.string "scheme"
     t.datetime "updated_at", null: false
     t.index ["card_id"], name: "index_payment_cards_on_card_id", unique: true
     t.index ["payment_customer_id"], name: "index_payment_cards_on_payment_customer_id"
   end
 
   create_table "payment_customers", force: :cascade do |t|
-    t.string "payment_customer_number", null: false
-    t.integer "user_id"
     t.datetime "created_at", null: false
+    t.string "payment_customer_number", null: false
     t.datetime "updated_at", null: false
     t.index ["payment_customer_number"], name: "index_payment_customers_on_payment_customer_number", unique: true
     t.index ["user_id"], name: "index_payment_customers_on_user_id", unique: true
   end
 
   create_table "payment_method_translations", force: :cascade do |t|
-    t.string "presentation"
+    t.datetime "created_at", null: false
     t.text "description"
     t.string "locale", null: false
     t.bigint "payment_method_id", null: false
-    t.datetime "created_at", null: false
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_payment_method_translations_on_locale"
     t.index ["payment_method_id", "locale"], name: "index_pm_translations_on_payment_method_id_and_locale", unique: true
@@ -423,27 +422,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
 
   create_table "payment_methods", force: :cascade do |t|
     t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
     t.string "description"
     t.string "name", null: false
     t.string "presentation"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "payment_statuses", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.integer "payment_transaction_id"
     t.string "status", null: false
-    t.string "transaction_url"
     t.datetime "transaction_created_at"
-    t.datetime "created_at", null: false
+    t.string "transaction_url"
     t.datetime "updated_at", null: false
   end
 
   create_table "payment_transactions", force: :cascade do |t|
     t.string "charge_id", null: false
+    t.datetime "created_at", null: false
     t.integer "payment_customer_id"
     t.integer "payment_id"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["charge_id"], name: "index_payment_transactions_on_charge_id"
     t.index ["payment_customer_id"], name: "index_payment_transactions_on_payment_customer_id"
@@ -452,21 +451,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
 
   create_table "payments", force: :cascade do |t|
     t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "card_id"
+    t.datetime "created_at", null: false
     t.datetime "deleted_at"
     t.string "message"
-    t.string "status", default: "pending", null: false
-    t.integer "card_id"
     t.integer "order_id"
-    t.string "token_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "payment_method_id"
+    t.string "status", default: "pending", null: false
+    t.string "token_id"
+    t.datetime "updated_at", null: false
   end
 
   create_table "price_list_items", force: :cascade do |t|
-    t.bigint "price_list_id", null: false
-    t.decimal "price", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.bigint "price_list_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "variant_id"
     t.index ["price_list_id", "variant_id"], name: "index_price_list_items_on_price_list_id_and_variant_id", unique: true
@@ -475,15 +474,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "price_lists", force: :cascade do |t|
-    t.string "name", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "product_categories", force: :cascade do |t|
-    t.bigint "product_id"
     t.bigint "category_id"
     t.datetime "created_at", null: false
+    t.bigint "product_id"
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_product_categories_on_category_id"
     t.index ["product_id", "category_id"], name: "index_product_categories_uniqueness", unique: true
@@ -491,29 +490,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "product_translations", force: :cascade do |t|
-    t.string "presentation"
+    t.datetime "created_at", null: false
     t.text "description"
     t.string "locale", null: false
+    t.string "presentation"
     t.bigint "product_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_product_translations_on_locale"
     t.index ["product_id", "locale"], name: "index_product_translations_on_product_id_and_locale", unique: true
   end
 
   create_table "products", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "status"
-    t.string "slug"
-    t.datetime "deleted_at"
-    t.float "total_rate"
-    t.integer "position", default: 1
     t.bigint "brand_id"
-    t.string "presentation"
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.string "description"
     t.integer "max_orderable_quantity"
+    t.string "name", null: false
+    t.integer "position", default: 1
+    t.string "presentation"
+    t.string "slug"
+    t.string "status"
+    t.float "total_rate"
+    t.datetime "updated_at", null: false
     t.index ["brand_id"], name: "index_products_on_brand_id"
     t.index ["created_at"], name: "index_products_on_created_at"
     t.index ["deleted_at"], name: "index_products_on_deleted_at"
@@ -522,31 +521,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "roles", force: :cascade do |t|
-    t.string "name"
-    t.string "resource_type"
-    t.bigint "resource_id"
     t.datetime "created_at", null: false
+    t.string "name"
+    t.bigint "resource_id"
+    t.string "resource_type"
     t.datetime "updated_at", null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
   create_table "suppliers", force: :cascade do |t|
-    t.string "name", null: false
     t.string "app_id", null: false
     t.string "app_secret", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "base_url"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
     t.string "supplier_type", default: ""
+    t.datetime "updated_at", null: false
     t.index ["supplier_type"], name: "index_suppliers_on_supplier_type"
   end
 
   create_table "user_favorites", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "product_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["created_at"], name: "index_user_favorites_on_created_at"
     t.index ["product_id"], name: "index_user_favorites_on_product_id"
     t.index ["user_id", "product_id"], name: "index_user_favorites_on_user_id_and_product_id", unique: true
@@ -554,41 +553,41 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "avatar"
-    t.date "date_of_birth"
-    t.string "locale", default: "en"
-    t.string "mobile_number"
-    t.boolean "verified", default: false, null: false
-    t.datetime "last_active_at"
-    t.datetime "deleted_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
+    t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email"
-    t.integer "failed_attempts", default: 0, null: false
-    t.string "unlock_token"
-    t.datetime "locked_at"
-    t.string "name"
+    t.bigint "country_id"
+    t.datetime "created_at", null: false
+    t.datetime "current_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.date "date_of_birth"
+    t.datetime "deleted_at"
+    t.string "email"
     t.boolean "email_notification", default: true, null: false
+    t.string "encrypted_password", default: "", null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "hashed_password"
+    t.datetime "last_active_at"
+    t.datetime "last_sign_in_at"
+    t.string "last_sign_in_ip"
+    t.string "locale", default: "en"
+    t.datetime "locked_at"
+    t.string "mobile_number"
+    t.string "name"
+    t.bigint "profile_id"
+    t.string "provider"
+    t.string "qr_code_token"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.integer "sign_in_count", default: 0, null: false
     t.boolean "sms_notification", default: true, null: false
     t.string "uid"
-    t.string "provider"
-    t.string "hashed_password"
-    t.bigint "profile_id"
-    t.string "qr_code_token"
-    t.bigint "country_id"
+    t.string "unconfirmed_email"
+    t.string "unlock_token"
+    t.datetime "updated_at", null: false
+    t.boolean "verified", default: false, null: false
     t.index ["country_id"], name: "index_users_on_country_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locale"], name: "index_users_on_locale"
@@ -598,38 +597,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "users_roles", primary_key: "key", force: :cascade do |t|
-    t.bigint "user_id"
     t.bigint "role_id"
+    t.bigint "user_id"
     t.index ["role_id"], name: "index_users_roles_on_role_id"
     t.index ["user_id", "role_id"], name: "index_unique_user_role", unique: true
   end
 
   create_table "variant_translations", force: :cascade do |t|
-    t.string "presentation"
-    t.string "locale", null: false
-    t.bigint "variant_id", null: false
     t.datetime "created_at", null: false
+    t.string "locale", null: false
+    t.string "presentation"
     t.datetime "updated_at", null: false
+    t.bigint "variant_id", null: false
     t.index ["locale"], name: "index_variant_translations_on_locale"
     t.index ["variant_id", "locale"], name: "index_variant_translations_on_variant_id_and_locale", unique: true
     t.index ["variant_id"], name: "index_variant_translations_on_variant_id"
   end
 
   create_table "variants", force: :cascade do |t|
-    t.string "sku", null: false
+    t.boolean "active", default: true
+    t.decimal "cost_price", precision: 10, scale: 2, default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.string "goods_uuid"
+    t.boolean "is_master", default: false, null: false
     t.string "name"
     t.integer "points"
-    t.float "weight", default: 0.0
-    t.boolean "is_master", default: false, null: false
-    t.boolean "active", default: true
     t.integer "position", default: 1
     t.integer "product_id"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.decimal "cost_price", precision: 10, scale: 2, default: "0.0"
-    t.string "goods_uuid"
     t.string "size"
+    t.string "sku", null: false
+    t.datetime "updated_at", null: false
+    t.float "weight", default: 0.0
     t.index ["active"], name: "index_variants_on_active"
     t.index ["created_at"], name: "index_variants_on_created_at"
     t.index ["deleted_at"], name: "index_variants_on_deleted_at"
@@ -642,43 +641,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_094227) do
   end
 
   create_table "vendors", force: :cascade do |t|
-    t.string "name"
-    t.string "contact_person"
-    t.string "phone_number"
-    t.string "email"
     t.text "address"
+    t.string "contact_person"
     t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "phone_number"
     t.datetime "updated_at", null: false
   end
 
   create_table "wallet_refills", force: :cascade do |t|
-    t.bigint "wallet_id", null: false
     t.decimal "amount", precision: 10, scale: 2, null: false
-    t.integer "payment_method_id"
     t.integer "card_id"
-    t.string "token_id"
-    t.string "status", default: "pending"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "message"
+    t.integer "payment_method_id"
+    t.string "status", default: "pending"
+    t.string "token_id"
+    t.datetime "updated_at", null: false
+    t.bigint "wallet_id", null: false
     t.index ["wallet_id"], name: "index_wallet_refills_on_wallet_id"
   end
 
   create_table "wallet_transactions", force: :cascade do |t|
-    t.bigint "wallet_id", null: false
     t.decimal "amount", precision: 15, scale: 2, null: false
-    t.string "transaction_type", null: false
-    t.string "description"
     t.datetime "created_at", null: false
+    t.string "description"
+    t.string "transaction_type", null: false
     t.datetime "updated_at", null: false
+    t.bigint "wallet_id", null: false
     t.index ["wallet_id"], name: "index_wallet_transactions_on_wallet_id"
   end
 
   create_table "wallets", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.decimal "balance", precision: 15, scale: 2, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_wallets_on_user_id"
   end
 
