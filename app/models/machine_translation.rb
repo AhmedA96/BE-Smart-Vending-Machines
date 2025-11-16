@@ -7,7 +7,6 @@
 #  id           :bigint           not null, primary key
 #  description  :text
 #  locale       :string           not null
-#  name         :string
 #  presentation :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

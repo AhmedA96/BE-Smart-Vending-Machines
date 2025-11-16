@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_16_145852) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_16_163234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -244,7 +244,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_16_145852) do
     t.text "description"
     t.string "locale", null: false
     t.bigint "machine_id", null: false
-    t.string "name"
     t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_machine_translations_on_locale"
