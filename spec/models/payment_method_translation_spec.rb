@@ -3,5 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe PaymentMethodTranslation, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'associations' do
+    it { should belong_to(:payment_method) }
+  end
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:locale) }
+  end
 end

@@ -5,6 +5,8 @@ ar:
     authentication:
       invalid_login: "رقم الجوال أو كلمة المرور غير صالحة"
     account_deleted: "تم حذف حسابك بنجاح"
+    email_taken: "هذا البريد الإلكتروني مسجل بالفعل في حساب آخر"
+    mobile_number_taken: "رقم الهاتف هذا مسجل بالفعل في حساب آخر"
   avo:
     resource_translations:
       machine_category:
