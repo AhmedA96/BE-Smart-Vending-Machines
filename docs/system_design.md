@@ -1,7 +1,7 @@
 # Vending System Architecture - System Design Document
 
 **Document Version:** 1.0  
-**Last Updated:** November 12, 2025  
+**Last Updated:** November 16, 2025  
 **Status:** Active
 
 ---
@@ -29,9 +29,9 @@ _High-level vending system architecture showing client connectivity, load balanc
 The Vending System is a distributed cloud architecture with:
 
 - Mobile and machine clients
-- DNS-based routing via ONS
-- Load balancing via Kekoa
-- Auto-scaling via StackQL
+- DNS-based routing via Cloudflare DNS
+- Load balancing via AWS Application Load Balancer (ALB)
+- Auto-scaling via AWS Auto Scaling Groups (ASG)
 - Redis caching layer
 - Replicated PostgreSQL database
 - Worker processes for background jobs
@@ -44,8 +44,8 @@ The Vending System is a distributed cloud architecture with:
 The architecture consists of interconnected layers within a VPC:
 
 1. **Client Layer**: Mobile and machine endpoints
-2. **Network Layer**: DNS routing (ONS) and load balancing (Kekoa)
-3. **Compute Layer**: Auto-scaling (StackQL) and worker processes
+2. **Network Layer**: DNS routing (Cloudflare DNS) and load balancing (AWS Application Load Balancer - ALB)
+3. **Compute Layer**: Auto-scaling (AWS Auto Scaling Groups - ASG) and worker processes
 4. **Data Layer**: Redis cache and replicated database
 5. **Observability**: Logging, monitoring, metrics, and automation
 
@@ -58,30 +58,30 @@ The architecture consists of interconnected layers within a VPC:
 #### 1.1 Mobile Client
 
 - Entry point for mobile applications
-- Routes requests through DNS (ONS)
+- Routes requests through DNS (Cloudflare DNS)
 
 #### 1.2 Machine (On-premises)
 
 - Physical/virtual machines or web interfaces
-- Routes through DNS (ONS) to cloud infrastructure
+- Routes through DNS (Cloudflare DNS) to cloud infrastructure
 
 ### 2. DNS & Routing Layer
 
-#### 2.1 DNS Service (ONS)
+#### 2.1 DNS Service (Cloudflare DNS)
 
 - Domain name resolution for all client requests
 - Routes clients to the load balancer
 
 ### 3. Network Layer
 
-#### 3.1 Load Balancer (Kekoa)
+#### 3.1 Load Balancer (AWS Application Load Balancer - ALB)
 
 - Distributes incoming traffic across backend instances
-- Routes requests to Auto Scaling component
+- Routes requests to application instances in the Auto Scaling Group (ASG)
 
 ### 4. Compute Layer
 
-#### 4.1 Auto Scaling (StackQL)
+#### 4.1 Auto Scaling (AWS Auto Scaling Group - ASG)
 
 - Manages horizontal scaling of application instances based on load
 - Distributes traffic to available workers
@@ -115,11 +115,11 @@ The architecture consists of interconnected layers within a VPC:
 ```
 Client (Mobile/Machine)
     ↓
-DNS (ONS) - Route request
+DNS (Cloudflare DNS) - Route request
     ↓
-Load Balancer (Kekoa) - Distribute traffic
+Load Balancer (AWS ALB) - Distribute traffic
     ↓
-Auto Scaling (StackQL) - Route to available instance
+Auto Scaling (AWS ASG) - Route to available instance
     ↓
 Redis - Check cache
     ↓
