@@ -22,4 +22,7 @@
 #  fk_rails_...  (payment_method_id => payment_methods.id)
 #
 class PaymentMethodTranslation < ApplicationRecord
+  belongs_to :payment_method
+
+  validates  :locale, presence: true
 end
