@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_27_094227) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -306,10 +306,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_27_094227) do
     t.boolean "read", default: false
     t.datetime "read_at"
     t.string "title", null: false
+    t.string "translation_key"
+    t.jsonb "translation_params", default: {}
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["notification_type"], name: "index_notifications_on_notification_type"
+    t.index ["translation_key"], name: "index_notifications_on_translation_key"
     t.index ["user_id", "created_at"], name: "index_notifications_on_user_id_and_created_at"
     t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
     t.index ["user_id"], name: "index_notifications_on_user_id"
