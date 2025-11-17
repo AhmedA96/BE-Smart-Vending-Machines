@@ -32,18 +32,18 @@ class PaymentCard < ApplicationRecord
   belongs_to :payment_customer, optional: false
 
   validates :card_id, presence: true, uniqueness: true
-  validate :single_default_per_payment_customer
+
+  before_save :toggle_previous_default_card
 
   private
 
-  def single_default_per_payment_customer
-    return unless default
+  def toggle_previous_default_card
+    return unless default && default_changed?
 
-    scope = PaymentCard.where(payment_customer_id: payment_customer_id, default: true)
-    scope = scope.where.not(id: id) if persisted?
-
-    return unless scope.exists?
-
-    errors.add(:base, 'only one default card is allowed per customer')
+    PaymentCard.where(payment_customer_id: payment_customer_id, default: true)
+               .where.not(id: id)
+               .find_each do |card|
+      card.update(default: false)
+    end
   end
 end
