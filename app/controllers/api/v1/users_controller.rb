@@ -21,7 +21,7 @@ module Api
         if @current_user.update(profile_params)
           render :profile
         else
-          render json: { errors: @current_user.errors.full_messages }, status: :unprocessable_content
+          render json: { errors: @current_user.errors.messages }, status: :unprocessable_content
         end
       end
 
@@ -38,7 +38,7 @@ module Api
       private
 
       def profile_params
-        params.expect(user: %i[name avatar email date_of_birth locale])
+        params.expect(user: %i[name avatar email date_of_birth locale mobile_number])
       end
     end
   end
