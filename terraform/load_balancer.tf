@@ -26,13 +26,13 @@ resource "aws_lb_target_group" "app" {
 
   # Health Check Configuration
   health_check {
-    healthy_threshold   = 2         # Consecutive successful checks to mark healthy
-    unhealthy_threshold = 3         # Consecutive failed checks to mark unhealthy
-    timeout             = 5         # Timeout for each health check (seconds)
-    interval            = 30        # How often to check (seconds)
-    path                = "/health" # Health check endpoint (configure in Rails)
+    healthy_threshold   = var.health_check_healthy_threshold
+    unhealthy_threshold = var.health_check_unhealthy_threshold
+    timeout             = var.health_check_timeout
+    interval            = var.health_check_interval
+    path                = var.health_check_path
     protocol            = "HTTP"
-    matcher             = "200" # HTTP status codes to consider healthy
+    matcher             = var.health_check_matcher
     enabled             = true
   }
 

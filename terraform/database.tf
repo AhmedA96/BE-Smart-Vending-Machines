@@ -35,8 +35,8 @@ resource "aws_rds_cluster" "main" {
 
   # Backup and restore configuration
   backup_retention_period      = var.db_backup_retention_period
-  preferred_backup_window      = "03:00-04:00"         # UTC (1-2 AM Gulf time)
-  preferred_maintenance_window = "sun:04:00-sun:05:00" # UTC Sunday
+  preferred_backup_window      = var.db_backup_window
+  preferred_maintenance_window = var.db_maintenance_window
 
   # Performance and availability
   enabled_cloudwatch_logs_exports = ["postgresql"] # Send logs to CloudWatch

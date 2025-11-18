@@ -71,9 +71,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "app_backups" {
     status = "Enabled"
     filter {}
 
-    # Delete old versions after 90 days
     noncurrent_version_expiration {
-      noncurrent_days = 90
+      noncurrent_days = var.s3_version_retention_days
     }
   }
 
@@ -82,9 +81,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "app_backups" {
     status = "Enabled"
     filter {}
 
-    # Delete backups older than 1 year
     expiration {
-      days = 365
+      days = var.s3_backup_retention_days
     }
   }
 
@@ -93,9 +91,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "app_backups" {
     status = "Enabled"
     filter {}
 
-    # Clean up incomplete multipart uploads after 7 days
     abort_incomplete_multipart_upload {
-      days_after_initiation = 7
+      days_after_initiation = var.s3_incomplete_upload_cleanup_days
     }
   }
 }
@@ -134,20 +131,18 @@ resource "aws_s3_bucket_lifecycle_configuration" "app_media" {
     status = "Enabled"
     filter {}
 
-    # Clean up incomplete multipart uploads after 7 days
     abort_incomplete_multipart_upload {
-      days_after_initiation = 7
+      days_after_initiation = var.s3_incomplete_upload_cleanup_days
     }
   }
 
-  # Keep versioning but delete old versions after 1 year
   rule {
     id     = "delete-old-versions"
     status = "Enabled"
     filter {}
 
     noncurrent_version_expiration {
-      noncurrent_days = 365
+      noncurrent_days = var.s3_backup_retention_days
     }
   }
 }
@@ -220,6 +215,8 @@ resource "aws_iam_policy" "app_s3_access" {
   tags = {
     Name = "${var.project_name}-app-r2-access"
   }
+
+  depends_on = [data.aws_caller_identity.current]
 }
 
 # ==============================================================================
@@ -264,6 +261,8 @@ resource "aws_iam_policy" "app_cloudwatch" {
   tags = {
     Name = "${var.project_name}-app-cloudwatch"
   }
+
+  depends_on = [data.aws_caller_identity.current]
 }
 
 # ==============================================================================
@@ -301,6 +300,8 @@ resource "aws_iam_policy" "app_secrets_read" {
   tags = {
     Name = "${var.project_name}-app-secrets-read"
   }
+
+  depends_on = [data.aws_caller_identity.current]
 }
 
 # ==============================================================================

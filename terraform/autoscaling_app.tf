@@ -93,8 +93,8 @@ resource "aws_launch_template" "app" {
     device_name = "/dev/sda1"
 
     ebs {
-      volume_type           = "gp3"
-      volume_size           = 50
+      volume_type           = var.app_ebs_volume_type
+      volume_size           = var.app_ebs_volume_size
       delete_on_termination = true
       encrypted             = true
     }
@@ -198,7 +198,9 @@ resource "aws_autoscaling_group" "app" {
 
   depends_on = [
     aws_launch_template.app,
-    aws_lb_target_group.app
+    aws_lb_target_group.app,
+    aws_rds_cluster_instance.primary,
+    aws_elasticache_replication_group.redis
   ]
 }
 
@@ -233,8 +235,8 @@ resource "aws_cloudwatch_metric_alarm" "app_scale_up_alarm" {
   namespace           = "AWS/EC2"
   period              = "300" # 5 minutes
   statistic           = "Average"
-  threshold           = "70"
-  alarm_description   = "Scale up when CPU > 70%"
+  threshold           = tostring(var.app_scale_up_cpu_threshold)
+  alarm_description   = "Scale up when CPU > ${var.app_scale_up_cpu_threshold}%"
   alarm_actions       = [aws_autoscaling_policy.app_scale_up.arn]
   treat_missing_data  = "notBreaching"
 
@@ -254,8 +256,8 @@ resource "aws_cloudwatch_metric_alarm" "app_scale_down_alarm" {
   namespace           = "AWS/EC2"
   period              = "300"
   statistic           = "Average"
-  threshold           = "30"
-  alarm_description   = "Scale down when CPU < 30%"
+  threshold           = tostring(var.app_scale_down_cpu_threshold)
+  alarm_description   = "Scale down when CPU < ${var.app_scale_down_cpu_threshold}%"
   alarm_actions       = [aws_autoscaling_policy.app_scale_down.arn]
   treat_missing_data  = "notBreaching"
 
@@ -273,11 +275,11 @@ resource "aws_cloudwatch_metric_alarm" "app_scale_down_alarm" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["099720109477"] # Canonical (Ubuntu publisher)
+  owners      = [var.ami_owner]
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = [var.ami_name_filter]
   }
 
   filter {

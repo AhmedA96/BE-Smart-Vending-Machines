@@ -87,8 +87,8 @@ resource "aws_launch_template" "worker" {
     device_name = "/dev/sda1"
 
     ebs {
-      volume_type           = "gp3"
-      volume_size           = 50
+      volume_type           = var.worker_ebs_volume_type
+      volume_size           = var.worker_ebs_volume_size
       delete_on_termination = true
       encrypted             = true
     }
@@ -215,8 +215,8 @@ resource "aws_cloudwatch_metric_alarm" "worker_scale_up_alarm" {
   namespace           = "AWS/EC2"
   period              = "300"
   statistic           = "Average"
-  threshold           = "60"
-  alarm_description   = "Scale up workers when CPU > 60%"
+  threshold           = tostring(var.worker_scale_up_cpu_threshold)
+  alarm_description   = "Scale up workers when CPU > ${var.worker_scale_up_cpu_threshold}%"
   alarm_actions       = [aws_autoscaling_policy.worker_scale_up.arn]
   treat_missing_data  = "notBreaching"
 
@@ -234,8 +234,8 @@ resource "aws_cloudwatch_metric_alarm" "worker_scale_down_alarm" {
   namespace           = "AWS/EC2"
   period              = "300"
   statistic           = "Average"
-  threshold           = "20"
-  alarm_description   = "Scale down workers when CPU < 20%"
+  threshold           = tostring(var.worker_scale_down_cpu_threshold)
+  alarm_description   = "Scale down workers when CPU < ${var.worker_scale_down_cpu_threshold}%"
   alarm_actions       = [aws_autoscaling_policy.worker_scale_down.arn]
   treat_missing_data  = "notBreaching"
 

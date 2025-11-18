@@ -59,8 +59,8 @@ resource "aws_elasticache_replication_group" "redis" {
 
   # Data persistence
   snapshot_retention_limit = 5
-  snapshot_window          = "03:00-05:00"
-  maintenance_window       = "sun:05:00-sun:06:00"
+  snapshot_window          = var.redis_snapshot_window
+  maintenance_window       = var.redis_maintenance_window
 
   # Logging
   log_delivery_configuration {
@@ -103,19 +103,19 @@ resource "aws_elasticache_parameter_group" "redis" {
   # Key eviction policy: When memory is full, evict least recently used keys
   parameter {
     name  = "maxmemory-policy"
-    value = "allkeys-lru" # Evict any key using LRU when max memory reached
+    value = var.redis_maxmemory_policy
   }
 
   # Timeout for idle connections (prevents accumulation)
   parameter {
     name  = "timeout"
-    value = "300" # 5 minutes
+    value = tostring(var.redis_timeout)
   }
 
   # TCP backlog for connection queue
   parameter {
     name  = "tcp-backlog"
-    value = "511"
+    value = tostring(var.redis_tcp_backlog)
   }
 
   tags = {
@@ -129,7 +129,7 @@ resource "aws_elasticache_parameter_group" "redis" {
 
 resource "aws_cloudwatch_log_group" "redis_slow_log" {
   name              = "/aws/elasticache/${var.project_name}/redis-slow-log"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_days
 
   tags = {
     Name = "${var.project_name}-redis-slow-log"
@@ -138,7 +138,7 @@ resource "aws_cloudwatch_log_group" "redis_slow_log" {
 
 resource "aws_cloudwatch_log_group" "redis_engine_log" {
   name              = "/aws/elasticache/${var.project_name}/redis-engine-log"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_days
 
   tags = {
     Name = "${var.project_name}-redis-engine-log"

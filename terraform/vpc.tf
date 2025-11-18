@@ -191,6 +191,8 @@ resource "aws_route_table" "private" {
   tags = {
     Name = "${var.project_name}-private-rt"
   }
+
+  depends_on = [aws_nat_gateway.nat]
 }
 
 # ==============================================================================

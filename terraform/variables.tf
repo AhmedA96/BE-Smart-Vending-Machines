@@ -209,3 +209,223 @@ variable "sms_provider_key" {
   sensitive   = true
   default     = "" # Optional, set in tfvars if needed
 }
+
+# ============================================
+# EC2 Instance Configuration
+# ============================================
+
+variable "app_ebs_volume_size" {
+  description = "EBS volume size for application servers (GB)"
+  type        = number
+  default     = 50
+}
+
+variable "app_ebs_volume_type" {
+  description = "EBS volume type for application servers"
+  type        = string
+  default     = "gp3"
+
+  validation {
+    condition     = contains(["gp2", "gp3", "io1", "io2"], var.app_ebs_volume_type)
+    error_message = "EBS volume type must be one of: gp2, gp3, io1, io2."
+  }
+}
+
+variable "worker_ebs_volume_size" {
+  description = "EBS volume size for worker servers (GB)"
+  type        = number
+  default     = 50
+}
+
+variable "worker_ebs_volume_type" {
+  description = "EBS volume type for worker servers"
+  type        = string
+  default     = "gp3"
+
+  validation {
+    condition     = contains(["gp2", "gp3", "io1", "io2"], var.worker_ebs_volume_type)
+    error_message = "EBS volume type must be one of: gp2, gp3, io1, io2."
+  }
+}
+
+# ============================================
+# AMI Configuration
+# ============================================
+
+variable "ami_owner" {
+  description = "AWS account ID of AMI owner (Canonical for Ubuntu)"
+  type        = string
+  default     = "099720109477"
+}
+
+variable "ami_name_filter" {
+  description = "AMI name filter pattern"
+  type        = string
+  default     = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+}
+
+# ============================================
+# Health Check Configuration
+# ============================================
+
+variable "health_check_path" {
+  description = "Health check endpoint path"
+  type        = string
+  default     = "/health"
+}
+
+variable "health_check_interval" {
+  description = "Health check interval in seconds"
+  type        = number
+  default     = 30
+}
+
+variable "health_check_timeout" {
+  description = "Health check timeout in seconds"
+  type        = number
+  default     = 5
+}
+
+variable "health_check_healthy_threshold" {
+  description = "Number of consecutive successful checks to mark healthy"
+  type        = number
+  default     = 2
+}
+
+variable "health_check_unhealthy_threshold" {
+  description = "Number of consecutive failed checks to mark unhealthy"
+  type        = number
+  default     = 3
+}
+
+variable "health_check_matcher" {
+  description = "HTTP status codes to consider healthy"
+  type        = string
+  default     = "200"
+}
+
+# ============================================
+# Auto Scaling Thresholds
+# ============================================
+
+variable "app_scale_up_cpu_threshold" {
+  description = "CPU percentage to trigger scale up for app servers"
+  type        = number
+  default     = 70
+}
+
+variable "app_scale_down_cpu_threshold" {
+  description = "CPU percentage to trigger scale down for app servers"
+  type        = number
+  default     = 30
+}
+
+variable "worker_scale_up_cpu_threshold" {
+  description = "CPU percentage to trigger scale up for worker servers"
+  type        = number
+  default     = 60
+}
+
+variable "worker_scale_down_cpu_threshold" {
+  description = "CPU percentage to trigger scale down for worker servers"
+  type        = number
+  default     = 20
+}
+
+# ============================================
+# Backup and Maintenance Windows
+# ============================================
+
+variable "db_backup_window" {
+  description = "Preferred backup window for database (UTC)"
+  type        = string
+  default     = "03:00-04:00" # 1-2 AM Gulf time
+}
+
+variable "db_maintenance_window" {
+  description = "Preferred maintenance window for database (UTC)"
+  type        = string
+  default     = "sun:04:00-sun:05:00"
+}
+
+variable "redis_snapshot_window" {
+  description = "Preferred snapshot window for Redis (UTC)"
+  type        = string
+  default     = "03:00-05:00"
+}
+
+variable "redis_maintenance_window" {
+  description = "Preferred maintenance window for Redis (UTC)"
+  type        = string
+  default     = "sun:05:00-sun:06:00"
+}
+
+# ============================================
+# Redis Configuration
+# ============================================
+
+variable "redis_maxmemory_policy" {
+  description = "Redis eviction policy when max memory is reached"
+  type        = string
+  default     = "allkeys-lru"
+
+  validation {
+    condition = contains([
+      "volatile-lru", "allkeys-lru", "volatile-lfu", "allkeys-lfu",
+      "volatile-random", "allkeys-random", "volatile-ttl", "noeviction"
+    ], var.redis_maxmemory_policy)
+    error_message = "Invalid Redis maxmemory policy."
+  }
+}
+
+variable "redis_timeout" {
+  description = "Redis connection timeout in seconds"
+  type        = number
+  default     = 300
+}
+
+variable "redis_tcp_backlog" {
+  description = "Redis TCP backlog size"
+  type        = number
+  default     = 511
+}
+
+# ============================================
+# CloudWatch Logs Configuration
+# ============================================
+
+variable "log_retention_days" {
+  description = "CloudWatch log retention period in days"
+  type        = number
+  default     = 7
+
+  validation {
+    condition = contains([
+      1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180,
+      365, 400, 545, 731, 1827, 3653
+    ], var.log_retention_days)
+    error_message = "Log retention must be a valid CloudWatch retention period."
+  }
+}
+
+# ============================================
+# S3 Lifecycle Configuration
+# ============================================
+
+variable "s3_backup_retention_days" {
+  description = "Days to retain backups in S3"
+  type        = number
+  default     = 365
+}
+
+variable "s3_version_retention_days" {
+  description = "Days to retain non-current object versions"
+  type        = number
+  default     = 90
+}
+
+variable "s3_incomplete_upload_cleanup_days" {
+  description = "Days after which to abort incomplete multipart uploads"
+  type        = number
+  default     = 7
+}
