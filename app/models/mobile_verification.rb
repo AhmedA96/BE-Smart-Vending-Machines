@@ -23,8 +23,18 @@ class MobileVerification < ApplicationRecord
 
   before_create :set_expires_at
 
+  validates :mobile_number, presence: true
+  validates :code, presence: true
+
+  scope :active, -> { where(expired: false, verified: false) }
+  scope :for_user, ->(user) { where(user: user) }
+
   def expired?
     expired || expires_at <= Time.zone.now
+  end
+
+  def mark_as_expired!
+    update!(expired: true)
   end
 
   private

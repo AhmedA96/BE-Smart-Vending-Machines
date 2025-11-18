@@ -14,7 +14,9 @@ RSpec.describe Api::V1::MobileVerificationsController, type: :request do
     context 'when user exists and code is sent successfully' do
       before do
         allow(User).to receive(:find_by).with(mobile_number: mobile_number).and_return(user)
-        allow(Verification::Mobile).to receive(:send_code).with(mobile_number, user).and_return(true)
+        allow(Verification::Mobile).to receive(:send_code).and_return(
+          { success: true, code: '123456' }
+        )
       end
 
       it 'returns ok status' do

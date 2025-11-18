@@ -310,10 +310,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_16_215557) do
     t.boolean "read", default: false
     t.datetime "read_at"
     t.string "title", null: false
+    t.string "translation_key"
+    t.jsonb "translation_params", default: {}
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
     t.index ["notification_type"], name: "index_notifications_on_notification_type"
+    t.index ["translation_key"], name: "index_notifications_on_translation_key"
     t.index ["user_id", "created_at"], name: "index_notifications_on_user_id_and_created_at"
     t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
     t.index ["user_id"], name: "index_notifications_on_user_id"
