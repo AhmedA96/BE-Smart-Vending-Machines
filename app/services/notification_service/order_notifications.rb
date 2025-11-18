@@ -9,46 +9,46 @@ module NotificationService
     end
 
     def payment_initiated
-      base_call(
+      create_notification(
         type: Notification::TYPES[:order_payment],
-        title: 'Payment Processing',
-        body: "Your payment for order ##{@order.number} is being processed."
+        translation_key: 'notifications.order_payment',
+        translation_params: { order_number: @order.number }
       )
     end
 
     def ready
-      base_call(
+      create_notification(
         type: Notification::TYPES[:order_ready],
-        title: 'Order Ready!',
-        body: "Your order is ready at #{@machine.name}. Go to the machine to collect your items!",
-        metadata: {
-          order_id: @order.id,
-          number: @order.number
-        }
+        translation_key: 'notifications.order_ready',
+        translation_params: {
+          order_number: @order.number,
+          machine_id: @machine.id
+        },
+        metadata: { order_id: @order.id, number: @order.number }
       )
     end
 
     def dispensed
-      base_call(
+      create_notification(
         type: Notification::TYPES[:order_dispensed],
-        title: 'Order Dispensed',
-        body: "Your order is dispensed at #{@machine.name}.",
-        metadata: {
-          order_id: @order.id,
-          number: @order.number
-        }
+        translation_key: 'notifications.order_dispensed',
+        translation_params: {
+          order_number: @order.number,
+          machine_id: @machine.id
+        },
+        metadata: { order_id: @order.id, number: @order.number }
       )
     end
 
     private
 
-    def base_call(type:, title:, body:, metadata: {})
+    def create_notification(type:, translation_key:, translation_params:, metadata: {})
       Notifications::Create.new(
         user: @user,
         attributes: {
           type: type,
-          title: title,
-          body: body,
+          translation_key: translation_key,
+          translation_params: translation_params,
           notifiable: @order,
           metadata: metadata
         }
