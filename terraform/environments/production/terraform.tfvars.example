@@ -3,7 +3,7 @@
 # NOTE: This file should NOT be committed to version control (see .gitignore)
 
 # AWS Configuration
-aws_region = "me-south-1"  # UAE (Middle East - Bahrain)
+aws_region = "me-central-1"  # UAE (Middle East - UAE)
 
 # Project Configuration
 project_name = "vending-system"
@@ -14,8 +14,9 @@ environment  = "production"  # Options: dev, staging, production
 vpc_cidr = "10.0.0.0/16"
 
 # Availability Zones (should match your AWS region)
-# UAE region (me-south-1) has 2 availability zones
-availability_zones = ["me-south-1a", "me-south-1b"]
+# UAE region (me-central-1) has 3 availability zones
+# Using 2 AZs to satisfy ALB/RDS requirements (cost-optimized: resources stay in AZ-a)
+availability_zones = ["me-central-1a", "me-central-1b"]
 
 # Database Configuration (PostgreSQL)
 db_engine_version   = "15.4"

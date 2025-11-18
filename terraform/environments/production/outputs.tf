@@ -8,9 +8,14 @@ output "vpc_cidr" {
   value       = aws_vpc.main.cidr_block
 }
 
-output "public_subnet_id" {
-  description = "Public subnet ID (for ALB)"
-  value       = aws_subnet.public.id
+output "public_subnet_a_id" {
+  description = "Public subnet A ID (AZ-a, for ALB)"
+  value       = aws_subnet.public_a.id
+}
+
+output "public_subnet_b_id" {
+  description = "Public subnet B ID (AZ-b, for ALB)"
+  value       = aws_subnet.public_b.id
 }
 
 output "private_app_subnet_1_id" {
@@ -23,9 +28,14 @@ output "private_app_subnet_2_id" {
   value       = aws_subnet.private_app_2.id
 }
 
-output "private_db_subnet_id" {
-  description = "Private database subnet ID"
-  value       = aws_subnet.private_db.id
+output "private_db_subnet_a_id" {
+  description = "Private database subnet A ID (AZ-a)"
+  value       = aws_subnet.private_db_a.id
+}
+
+output "private_db_subnet_b_id" {
+  description = "Private database subnet B ID (AZ-b)"
+  value       = aws_subnet.private_db_b.id
 }
 
 output "load_balancer_dns" {

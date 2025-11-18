@@ -118,11 +118,11 @@ resource "aws_rds_cluster_instance" "replica" {
 # 4. DB Subnet Group
 # ==============================================================================
 # Subnet group tells Aurora which subnets it can use for instances.
-# Must span multiple subnets (even in single AZ, for resilience).
+# Must span 2 AZs (AWS requirement), but instances deployed to AZ-a only.
 
 resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-db-subnet-group"
-  subnet_ids = [aws_subnet.private_db.id] # Using the database subnet
+  subnet_ids = [aws_subnet.private_db_a.id, aws_subnet.private_db_b.id]
 
   tags = {
     Name = "${var.project_name}-db-subnet-group"

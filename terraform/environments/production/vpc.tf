@@ -53,23 +53,37 @@ resource "aws_internet_gateway" "main" {
 }
 
 # ==============================================================================
-# 3. Public Subnet (Single AZ - Cost Optimized)
+# 3. Public Subnets (2 AZs required for ALB - Cost Optimized)
 # ==============================================================================
-# Single public subnet hosts:
-# - Application Load Balancer (receives client traffic)
-# - NAT Gateway (provides outbound internet for private subnets)
+# Public subnets host:
+# - Application Load Balancer (receives client traffic across 2 AZs)
+# - NAT Gateway (in AZ-a only for cost optimization)
 #
-# CIDR: 10.0.1.0/24 (256 IPs)
+# CIDR: 10.0.1.0/24 (AZ-a) and 10.0.5.0/24 (AZ-b)
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_a" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
   availability_zone       = var.availability_zones[0]
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.project_name}-public-subnet"
+    Name = "${var.project_name}-public-subnet-a"
     Tier = "public"
+    AZ   = var.availability_zones[0]
+  }
+}
+
+resource "aws_subnet" "public_b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.5.0/24"
+  availability_zone       = var.availability_zones[1]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.project_name}-public-subnet-b"
+    Tier = "public"
+    AZ   = var.availability_zones[1]
   }
 }
 
@@ -104,21 +118,35 @@ resource "aws_subnet" "private_app_2" {
 }
 
 # ==============================================================================
-# 5. Private Subnet - Database Tier (Single AZ - Cost Optimized)
+# 5. Private Subnets - Database Tier (2 AZs required for RDS - Cost Optimized)
 # ==============================================================================
 # Hosts Aurora PostgreSQL and Redis ElastiCache.
 # Separate tier for database isolation and security.
+# 2 AZs required for RDS subnet group (resources deployed to AZ-a only)
 #
-# CIDR: 10.0.4.0/24 (256 IPs)
+# CIDR: 10.0.4.0/24 (AZ-a) and 10.0.6.0/24 (AZ-b)
 
-resource "aws_subnet" "private_db" {
+resource "aws_subnet" "private_db_a" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.4.0/24"
   availability_zone = var.availability_zones[0]
 
   tags = {
-    Name = "${var.project_name}-private-db-subnet"
+    Name = "${var.project_name}-private-db-subnet-a"
     Tier = "private-db"
+    AZ   = var.availability_zones[0]
+  }
+}
+
+resource "aws_subnet" "private_db_b" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.6.0/24"
+  availability_zone = var.availability_zones[1]
+
+  tags = {
+    Name = "${var.project_name}-private-db-subnet-b"
+    Tier = "private-db"
+    AZ   = var.availability_zones[1]
   }
 }
 
@@ -139,14 +167,14 @@ resource "aws_eip" "nat" {
 }
 
 # ==============================================================================
-# 7. NAT Gateway (Single - Cost Optimized)
+# 7. NAT Gateway (Single in AZ-a - Cost Optimized)
 # ==============================================================================
 # Enables private subnets to access internet (outbound only).
-# Single NAT Gateway in the public subnet serves both private tiers.
+# Single NAT Gateway in AZ-a public subnet serves all private subnets.
 
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public.id
+  subnet_id     = aws_subnet.public_a.id
 
   tags = {
     Name = "${var.project_name}-nat-gateway"
@@ -196,12 +224,18 @@ resource "aws_route_table" "private" {
 }
 
 # ==============================================================================
-# 9. Route Table Associations (Updated for 2 App Subnets)
+# 9. Route Table Associations
 # ==============================================================================
 
-# Public subnet → Public route table
-resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+# Public subnet A → Public route table
+resource "aws_route_table_association" "public_a" {
+  subnet_id      = aws_subnet.public_a.id
+  route_table_id = aws_route_table.public.id
+}
+
+# Public subnet B → Public route table
+resource "aws_route_table_association" "public_b" {
+  subnet_id      = aws_subnet.public_b.id
   route_table_id = aws_route_table.public.id
 }
 
@@ -217,9 +251,15 @@ resource "aws_route_table_association" "private_app_2" {
   route_table_id = aws_route_table.private.id
 }
 
-# Private db subnet → Private route table
-resource "aws_route_table_association" "private_db" {
-  subnet_id      = aws_subnet.private_db.id
+# Private db subnet A → Private route table
+resource "aws_route_table_association" "private_db_a" {
+  subnet_id      = aws_subnet.private_db_a.id
+  route_table_id = aws_route_table.private.id
+}
+
+# Private db subnet B → Private route table
+resource "aws_route_table_association" "private_db_b" {
+  subnet_id      = aws_subnet.private_db_b.id
   route_table_id = aws_route_table.private.id
 }
 

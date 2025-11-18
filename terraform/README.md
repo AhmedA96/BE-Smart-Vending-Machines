@@ -1,264 +1,367 @@
-# Vending System - Terraform Infrastructure as Code
+# Vending System - Terraform Infrastructure
 
-This directory contains the Terraform configuration for deploying the Vending System architecture on AWS.
+Production infrastructure for the Vending System on AWS.
 
-## Architecture Overview
-
-Based on the system design document, this Terraform implementation creates:
-
-- **VPC**: Virtual Private Cloud with public and private subnets across multiple AZs
-- **Load Balancer**: Application Load Balancer (ALB) for distributing traffic
-- **Auto Scaling Groups**:
-  - Application servers (handles API requests)
-  - Worker nodes (handles background jobs from Redis)
-- **Databases**:
-  - PostgreSQL RDS with primary-replica setup
-  - Redis ElastiCache for caching and job queue
-- **Storage**: S3 bucket for external resources (equivalent to R2)
-- **DNS**: Cloudflare for domain management
-- **Security**: Security groups controlling inter-component communication
-
-## Prerequisites
-
-1. **Terraform**: Version 1.0 or higher
-2. **AWS Account**: With appropriate permissions to create VPC, RDS, ElastiCache, EC2, ALB, and S3 resources
-3. **AWS CLI**: Configured with credentials
-4. **Cloudflare Account**: Domain and DNS management through Cloudflare
-5. **Variables**: Create a `terraform.tfvars` file with required variables
-
-## Project Structure
-
-```
-terraform/
-├── main.tf                 # Provider configuration
-├── variables.tf            # Variable definitions
-├── outputs.tf              # Output definitions
-├── vpc.tf                  # VPC and networking
-├── security_groups.tf      # Security group definitions
-├── database.tf             # RDS PostgreSQL database
-├── redis.tf                # ElastiCache Redis cluster
-├── load_balancer.tf        # ALB configuration
-├── autoscaling_app.tf      # Application Auto Scaling Group
-├── autoscaling_worker.tf   # Worker Auto Scaling Group
-├── storage.tf              # S3 bucket for external storage
-├── terraform.tfvars        # Variable values (NOT in version control)
-└── README.md               # This file
-```
-
-## Getting Started
-
-### Step 1: Initialize Terraform
+## Quick Start
 
 ```bash
-cd terraform
+cd environments/production
+
+# Configure
+cp terraform.tfvars.example terraform.tfvars
+vim terraform.tfvars  # Add your secrets
+
+# Deploy
 terraform init
-```
-
-### Step 2: Create terraform.tfvars
-
-Create a `terraform.tfvars` file with your specific values:
-
-```hcl
-aws_region      = "us-east-1"
-project_name    = "vending-system"
-environment     = "production"
-db_username     = "admin"
-db_password     = "your-secure-password"
-domain_name     = "api.vending.example.com"
-```
-
-### Step 3: Plan Deployment
-
-```bash
 terraform plan -out=tfplan
-```
-
-Review the planned changes carefully.
-
-### Step 4: Apply Configuration
-
-```bash
 terraform apply tfplan
 ```
 
-## Deployment Steps
+## Directory Structure
 
-This implementation is designed to be deployed step-by-step for learning and validation:
+```
+terraform/
+├── environments/
+│   └── production/         # Production infrastructure
+│       ├── *.tf           # 14 Terraform files
+│       ├── backend.tf     # S3 state configuration
+│       ├── terraform.tfvars.example
+│       ├── README.md      # Deployment guide
+│       ├── MULTI_AZ_CHANGES.md
+│       └── PRE_DEPLOYMENT_CHECKLIST.md
+├── modules/               # Future: Reusable modules
+│   ├── vpc/
+│   ├── database/
+│   └── ...
+└── bootstrap/             # One-time backend setup
+```
 
-### Phase 1: Networking Foundation
+## Architecture
 
-1. VPC and subnets
-2. Internet Gateway and NAT Gateway
-3. Route tables
+### Infrastructure Components
 
-### Phase 2: Security
+| Component | Configuration | Cost/mo |
+|-----------|--------------|---------|
+| **VPC** | 2 AZs, 6 subnets | $0 |
+| **NAT Gateway** | 1 (cost optimized) | ~$35 |
+| **ALB** | Across 2 AZs | ~$20 |
+| **Aurora PostgreSQL** | Primary + replica (t3.small) | ~$120 |
+| **Redis** | Primary + replica (t3.micro) | ~$36 |
+| **App Servers** | 2-4 instances (t3.micro) | ~$15-30 |
+| **Workers** | 2-5 instances (t3.micro) | ~$15-38 |
+| **Storage** | S3/R2 buckets | ~$10 |
+| **CloudWatch** | Logs + metrics | ~$15 |
+| **Total** | | **~$270-320** |
 
-4. Security groups for all components
+### Network Architecture
 
-### Phase 3: Data Layer
+```
+Internet
+   ↓
+┌──────────────────────────────────────────┐
+│ ALB (2 AZs: me-central-1a, me-central-1b)   │
+└──────────────────────────────────────────┘
+   ↓
+┌──────────────────────────────────────────┐
+│ App Servers (AZ-a)                       │
+│ • Auto-scaling: 2-4 instances            │
+│ • Security: Private subnet               │
+└──────────────────────────────────────────┘
+   ↓                           ↓
+┌─────────────────┐    ┌──────────────┐
+│ Aurora DB       │    │ Redis Cache  │
+│ • Primary       │    │ • Primary    │
+│ • Replica       │    │ • Replica    │
+│ (AZ-a)          │    │ (AZ-a)       │
+└─────────────────┘    └──────────────┘
+```
 
-5. RDS PostgreSQL primary and replica
-6. Redis ElastiCache cluster
+## Deployment
 
-### Phase 4: Network Services
+### Prerequisites
 
-7. Application Load Balancer
+1. **AWS Account** with admin access
+2. **Terraform** >= 1.0 installed
+3. **AWS CLI** configured
 
-### Phase 5: Compute Layer
-
-8. Auto Scaling Group for application servers
-9. Auto Scaling Group for worker nodes
-
-### Phase 6: External Services
-
-10. S3 bucket for external storage
-
-## Key Concepts
-
-### Variables
-
-- **Input Variables**: Defined in `variables.tf`, used to customize deployments
-- **Sensitive Variables**: `db_password`, `db_username` marked as sensitive
-- **Validation**: Environment variable validated against allowed values
-
-### Outputs
-
-- Display important resource identifiers
-- Sensitive outputs marked for security
-- Used for referencing between modules or external systems
-
-### Resources
-
-- All resources tagged with project, environment, and managed-by metadata
-- Regional resources distributed across multiple availability zones for HA
-- Security groups implement least-privilege access
-
-### State Management
-
-- Terraform state stored locally by default
-- For production, use S3 backend with DynamoDB locks (see commented section in main.tf)
-
-## Validation & Learning Points
-
-### Each Step Focuses On:
-
-1. **Understanding**: What resource does and why it's needed
-2. **Configuration**: How to configure it with Terraform
-3. **Dependencies**: How it connects to other resources
-4. **Security**: Appropriate security configurations
-
-### Best Practices Demonstrated:
-
-- ✅ Modular organization (separate files per component)
-- ✅ Reusable variables for customization
-- ✅ Descriptive variable names and validation
-- ✅ Comprehensive outputs for reference
-- ✅ Security groups with minimal required permissions
-- ✅ Multi-AZ deployment for high availability
-- ✅ Tagging strategy for resource management
-- ✅ Sensitive data protection
-
-## Terraform Commands Reference
+### Step 1: Bootstrap (One-time)
 
 ```bash
-# Initialize working directory
+cd bootstrap
+terraform init
+terraform apply
+# Note the S3 bucket name for state
+```
+
+### Step 2: Configure Production
+
+```bash
+cd environments/production
+
+# Copy example config
+cp terraform.tfvars.example terraform.tfvars
+
+# Generate secrets
+openssl rand -hex 64  # rails_secret_key_base
+openssl rand -hex 64  # jwt_secret  
+openssl rand -hex 32  # rails_master_key
+openssl rand -base64 32  # db_password
+
+# Edit config with your values
+vim terraform.tfvars
+```
+
+**Required variables:**
+- `db_password` - Strong database password
+- `rails_master_key` - Rails credentials key
+- `rails_secret_key_base` - Session signing key
+- `jwt_secret` - API token signing key
+- `domain_name` - Your domain (e.g., api.example.com)
+
+### Step 3: Deploy Infrastructure
+
+```bash
+cd environments/production
+
+# Initialize Terraform
 terraform init
 
-# Validate configuration
-terraform validate
+# Review changes
+terraform plan -out=tfplan
 
-# Format code to standard style
-terraform fmt -recursive
+# Apply (takes ~15-20 minutes)
+terraform apply tfplan
 
-# Plan changes
+# Get outputs
+terraform output
+```
+
+### Step 4: Post-Deployment
+
+```bash
+# Get ALB DNS
+terraform output load_balancer_dns
+
+# Configure DNS (Cloudflare)
+# Create CNAME: api.yourdomain.com → <alb-dns>
+
+# Subscribe to alerts
+terraform output | grep alerts
+aws sns subscribe \
+  --topic-arn <alerts-topic-arn> \
+  --protocol email \
+  --notification-endpoint your@email.com
+```
+
+## Cost Optimization
+
+Current configuration uses **single-AZ deployment** with cost optimizations:
+
+✅ **What Saves Money:**
+- Single NAT Gateway (saves ~$35/mo vs 2 NATs)
+- Single-AZ RDS (saves ~$60/mo vs Multi-AZ)
+- Single-AZ Redis (saves ~$18/mo vs Multi-AZ)
+- All compute in one AZ (saves cross-AZ transfer fees)
+
+⚠️ **Trade-offs:**
+- AZ failure causes full outage
+- No automatic cross-AZ failover
+- Limited by single AZ capacity
+
+💡 **To Upgrade to Full HA:**
+```hcl
+# In terraform.tfvars:
+db_multi_az = true
+multi_az_enabled = true  # Redis
+
+# Add 2nd NAT Gateway
+# Deploy resources across both AZs
+# Cost: +$100-105/month
+```
+
+## Management
+
+### Update Infrastructure
+
+```bash
+cd environments/production
+
+# Edit any .tf file
+vim vpc.tf
+
+# Review changes
 terraform plan
 
-# Apply changes
+# Apply
 terraform apply
+```
 
-# Show current state
+### View Current State
+
+```bash
+cd environments/production
 terraform show
+terraform state list
+```
 
-# Output specific value
-terraform output vpc_id
+### Destroy Infrastructure
 
-# Destroy all resources (use with caution!)
+```bash
+cd environments/production
+
+# WARNING: This deletes everything!
 terraform destroy
+```
+
+## Security
+
+### Secrets Management
+
+All secrets stored in **AWS Secrets Manager**:
+- Database credentials
+- Redis connection info
+- Application secrets (Rails, JWT)
+- Third-party API keys
+
+**Never commit to git:**
+- `terraform.tfvars`
+- `*.tfstate`
+- `.terraform/`
+
+### Network Security
+
+- ✅ Private subnets for all compute
+- ✅ Security groups with least privilege
+- ✅ Encrypted storage (RDS, Redis, EBS)
+- ✅ KMS encryption for secrets
+- ✅ ALB as single entry point
+
+### Recommended Actions
+
+- [ ] Enable MFA on AWS root account
+- [ ] Set up CloudTrail logging
+- [ ] Configure VPC Flow Logs
+- [ ] Enable AWS GuardDuty
+- [ ] Add WAF to ALB (production)
+- [ ] Rotate secrets quarterly
+
+## Monitoring
+
+### CloudWatch Alarms
+
+Alerts configured for:
+- High CPU (app, database, Redis)
+- Unhealthy targets (ALB)
+- Database connections
+- Redis memory/evictions
+- HTTP 5xx errors
+
+### Dashboard
+
+```bash
+# View dashboard
+AWS Console → CloudWatch → Dashboards → vending-system-production
+```
+
+### Logs
+
+```bash
+# View logs
+AWS Console → CloudWatch → Log Groups
+- /aws/ec2/vending-system/*
+- /aws/rds/cluster/vending-system-aurora-cluster
+- /aws/elasticache/vending-system/redis-*
 ```
 
 ## Troubleshooting
 
-### State Lock
+### Common Issues
 
-If you encounter a lock error:
-
+**Issue:** Terraform state lock
 ```bash
 terraform force-unlock <LOCK_ID>
 ```
 
-### Validate Configuration
-
+**Issue:** Plan shows unexpected changes
 ```bash
-terraform validate
+terraform refresh
+terraform plan
 ```
 
-### Format Code
-
+**Issue:** Resources fail to create
 ```bash
-terraform fmt -recursive
+# Check AWS service quotas
+# Verify IAM permissions
+# Review CloudWatch events
 ```
 
-## Next Steps
+### Getting Help
 
-After successful deployment:
+1. Check `environments/production/README.md` for deployment details
+2. Review `environments/production/PRE_DEPLOYMENT_CHECKLIST.md`
+3. See `environments/production/MULTI_AZ_CHANGES.md` for recent updates
 
-1. **Configure Secrets in AWS Secrets Manager**:
+## Adding Environments
 
-   - Review: `SECRETS_MANAGER_SETUP.md` for detailed instructions
-   - Update secrets with production values:
-     - Database credentials
-     - Redis connection info
-     - Application API keys and secrets
-   - Test access from EC2 instances
+To create staging or dev:
 
-2. **Configure DNS in Cloudflare**:
+```bash
+# Copy production
+cp -r environments/production environments/staging
+cd environments/staging
 
-   - Get the ALB DNS name from the Terraform output: `terraform output load_balancer_dns`
-   - In Cloudflare, create a CNAME record pointing your domain to the ALB
-   - Example: `api.vending.example.com` → `<alb-dns-name>`
+# Customize (smaller instances)
+vim variables.tf
+vim terraform.tfvars
 
-3. Configure application deployment (via CodeDeploy or similar)
-4. Set up monitoring and logging (CloudWatch)
-5. Configure backup and disaster recovery policies
-6. Enable VPC Flow Logs for network monitoring
-7. Set up CI/CD pipeline for infrastructure updates
+# Update backend key
+vim backend.tf  # Change key to "staging/terraform.tfstate"
 
-## Security Considerations
+# Deploy
+terraform init
+terraform plan
+terraform apply
+```
 
-- **Secrets Management**: Use AWS Secrets Manager for all credentials (DB, Redis, API keys)
+## Modules (Future)
 
-  - Never commit secrets to Git or environment files
-  - Rotate credentials quarterly
-  - Monitor secret access via CloudTrail
-  - See `SECRETS_MANAGER_SETUP.md` for implementation details
+Extract reusable components:
 
-- Store `terraform.tfvars` securely (add to .gitignore)
-- Use IAM roles for EC2 instances instead of hardcoded credentials
-- Enable RDS encryption at rest (already enabled in `database.tf`)
-- Enable S3 bucket versioning and MFA delete
-- Regularly rotate database passwords and API keys
-- Monitor AWS CloudTrail for infrastructure changes
-- Use Terraform Cloud/Enterprise for state locking in team environments
-- Keep Terraform state files encrypted (use S3 backend with encryption)
+```bash
+# Example: VPC module
+mkdir -p modules/vpc
+# Move VPC resources
+# Reference from environments
+```
 
-## Support & Learning Resources
+## Backup & Recovery
 
-- [Terraform AWS Provider Documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [Terraform Language Documentation](https://www.terraform.io/language)
-- `SECRETS_MANAGER_SETUP.md` - Complete guide to managing credentials with AWS Secrets Manager
-- `STEP2_VPC_GUIDE.md` - Deep dive into VPC architecture and networking
-- `STEP3_AURORA_GUIDE.md` - Aurora PostgreSQL database configuration details
+### State Backups
 
-## Version History
+- State stored in S3 with versioning
+- DynamoDB for state locking
+- Encrypted at rest
 
-- v1.0 - Initial implementation with core components
+### Database Backups
+
+- Automated backups: 7 days retention
+- Manual snapshots available
+- Point-in-time recovery enabled
+
+### Disaster Recovery
+
+1. Infrastructure: Re-run terraform apply
+2. Database: Restore from RDS snapshot
+3. Application: Redeploy from git
+
+## Support
+
+- **AWS Documentation:** https://docs.aws.amazon.com
+- **Terraform:** https://www.terraform.io/docs
+- **Production Issues:** Check CloudWatch alarms and logs
+
+---
+
+**Version:** 1.0  
+**Last Updated:** 2025-11-18  
+**Status:** ✅ Production Ready

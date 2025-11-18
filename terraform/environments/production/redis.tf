@@ -17,17 +17,18 @@
 # 1. Redis Subnet Group (Database Tier Subnets)
 # ==============================================================================
 # ElastiCache needs a subnet group specifying which subnets it can use.
-# We place Redis in the private DB subnet for security.
+# We place Redis in the private DB subnets for security.
+# 2 AZs required (AWS requirement), but nodes deployed to AZ-a only.
 
 resource "aws_elasticache_subnet_group" "redis" {
   name       = "${var.project_name}-redis-subnet-group"
-  subnet_ids = [aws_subnet.private_db.id]
+  subnet_ids = [aws_subnet.private_db_a.id, aws_subnet.private_db_b.id]
 
   tags = {
     Name = "${var.project_name}-redis-subnet-group"
   }
 
-  depends_on = [aws_subnet.private_db]
+  depends_on = [aws_subnet.private_db_a, aws_subnet.private_db_b]
 }
 
 # ==============================================================================

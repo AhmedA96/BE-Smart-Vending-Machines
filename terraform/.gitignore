@@ -35,3 +35,10 @@ terraform.rc
 *.swo
 *~
 .DS_Store
+
+# Environment-specific state files
+environments/*/terraform.tfstate
+environments/*/terraform.tfstate.backup
+environments/*/.terraform/
+environments/*/.terraform.lock.hcl
+environments/*/tfplan

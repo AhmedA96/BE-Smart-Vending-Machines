@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region where resources will be deployed"
   type        = string
-  default     = "me-south-1" # UAE (Middle East - Bahrain)
+  default     = "me-central-1" # UAE (Middle East - UAE)
 }
 
 variable "project_name" {
@@ -31,7 +31,7 @@ variable "vpc_cidr" {
 variable "availability_zones" {
   description = "List of availability zones for deployment"
   type        = list(string)
-  default     = ["me-south-1a"] # Cost optimization: single AZ
+  default     = ["me-central-1a", "me-central-1b"] # 2 AZs required for ALB/RDS (resources stay in AZ-a)
 }
 
 # Database Configuration

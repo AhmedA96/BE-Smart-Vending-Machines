@@ -15,18 +15,18 @@ terraform {
   # After running bootstrap (terraform/bootstrap), uncomment this block:
   #
   # Usage:
-  #   1. cd terraform/bootstrap && terraform apply
+  #   1. cd ../../bootstrap && terraform apply
   #   2. Copy the state_bucket_name and dynamodb_table_name from outputs
   #   3. Uncomment and update this block with those values
-  #   4. cd .. && terraform init -migrate-state
+  #   4. terraform init -migrate-state
   #
-  backend "s3" {
-    bucket         = "vndg-terraform-state-YOUR_ACCOUNT_ID" # Run bootstrap first
-    key            = "production/terraform.tfstate"
-    region         = "me-south-1"
-    encrypt        = true
-    dynamodb_table = "terraform-locks"
-  }
+  # backend "s3" {
+  #   bucket         = "vndg-terraform-state-YOUR_ACCOUNT_ID" # Run bootstrap first
+  #   key            = "production/terraform.tfstate"
+  #   region         = "me-central-1"
+  #   encrypt        = true
+  #   dynamodb_table = "terraform-locks"
+  # }
 }
 
 provider "aws" {
