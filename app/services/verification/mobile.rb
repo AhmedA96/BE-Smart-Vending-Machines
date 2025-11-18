@@ -2,18 +2,25 @@
 
 module Verification
   class Mobile
-    def self.send_code(mobile_number, user)
-      verification_code = generate_verification_code
-      message = I18n.t('verification.mobile.otp_message', otp: verification_code)
+    class << self
+      def send_code(mobile_number, user, provider: nil)
+        verification_code = generate_verification_code
+        message = I18n.t('verification.mobile.otp_message', otp: verification_code)
 
-      SmsGateway::Synapse.send_sms(mobile_number, message)
+        result = SmsGateway::Provider.send_sms(mobile_number, message, provider)
 
-      MobileVerifications::Create.call(mobile_number, verification_code, user)
-      true
-    end
+        if result[:success]
+          MobileVerifications::Create.call(mobile_number, verification_code, user)
+          { success: true, code: verification_code, provider: result[:provider] }
+        else
+          Rails.logger.error("Failed to send SMS via #{result[:provider]}: #{result[:error]}")
+          { success: false, error: result[:error], provider: result[:provider] }
+        end
+      end
 
-    def self.generate_verification_code
-      SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+      def generate_verification_code
+        SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+      end
     end
   end
 end
