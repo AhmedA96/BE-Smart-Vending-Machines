@@ -145,7 +145,7 @@ jobs:
 
       - name: Run Postman Integration Tests
         run: |
-          newman run "VNDG API Integration.postman_collection.json" \
-            -e "staging.postman_environment.json" \
+          newman run "newman/VNDG API Integration.postman_collection.json" \
+            -e "newman/staging.postman_environment.json" \
             -r cli,htmlextra \
             --reporter-htmlextra-export ./reports/report.html
