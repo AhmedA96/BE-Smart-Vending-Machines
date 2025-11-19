@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_16_215557) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_19_215010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -383,6 +383,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_16_215557) do
     t.bigint "user_id"
     t.index ["machine_id"], name: "index_orders_on_machine_id"
     t.index ["user_id", "created_at"], name: "index_orders_on_user_id_and_created_at"
+    t.index ["user_id", "machine_id", "status"], name: "index_orders_on_user_machine_cart_uniqueness", unique: true, where: "(((status)::text = 'cart'::text) AND (user_id IS NOT NULL))"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
