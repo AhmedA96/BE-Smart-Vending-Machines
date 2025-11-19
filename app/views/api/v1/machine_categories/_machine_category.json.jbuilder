@@ -10,10 +10,10 @@ end
 
 json.machines machine_category.machines do |machine|
   json.id machine.id
-  json.name machine.name
+  json.name machine.presentation
 
   json.location do
     json.id machine.location.id
-    json.name machine.location.name
+    json.name machine.location.presentation
   end
 end

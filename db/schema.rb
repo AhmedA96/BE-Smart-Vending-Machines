@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_16_215557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "postgis"
@@ -164,7 +164,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
     t.datetime "created_at", null: false
     t.string "locale", null: false
     t.bigint "location_id", null: false
-    t.string "name"
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_location_translations_on_locale"
     t.index ["location_id", "locale"], name: "index_location_translations_on_location_id_and_locale", unique: true
@@ -178,6 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
     t.datetime "created_at", null: false
     t.string "landmark"
     t.string "name"
+    t.string "presentation"
     t.bigint "price_list_id"
     t.string "state"
     t.datetime "updated_at", null: false
@@ -241,9 +242,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
 
   create_table "machine_translations", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.text "description"
     t.string "locale", null: false
     t.bigint "machine_id", null: false
-    t.string "name"
+    t.string "presentation"
     t.datetime "updated_at", null: false
     t.index ["locale"], name: "index_machine_translations_on_locale"
     t.index ["machine_id", "locale"], name: "index_machine_translations_on_machine_id_and_locale", unique: true
@@ -262,6 +264,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
     t.bigint "category_id", null: false
     t.geography "coordinates", limit: {srid: 4326, type: "st_point", geographic: true}
     t.datetime "created_at", null: false
+    t.text "description"
     t.integer "floor_no"
     t.datetime "installed_at"
     t.datetime "last_service_date"
@@ -271,6 +274,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
     t.string "machineuuid"
     t.integer "max_items_per_order"
     t.string "name"
+    t.string "presentation"
     t.string "status"
     t.bigint "supplier_id"
     t.datetime "updated_at", null: false
@@ -611,6 +615,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_12_155116) do
     t.datetime "created_at", null: false
     t.string "locale", null: false
     t.string "presentation"
+    t.string "size"
     t.datetime "updated_at", null: false
     t.bigint "variant_id", null: false
     t.index ["locale"], name: "index_variant_translations_on_locale"
