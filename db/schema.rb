@@ -413,7 +413,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_16_215557) do
     t.string "payment_customer_number", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.index ["payment_customer_number", "user_id"], name: "index_payment_customers_on_payment_customer_number_and_user_id", unique: true
+    t.index ["payment_customer_number"], name: "index_payment_customers_on_payment_customer_number", unique: true
+    t.index ["user_id"], name: "index_payment_customers_on_user_id", unique: true
   end
 
   create_table "payment_method_translations", force: :cascade do |t|
