@@ -113,11 +113,9 @@ resource "aws_elasticache_parameter_group" "redis" {
     value = tostring(var.redis_timeout)
   }
 
-  # TCP backlog for connection queue
-  parameter {
-    name  = "tcp-backlog"
-    value = tostring(var.redis_tcp_backlog)
-  }
+  # Note: tcp-backlog parameter is not available in ElastiCache Redis 7.x
+  # It's a OS-level parameter managed by AWS
+  # Removed to prevent errors
 
   tags = {
     Name = "${var.project_name}-redis-parameter-group"

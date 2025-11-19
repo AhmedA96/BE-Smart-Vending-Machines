@@ -46,8 +46,8 @@ resource "aws_lb_target_group" "app" {
   # Deregistration delay: Time to drain connections before killing instance
   deregistration_delay = 30 # seconds
 
-  # Preserve client IP
-  preserve_client_ip = true
+  # Note: preserve_client_ip is only supported for TCP/UDP target groups, not HTTP
+  # Client IP is available via X-Forwarded-For header for HTTP
 
   tags = {
     Name = "${var.project_name}-app-target-group"
@@ -125,7 +125,8 @@ resource "aws_lb_listener" "https" {
     Name = "${var.project_name}-https-listener"
   }
 
-  depends_on = [aws_acm_certificate_validation.main]
+  # Certificate validation not needed for imported certificates
+  depends_on = [aws_acm_certificate.main]
 }
 
 # ==============================================================================
@@ -172,15 +173,16 @@ resource "aws_acm_certificate" "main" {
 # ==============================================================================
 # 6. ACM Certificate Validation (for real certificates)
 # ==============================================================================
-# For self-signed, validation is automatic
-# For real certificates, uncomment the DNS validation below
+# Note: Certificate validation is only needed for DNS-validated certificates
+# Imported certificates (like self-signed) don't require validation
+# Commenting out to avoid errors with imported certificates
 
-resource "aws_acm_certificate_validation" "main" {
-  certificate_arn = aws_acm_certificate.main.arn
-  timeouts {
-    create = "5m"
-  }
-}
+# resource "aws_acm_certificate_validation" "main" {
+#   certificate_arn = aws_acm_certificate.main.arn
+#   timeouts {
+#     create = "5m"
+#   }
+# }
 
 # ==============================================================================
 # 7. Listener Rule (Optional Path-Based Routing)

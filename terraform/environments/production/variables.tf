@@ -38,7 +38,7 @@ variable "availability_zones" {
 variable "db_engine_version" {
   description = "PostgreSQL engine version"
   type        = string
-  default     = "15.4"
+  default     = "16.4" # Aurora PostgreSQL compatible version
 }
 
 variable "db_instance_class" {

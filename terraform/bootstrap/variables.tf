@@ -5,7 +5,7 @@
 variable "aws_region" {
   description = "AWS region for remote state infrastructure"
   type        = string
-  default     = "me-south-1"
+  default     = "me-central-1"
 }
 
 variable "project_name" {
