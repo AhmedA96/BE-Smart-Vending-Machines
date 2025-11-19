@@ -12,14 +12,15 @@ module Api
         @orders = paginate(
           orders.completed
                 .includes(:machine)
+                .order(completed_at: :desc)
         )
       end
 
       def show
-        if @order.completed?
-          render :show
-        else
+        if @order.cart?
           render json: [], status: :ok
+        else
+          render :show
         end
       end
 

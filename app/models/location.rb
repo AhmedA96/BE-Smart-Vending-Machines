@@ -10,6 +10,7 @@
 #  coordinates   :geography        point, 4326
 #  landmark      :string
 #  name          :string
+#  presentation  :string
 #  state         :string
 #  zip_code      :string
 #  created_at    :datetime         not null
@@ -31,7 +32,7 @@
 class Location < ApplicationRecord
   extend Mobility
 
-  translates :name
+  translates :presentation
   accepts_nested_attributes_for :translations
 
   belongs_to :price_list

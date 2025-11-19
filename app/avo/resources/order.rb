@@ -24,8 +24,8 @@ module Avo
         field :id, as: :id
         field :number, as: :text, required: true, sortable: true
         field :status, as: :status, enum: ORDER_EVENTS,
-                       loading_when: %i[cart initial],
-                       success_when: %i[paid dispensed],
+                       loading_when: %i[cart payment],
+                       success_when: %i[completed dispensed],
                        failed_when: %i[failed canceled],
                        only_on: :display
         field :items_total, as: :text, required: true, sortable: true
@@ -47,6 +47,10 @@ module Avo
           field :line_items, as: :has_many, reloadable: true, linkable: true, searchable: true
           field :payments, as: :has_many, reloadable: true, linkable: true, searchable: true
         end
+      end
+
+      def filters
+        filter Avo::Filters::Orders::OrderStatusFilter
       end
     end
   end

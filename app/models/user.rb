@@ -66,6 +66,9 @@ class User < ApplicationRecord
             phone: { possible: true, allow_blank: false },
             presence: true,
             uniqueness: { case_sensitive: false }
+  validates :email,
+            allow_blank: true,
+            uniqueness: { case_sensitive: false, message: I18n.t('user.email_taken') }
 
   validate :password_complexity
   validate :new_and_old_password_must_be_different
@@ -82,6 +85,7 @@ class User < ApplicationRecord
   has_many :addresses, dependent: :destroy
   has_many :payment_cards, through: :payment_customer
   has_many :notifications, dependent: :destroy
+  has_many :devices, dependent: :destroy
 
   belongs_to :country, optional: true
 

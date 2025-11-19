@@ -5,7 +5,7 @@ json.cart do
 
   json.line_items @line_items do |line_item|
     json.extract! line_item, :id, :variant_id, :quantity, :price
-    json.variant_name line_item.variant.name
+    json.variant_name line_item.variant.presentation
     json.variant_size line_item.variant.size
     if line_item.variant.product&.images&.attached?
       json.variant_image_url url_for(line_item.variant.product.images.first)

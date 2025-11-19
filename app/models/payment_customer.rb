@@ -12,14 +12,14 @@
 #
 # Indexes
 #
-#  index_payment_customers_on_payment_customer_number_and_user_id  (payment_customer_number,user_id) UNIQUE
+#  index_payment_customers_on_payment_customer_number  (payment_customer_number) UNIQUE
+#  index_payment_customers_on_user_id                  (user_id) UNIQUE
 #
 class PaymentCustomer < ApplicationRecord
   belongs_to :user, optional: false
-
   has_many :payment_cards, dependent: :destroy
   has_many :payment_transactions, dependent: :destroy
 
-  validates :payment_customer_number, presence: true
-  validates :payment_customer_number, uniqueness: { scope: :user_id }
+  validates :payment_customer_number, presence: true, uniqueness: true
+  validates :user_id, uniqueness: true
 end

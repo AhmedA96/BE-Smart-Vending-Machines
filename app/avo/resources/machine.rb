@@ -78,6 +78,7 @@ module Avo
         field :coordinates, as: :text, hide_on: %i[index edit new]
         field :installed_at, as: :date_time, hide_on: %i[index]
         field :last_service_date, as: :date_time, hide_on: %i[index]
+        field :machine_type, as: :belongs_to, hide_on: %i[index]
 
         many_relations
       end
@@ -88,6 +89,7 @@ module Avo
           field :machine_translations, as: :has_many, reloadable: true, name: 'Machine Translations'
           field :machine_payment_methods, as: :has_many, reloadable: true, name: 'Payment Methods', linkable: true
           field :machine_statuses, as: :has_many, reloadable: true, name: 'Status History', linkable: true
+          field :orders, as: :has_many, reloadable: true, name: 'Orders', linkable: true
         end
       end
     end

@@ -21,7 +21,7 @@
 #  updated_at           :datetime         not null
 #  card_id              :string           not null
 #  payment_agreement_id :string
-#  payment_customer_id  :integer
+#  payment_customer_id  :integer          not null
 #
 # Indexes
 #
@@ -32,4 +32,18 @@ class PaymentCard < ApplicationRecord
   belongs_to :payment_customer, optional: false
 
   validates :card_id, presence: true, uniqueness: true
+
+  before_save :toggle_previous_default_card
+
+  private
+
+  def toggle_previous_default_card
+    return unless default && default_changed?
+
+    PaymentCard.where(payment_customer_id: payment_customer_id, default: true)
+               .where.not(id: id)
+               .find_each do |card|
+      card.update(default: false)
+    end
+  end
 end

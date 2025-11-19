@@ -7,11 +7,11 @@ ruby '3.4.2'
 
 # Core
 gem 'bootsnap', require: false
-gem 'rails', '~> 8.0'
+gem 'rails', '~> 8.1'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Database
-gem 'activerecord-postgis-adapter', github: "AhmedAliIbrahim/activerecord-postgis-adapter", branch: "rails-8"
+gem "activerecord-postgis-adapter", github: "StreetIQ/activerecord-postgis-adapter", branch: "allow_rails81"
 gem 'pg', '~> 1.6'
 gem "pghero"
 gem 'pg_search'
@@ -22,6 +22,7 @@ gem 'scenic'
 gem 'devise', '~> 4.9'
 gem 'devise-bootstrap5', '~> 0.1.3'
 gem "doorkeeper", "~> 5.8"
+gem 'googleauth'
 gem 'jwt'
 gem 'omniauth-apple'
 gem 'omniauth-google-oauth2'
@@ -37,7 +38,9 @@ gem 'rswag-ui'
 
 # File Storage & Processing
 gem 'activestorage'
+gem 'aws-sdk-kms'
 gem 'aws-sdk-s3'
+gem 'aws-sdk-secretsmanager'
 gem 'down'
 gem "image_processing", "~> 1.2"
 gem 'mini_magick'
@@ -46,6 +49,7 @@ gem 'mini_magick'
 gem 'solid_queue'
 
 # Caching & Performance
+gem 'concurrent-ruby', '~> 1.2'
 gem 'kredis'
 gem 'puma', '>= 6.4.2'
 gem 'rack', '>= 3.1.10'
@@ -94,6 +98,9 @@ gem 'avo', '>= 3.11'
 # Spreadsheets Reader
 gem 'roo'
 
+# Strong Migrations for safer database migrations
+gem "strong_migrations"
+
 # Development Tools
 group :development do
   gem "actual_db_schema"
@@ -139,10 +146,9 @@ group :development, :test do
   gem 'rubocop-minitest'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov'
   gem "spring"
-  gem "strong_migrations"
   gem 'vcr'
   gem 'webmock'
 end

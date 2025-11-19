@@ -6,6 +6,7 @@
 #
 #  id                  :bigint           not null, primary key
 #  coordinates         :geography        point, 4326
+#  description         :text
 #  floor_no            :integer
 #  installed_at        :datetime
 #  last_service_date   :datetime
@@ -13,6 +14,7 @@
 #  machineuuid         :string
 #  max_items_per_order :integer
 #  name                :string
+#  presentation        :string
 #  status              :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
@@ -42,7 +44,7 @@
 class Machine < ApplicationRecord
   extend Mobility
 
-  translates :name
+  translates :presentation, :description
   accepts_nested_attributes_for :translations
 
   belongs_to :vendor
@@ -60,6 +62,7 @@ class Machine < ApplicationRecord
   has_many :machine_translations, dependent: :destroy
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payment_methods, through: :machine_payment_methods
+  has_many :orders, dependent: :nullify
 
   has_one_attached :image
 
