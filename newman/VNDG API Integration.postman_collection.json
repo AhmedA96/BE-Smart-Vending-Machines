@@ -376,13 +376,13 @@
 					"response": []
 				},
 				{
-					"name": "Step 7 - Select Payment Way",
+					"name": "Step 7A - Select Payment Way",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Payment methods retrieved\", function () {",
+									"pm.test(\"Select credit_card payment method\", function () {",
 									"  pm.response.to.have.status(200);",
 									"",
 									"  const json = pm.response.json();",
@@ -391,10 +391,14 @@
 									"  pm.expect(Array.isArray(paymentMethods)).to.be.true;",
 									"  pm.expect(paymentMethods.length).to.be.above(0);",
 									"",
-									"  const firstPaymentMethodId = paymentMethods[0].id;",
-									"  pm.environment.set(\"payment_method_id\", firstPaymentMethodId);",
+									"  // Find the payment method with name = credit_card",
+									"  const creditCardMethod = paymentMethods.find(pm => pm.name === \"credit_card\");",
 									"",
-									"  console.log(\"Saved payment_method_id:\", firstPaymentMethodId);",
+									"  pm.expect(creditCardMethod, \"credit_card payment method not found\").to.exist;",
+									"",
+									"  pm.environment.set(\"payment_method_id\", creditCardMethod.id);",
+									"",
+									"  console.log(\"Saved payment_method_id:\", creditCardMethod.id);",
 									"});",
 									""
 								],
@@ -428,24 +432,28 @@
 					"response": []
 				},
 				{
-					"name": "Step 8A - Create Tap SDK Test Token",
+					"name": "Step 7B - Select Payment Card",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const status = pm.response.code;",
-									"console.log('Tap Token Response Code:', status);",
-									"console.log('Tap Token Response Body:', pm.response.text());",
-									"if ([200,201].includes(status)) {",
+									"pm.test(\"Select first payment card\", function () {",
+									"  pm.response.to.have.status(200);",
+									"",
 									"  const json = pm.response.json();",
-									"  pm.environment.set('token_id', json.id);",
-									"  pm.test('Tap Token Created', function () { pm.expect(status).to.be.oneOf([200,201]); });",
-									"  console.log('Saved token_id:', json.id);",
-									"} else {",
-									"  pm.test(`Tap Token Failed (${status})`, function () { pm.expect.fail('Tap token creation failed'); });",
-									"  console.warn('Tap token creation failed, skipping token_id set');",
-									"}"
+									"  const cards = json.payment_cards || json.cards || [];",
+									"",
+									"  pm.expect(Array.isArray(cards), \"payment_cards is not an array\").to.be.true;",
+									"  pm.expect(cards.length, \"No payment cards returned\").to.be.above(0);",
+									"",
+									"  const firstCardId = cards[0].id;",
+									"",
+									"  pm.environment.set(\"card_id\", firstCardId);",
+									"",
+									"  console.log(\"Saved card_id:\", firstCardId);",
+									"});",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -453,8 +461,11 @@
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -462,7 +473,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "Bearer {{TAP_SECRET_KEY}}"
+								"value": "Bearer {{access_token}}"
 							}
 						],
 						"body": {
@@ -475,36 +486,67 @@
 							}
 						},
 						"url": {
-							"raw": "https://api.tap.company/v2/tokens",
-							"protocol": "https",
+							"raw": "{{base_url}}/api/v1/payment_cards",
 							"host": [
-								"api",
-								"tap",
-								"company"
+								"{{base_url}}"
 							],
 							"path": [
-								"v2",
-								"tokens"
+								"api",
+								"v1",
+								"payment_cards"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Step 8B - Make Payment via Backend",
+					"name": "Step 7C - Make Payment via Backend",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"const status = pm.response.code;",
-									"console.log('Payment Response Code:', status);",
-									"console.log('Payment Response Body:', pm.response.text());",
-									"if ([200,201].includes(status)) {",
-									"  pm.test('Payment Successful', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"console.log('Order Status Response Code:', status);",
+									"console.log('Order Status Response Body:', pm.response.text());",
+									"",
+									"if ([200, 201].includes(status)) {",
+									"    pm.test('Order Confirmed', function () { ",
+									"        pm.expect(status).to.be.oneOf([200, 201]); ",
+									"    });",
+									"",
+									"    const responseJson = pm.response.json();",
+									"",
+									"    // Set order_id env variable",
+									"    if (responseJson.order && responseJson.order.id) {",
+									"        pm.environment.set('order_id', responseJson.order.id);",
+									"        console.log('order_id set to:', responseJson.order.id);",
+									"    } else {",
+									"        console.warn('order.id not found in response');",
+									"    }",
+									"",
+									"    // Set payment_id env variable",
+									"    if (responseJson.order && responseJson.order.payment && responseJson.order.payment.id) {",
+									"        pm.environment.set('payment_id', responseJson.order.payment.id);",
+									"        console.log('payment_id set to:', responseJson.order.payment.id);",
+									"    } else {",
+									"        console.warn('order.payment.id not found in response');",
+									"    }",
+									"",
+									"    // Log if order is dispensed (check both status fields)",
+									"    if (",
+									"        responseJson.order &&",
+									"        (responseJson.order.status === 'dispensed' || responseJson.order.dispense_status === 'dispensed')",
+									"    ) {",
+									"        console.log('Order has been dispensed');",
+									"    }",
+									"",
 									"} else {",
-									"  pm.test(`Payment Failed (${status})`, function () { pm.expect.fail('Payment request failed'); });",
-									"}"
+									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
+									"        pm.expect.fail('Order status request failed'); ",
+									"    });",
+									"}",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -525,7 +567,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/payments?payment_method_id={{payment_method_id}}&token_id={{token_id}}&order_id={{cart_id}}",
+							"raw": "{{base_url}}/api/v1/payments?payment_method_id=3&card_id={{card_id}}&order_id={{cart_id}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -537,11 +579,11 @@
 							"query": [
 								{
 									"key": "payment_method_id",
-									"value": "{{payment_method_id}}"
+									"value": "3"
 								},
 								{
-									"key": "token_id",
-									"value": "{{token_id}}"
+									"key": "card_id",
+									"value": "{{card_id}}"
 								},
 								{
 									"key": "order_id",
@@ -553,7 +595,7 @@
 					"response": []
 				},
 				{
-					"name": "Step 9 - Checkout Order",
+					"name": "Step 8 - Checkout Order",
 					"event": [
 						{
 							"listen": "test",
@@ -562,11 +604,38 @@
 									"const status = pm.response.code;",
 									"console.log('Order Status Response Code:', status);",
 									"console.log('Order Status Response Body:', pm.response.text());",
-									"if ([200,201].includes(status)) {",
-									"  pm.test('Order Confirmed', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"",
+									"if ([200, 201].includes(status)) {",
+									"    pm.test('Order Confirmed', function () { ",
+									"        pm.expect(status).to.be.oneOf([200, 201]); ",
+									"    });",
+									"",
+									"    // Parse response JSON and set order_id env variable from id",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.id) {",
+									"        pm.environment.set('order_id', responseJson.id);",
+									"        console.log('order_id set to:', responseJson.id);",
+									"    } else {",
+									"        console.warn('id not found in response');",
+									"    }",
+									"",
 									"} else {",
-									"  pm.test(`Order Confirmation Failed (${status})`, function () { pm.expect.fail('Order status request failed'); });",
-									"}"
+									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
+									"        pm.expect.fail('Order status request failed'); ",
+									"    });",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -618,14 +687,60 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"// Get response code and parse JSON",
 									"const status = pm.response.code;",
+									"const responseJson = pm.response.json();",
+									"",
+									"// Log response code and body",
 									"console.log('Order Status Response Code:', status);",
 									"console.log('Order Status Response Body:', pm.response.text());",
-									"if ([200,201].includes(status)) {",
-									"  pm.test('Order Confirmed', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"",
+									"// Confirm HTTP success",
+									"if ([200, 201].includes(status)) {",
+									"",
+									"    pm.test('Order Confirmed', function () { ",
+									"        pm.expect(status).to.be.oneOf([200, 201]); ",
+									"    });",
+									"",
+									"    // Set environment variable for order_id",
+									"    if (responseJson.order && responseJson.order.id) {",
+									"        pm.environment.set('order_id', responseJson.order.id);",
+									"        console.log('order_id set to:', responseJson.order.id);",
+									"    } else {",
+									"        console.warn('⚠️ order.id not found in response');",
+									"    }",
+									"",
+									"    // Set environment variable for payment_id",
+									"    if (responseJson.order && responseJson.order.payment && responseJson.order.payment.id) {",
+									"        pm.environment.set('payment_id', responseJson.order.payment.id);",
+									"        console.log('payment_id set to:', responseJson.order.payment.id);",
+									"    } else {",
+									"        console.warn('⚠️ order.payment.id not found in response');",
+									"    }",
+									"",
+									"    // Check if order is dispensed (either status or dispense_status)",
+									"    const isDispensed = responseJson.order &&",
+									"        (responseJson.order.status === 'dispensed' || responseJson.order.dispense_status === 'dispensed');",
+									"",
+									"    // Log dispense status",
+									"    if (isDispensed) {",
+									"        console.log('Order has been dispensed. Order ID:', responseJson.order.id);",
+									"    } else {",
+									"        console.log('Order is not dispensed yet. Order ID:', responseJson.order.id);",
+									"    }",
+									"",
+									"    // Postman test for dispensed order",
+									"    pm.test('Order is dispensed', function () {",
+									"        pm.expect(isDispensed).to.be.true;",
+									"    });",
+									"",
 									"} else {",
-									"  pm.test(`Order Confirmation Failed (${status})`, function () { pm.expect.fail('Order status request failed'); });",
-									"}"
+									"    // HTTP request failed",
+									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
+									"        pm.expect.fail('Order status request failed'); ",
+									"    });",
+									"}",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -662,7 +777,7 @@
 							"variable": [
 								{
 									"key": "order_id",
-									"value": "{{cart_id}}"
+									"value": "{{order_id}}"
 								}
 							]
 						}
