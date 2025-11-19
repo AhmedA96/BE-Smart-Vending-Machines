@@ -47,6 +47,8 @@ gem 'mini_magick'
 
 # Background Processing
 gem 'solid_queue'
+gem "solid_queue_dashboard", "~> 0.2.0"
+gem 'solid_queue_monitor'
 
 # Caching & Performance
 gem 'concurrent-ruby', '~> 1.2'

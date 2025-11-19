@@ -79,4 +79,7 @@ Rails.application.configure do
     Bullet.console = true         # console output
     Bullet.rails_logger = true    # Rails logs
   end
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.solid_queue.logger = ActiveSupport::Logger.new($stdout)
 end
