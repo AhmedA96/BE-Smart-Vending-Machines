@@ -7,6 +7,7 @@
 #  id           :bigint           not null, primary key
 #  locale       :string           not null
 #  presentation :string
+#  size         :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  variant_id   :bigint           not null

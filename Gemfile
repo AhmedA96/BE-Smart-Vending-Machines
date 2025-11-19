@@ -98,6 +98,9 @@ gem 'avo', '>= 3.11'
 # Spreadsheets Reader
 gem 'roo'
 
+# Strong Migrations for safer database migrations
+gem "strong_migrations"
+
 # Development Tools
 group :development do
   gem "actual_db_schema"
@@ -146,7 +149,6 @@ group :development, :test do
   gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov'
   gem "spring"
-  gem "strong_migrations"
   gem 'vcr'
   gem 'webmock'
 end

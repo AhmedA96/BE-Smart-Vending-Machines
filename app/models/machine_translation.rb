@@ -4,12 +4,13 @@
 #
 # Table name: machine_translations
 #
-#  id         :bigint           not null, primary key
-#  locale     :string           not null
-#  name       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  machine_id :bigint           not null
+#  id           :bigint           not null, primary key
+#  description  :text
+#  locale       :string           not null
+#  presentation :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  machine_id   :bigint           not null
 #
 # Indexes
 #
@@ -23,6 +24,6 @@
 class MachineTranslation < ApplicationRecord
   belongs_to :machine
 
-  validates :name, :locale, presence: true
+  validates :presentation, :locale, presence: true
   validates :locale, uniqueness: { scope: :machine_id }
 end

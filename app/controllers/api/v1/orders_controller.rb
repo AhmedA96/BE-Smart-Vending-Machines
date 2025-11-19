@@ -17,10 +17,10 @@ module Api
       end
 
       def show
-        if @order.completed?
-          render :show
-        else
+        if @order.cart?
           render json: [], status: :ok
+        else
+          render :show
         end
       end
 
