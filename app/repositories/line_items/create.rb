@@ -10,21 +10,19 @@ module LineItems
       price = variant_price(machine, variant)
 
       ActiveRecord::Base.transaction do
-        existing_item = order.line_items.find_by(variant_id: variant_id)
-        line_item = if existing_item
-                      new_quantity = existing_item.quantity + quantity_to_add
-                      existing_item.update!(quantity: new_quantity)
-                      existing_item
-                    else
-                      order.line_items.create!(
-                        variant_id: variant_id,
-                        quantity: quantity_to_add,
-                        price: price
-                      )
-                    end
+        order.lock!
+
+        line_item = order.line_items.lock.find_or_initialize_by(variant_id: variant_id)
+
+        if line_item.persisted?
+          line_item.quantity += quantity_to_add
+        else
+          line_item.quantity = quantity_to_add
+          line_item.price = price
+        end
+        line_item.save!
 
         order.recalculate_totals!
-
         line_item
       end
     end
