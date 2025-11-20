@@ -35,13 +35,28 @@ module Avo
 
         field :product, as: :has_one, through: :variant, readonly: true, hide_on: %i[new edit index]
 
-        field :stock, as: :number, required: true, min: 0, help: 'Current stock level'
+        field :stock, as: :number, required: true, min: 0, help: 'Current stock level', hide_on: %i[new edit index]
 
-        field :reserved_stock, as: :number, readonly: true, hide_on: %i[new edit],
+        field :reserved_stock, as: :number, readonly: true, hide_on: %i[new edit index],
                                help: 'Stock reserved for orders'
 
-        field :available_stock, as: :text, hide_on: %i[new edit] do
-          record.stock - record.reserved_stock
+        field :available_stock, as: :text, name: 'Available Stock' do
+          available = (record.stock.to_i - record.reserved_stock.to_i)
+
+          color, bg_color, text = if available <= 0
+                                    ['#ffffff', '#dc2626', 'OUT OF STOCK'] # Red badge
+                                  elsif available <= 5
+                                    ['#78350f', '#fbbf24', available.to_s]  # Yellow badge
+                                  else
+                                    ['#065f46', '#22c55e', available.to_s]  # Green badge
+                                  end
+
+          "<span style='display: inline-block; padding: 6px 14px; border-radius: 8px;
+          background-color: #{bg_color}; color: #{color};
+          font-weight: 700; font-size: 16px; text-transform: uppercase;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);'>
+          #{text}
+   </span>".html_safe
         end
 
         field :line_number, as: :number, required: true, hide_on: :index,
