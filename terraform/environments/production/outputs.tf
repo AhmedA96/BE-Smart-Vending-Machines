@@ -170,13 +170,3 @@ output "app_secrets_secret_name" {
   value       = aws_secretsmanager_secret.app_secrets.name
 }
 
-output "app_secrets_access_role_arn" {
-  description = "ARN of IAM role for accessing secrets from EC2"
-  value       = aws_iam_role.app_secrets_access.arn
-}
-
-output "app_secrets_instance_profile_name" {
-  description = "Name of IAM instance profile for accessing secrets"
-  value       = aws_iam_instance_profile.app_secrets_profile.name
-}
-

@@ -47,12 +47,6 @@ variable "db_instance_class" {
   default     = "db.t3.small" # Aurora requires at least t3.small
 }
 
-variable "db_allocated_storage" {
-  description = "Allocated storage for database in GB (Aurora auto-scales)"
-  type        = number
-  default     = 20 # Aurora minimum, auto-scales as needed
-}
-
 variable "db_name" {
   description = "Initial database name"
   type        = string
@@ -75,12 +69,6 @@ variable "db_backup_retention_period" {
   description = "Database backup retention in days"
   type        = number
   default     = 7 # Keep 7 days of backups
-}
-
-variable "db_multi_az" {
-  description = "Enable Multi-AZ for Aurora (automatic failover)"
-  type        = bool
-  default     = false # Single AZ for cost optimization
 }
 
 # Redis Configuration
