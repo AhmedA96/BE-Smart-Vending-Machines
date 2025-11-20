@@ -42,6 +42,7 @@ resource "aws_rds_cluster" "main" {
   enabled_cloudwatch_logs_exports = ["postgresql"] # Send logs to CloudWatch
   deletion_protection             = true           # Prevent accidental deletion
   storage_encrypted               = true           # Encrypt data at rest
+  skip_final_snapshot             = true           # Skip snapshot on deletion
 
   # Multi-AZ configuration (set to true for production across AZs)
   availability_zones = var.availability_zones
