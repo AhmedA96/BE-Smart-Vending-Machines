@@ -1,116 +1,174 @@
-# Name of your application. Used to uniquely configure containers.
-service: vndgme
+# ============================================
+# KAMAL DEPLOYMENT CONFIGURATION - BASE
+# ============================================
+# This is the base configuration for Vending System.
+# Use environment-specific overrides:
+#
+#   kamal deploy -c config/deploy.staging.yml      # Staging (local Docker services)
+#   kamal deploy -c config/deploy.production.yml   # Production (AWS managed services)
+#
+# Environment configs extend this base configuration.
+# See deploy.staging.yml and deploy.production.yml for how to override values.
 
-# Name of the container image.
+# ============================================
+# APPLICATION METADATA
+# ============================================
+
+service: vndgme
 image: vndg-me/backend
 
-# Deploy to these servers.
-servers:
-  web:
-    - 3.29.98.60
-  # job:
-  #   hosts:
-  #     - 3.29.98.60
-  #   cmd: bin/jobs
+# ============================================
+# CONTAINER REGISTRY
+# ============================================
+# GitHub Container Registry (ghcr.io)
 
-# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
-# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
-#
-# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
-proxy:
-  ssl: true
-  host: staging.vndg.me
-
-# Credentials for your image host.
 registry:
-  # Specify the registry server, if you're not using Docker Hub
   server: ghcr.io
   username: mahmoudaliibrahim
-  # Always use an access token rather than real password when possible.
   password:
-    - KAMAL_REGISTRY_PASSWORD
+    - KAMAL_REGISTRY_PASSWORD  # Set in .kamal/secrets
 
-# Inject ENV variables into containers (secrets come from .kamal/secrets).
-env:
-  secret:
-    - RAILS_MASTER_KEY
-    - POSTGRES_PASSWORD
-  clear:
-    # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
-    # When you start using multiple servers, you should split out job processing to a dedicated machine.
-    SOLID_QUEUE_IN_PUMA: true
+# ============================================
+# SSH CONFIGURATION
+# ============================================
+# Used for deploying to EC2 instances
 
-    # Set number of processes dedicated to Solid Queue (default: 1)
-    JOB_CONCURRENCY: 3
+ssh:
+  user: ubuntu
 
-    # Set number of cores available to the application on each server (default: 1).
-    WEB_CONCURRENCY: 2
+# ============================================
+# DOCKER IMAGE BUILDER
+# ============================================
+# Build configuration for Docker images
+# Optimized for faster builds with caching
 
-    # Match this to any external database server to configure Active Record correctly
-    # Use vndgme-db for a db accessory server on same machine via local kamal docker network.
-    POSTGRES_HOST: vndgme-db
-    POSTGRES_USER: vndgme
-    RAILS_ENV: staging
+builder:
+  arch: amd64
+  context: .
 
-    # Log everything from Rails
-    RAILS_LOG_LEVEL: debug
+# ============================================
+# ASSET PIPELINE
+# ============================================
+# Rails assets configuration
 
-# Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
-# "bin/kamal logs -r job" will tail logs from the first server in the job section.
+asset_path: /rails/public/assets
+
+# ============================================
+# CLI ALIASES
+# ============================================
+# Shorthand commands for common operations
+# Usage: kamal <alias>
+
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
+  migrate: app exec "bin/rails db:migrate"
+  seed: app exec "bin/rails db:seed"
 
+# ============================================
+# ENVIRONMENT VARIABLES (BASE DEFAULTS)
+# ============================================
+# These are inherited by all environment configs.
+# Override in environment-specific files as needed.
 
-# Use a persistent storage volume for sqlite database files and local Active Storage files.
-# Recommended to change this to a mounted volume path that is backed up off server.
-volumes:
-  - "vndgme_storage:/rails/storage"
+env:
+  secret:
+    - RAILS_MASTER_KEY          # From .kamal/secrets
+    - POSTGRES_PASSWORD         # From .kamal/secrets
 
+  clear:
+    # Server configuration
+    WEB_CONCURRENCY: 2
+    SOLID_QUEUE_IN_PUMA: "false"
+    
+    # Logging
+    RAILS_LOG_TO_STDOUT: "true"
 
-# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
-# hitting 404 on in-flight requests. Combines all files from new and old
-# version inside the asset_path.
-asset_path: /rails/public/assets
+# ============================================
+# SERVERS CONFIGURATION
+# ============================================
+# MUST BE SET IN ENVIRONMENT-SPECIFIC CONFIG
+#
+# Example for staging (local single server):
+#   servers:
+#     web:
+#       - 3.29.98.60
+#
+# Example for production (multiple AWS instances):
+#   servers:
+#     web:
+#       - 10.0.2.x
+#       - 10.0.3.x
 
-# Configure the image builder.
-builder:
-  arch: amd64
-  context: .
+# ============================================
+# PROXY / SSL CONFIGURATION
+# ============================================
+# MUST BE SET IN ENVIRONMENT-SPECIFIC CONFIG
+#
+# Example:
+#   proxy:
+#     ssl: true
+#     host: api.vndg.me
 
-  # # Build image via remote server (useful for faster amd64 builds on arm64 computers)
-  # remote: ssh://docker@docker-builder-server
-  #
-  # # Pass arguments and secrets to the Docker build process
-  # args:
-  #   RUBY_VERSION: 3.4.1
-  # secrets:
-  #   - GITHUB_TOKEN
-  #   - RAILS_MASTER_KEY
+# ============================================
+# ACCESSORY SERVICES
+# ============================================
+# OPTIONAL: Only for local/staging deployments
+# Production uses AWS managed services (RDS, ElastiCache)
+#
+# Example for staging (local services):
+#   accessories:
+#     db:
+#       image: postgis/postgis:latest
+#       host: 3.29.98.60
+#       port: 5432
+#       ...
+#     redis:
+#       image: redis:7.0
+#       host: 3.29.98.60
+#       ...
 
-# Use a different ssh user than root
-ssh:
-  user: ubuntu
+# ============================================
+# PERSISTENT VOLUMES
+# ============================================
+# OPTIONAL: Only for staging/local deployments
+# Production uses S3/R2 for file storage
+#
+# Example for staging:
+#   volumes:
+#     - "vndgme_storage:/rails/storage"
 
-# Use accessory services (secrets come from .kamal/secrets).
-accessories:
-  db:
-    image: postgis/postgis:latest
-    host: 3.29.98.60
-    port: 5432
-    env:
-      clear:
-        POSTGRES_USER: vndgme
-        POSTGRES_DB: vndgme_staging
-      secret:
-        - POSTGRES_PASSWORD
-    directories:
-      - data:/var/lib/postgresql/data
-  redis:
-    image: redis:7.0
-    host: 3.29.98.60
-    port: 6379
-    directories:
-      - data:/data
+# ============================================
+# ENVIRONMENT VARIABLES (MUST OVERRIDE)
+# ============================================
+# The following MUST be set in your environment config:
+#
+# env:
+#   clear:
+#     # Application environment
+#     RAILS_ENV: staging|production
+#     RAILS_LOG_LEVEL: debug|info
+#     
+#     # Database configuration
+#     POSTGRES_HOST: localhost|aws-rds-endpoint
+#     POSTGRES_PORT: 5432
+#     POSTGRES_DB: vendingdb|vndgme_staging
+#     POSTGRES_USER: vndg|vndgme
+#     
+#     # Redis/Cache configuration
+#     REDIS_HOST: localhost|elasticache-endpoint
+#     REDIS_PORT: 6379
+#     
+#     # AWS/Storage configuration (production only)
+#     ACTIVE_STORAGE_SERVICE: amazon|cloudflare_r2
+#     AWS_S3_BUCKET: bucket-name
+#     AWS_S3_REGION: me-central-1
+
+# ============================================
+# SEE ALSO
+# ============================================
+# - config/deploy.staging.yml    - Staging environment
+# - config/deploy.production.yml - Production environment
+# - .kamal/secrets               - Secrets file (git-ignored)
