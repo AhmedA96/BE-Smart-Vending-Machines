@@ -24,11 +24,12 @@ Avo.configure do |config|
   ## == Authentication ==
   config.current_user_method = :current_user
   config.authenticate_with do
-    if current_user.admin?
+    if current_user&.admin?
       current_user
     else
-      sign_out
-      redirect_to '/'
+      sign_out(:user)
+      redirect_to main_app.new_user_session_path
+      throw :abort
     end
   end
 

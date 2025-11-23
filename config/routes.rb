@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # Root endpoint - API info
-  root to: proc { [200, { 'Content-Type' => 'application/json' }, [{ 
-    api: 'VNDG.ME Backend API', 
-    version: 'v1', 
-    docs: '/api-docs',
-    health: '/up'
-  }.to_json]] }
+  get '/', to: redirect('/admin')
 
   # Admin-only API docs
   authenticate :user, ->(u) { u.admin? } do
@@ -19,9 +13,10 @@ Rails.application.routes.draw do
   authenticate :user do
     mount Avo::Engine, at: Avo.configuration.root_path
   end
+  get '/admin', to: redirect('/users/sign_in')
 
   devise_for :users,
-             skip: %i[sessions registrations],
+             skip: %i[registrations],
              path: 'users'
 
   use_doorkeeper
