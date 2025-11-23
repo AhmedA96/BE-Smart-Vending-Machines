@@ -3,7 +3,7 @@
 module Avo
   module Resources
     class LocationTranslation < Avo::BaseResource
-      self.title = :name
+      self.title = :presentation
       self.includes = []
       self.visible_on_sidebar = false
 
@@ -13,7 +13,7 @@ module Avo
 
       def fields
         field :id, as: :id
-        field :name, as: :text
+        field :presentation, as: :text
         field :locale, as: :select, options: I18n.available_locales.map(&:to_s), default: I18n.default_locale.to_s
         field :location, as: :belongs_to
       end

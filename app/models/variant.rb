@@ -36,7 +36,7 @@ class Variant < ApplicationRecord
   extend Mobility
 
   acts_as_paranoid
-  translates :presentation
+  translates :presentation, :size
   accepts_nested_attributes_for :translations
 
   delegate :name, to: :product, prefix: true

@@ -3,14 +3,18 @@
 module Avo
   module Resources
     class PaymentMethodTranslation < Avo::BaseResource
-      # self.includes = []
-      # self.attachments = []
-      # self.search = {
-      #   query: -> { query.ransack(id_eq: q, m: "or").result(distinct: false) }
-      # }
+      self.title = :presentation
+      self.visible_on_sidebar = false
+      self.includes = []
+      self.search = {
+        query: -> { query.ransack(id_eq: params[:q], presentation_cont: params[:q], m: 'or').result(distinct: false) }
+      }
 
       def fields
         field :id, as: :id
+        field :presentation, as: :text
+        field :locale, as: :select, options: I18n.available_locales.map(&:to_s), default: I18n.default_locale.to_s
+        field :payment_method, as: :belongs_to
       end
     end
   end

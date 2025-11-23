@@ -12,7 +12,7 @@ json.products do
 
     if master_variant
       json.master_variant do
-        json.extract! master_variant, :id, :name, :sku, :is_master, :max_orderable_quantity
+        json.extract! master_variant, :id, :name, :presentation, :sku, :is_master, :max_orderable_quantity
         json.stock master_variant.machine_stock(@machine).to_i
 
         if @machine&.price_list
