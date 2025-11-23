@@ -38,3 +38,4 @@
 
 secrets-*
 !secrets-example
+.kamal/secrets.production
