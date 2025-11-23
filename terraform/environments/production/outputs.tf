@@ -170,3 +170,48 @@ output "app_secrets_secret_name" {
   value       = aws_secretsmanager_secret.app_secrets.name
 }
 
+# ============================================
+# Bastion Host Outputs
+# ============================================
+
+output "bastion_public_ip" {
+  description = "Public IP address of bastion host"
+  value       = aws_eip.bastion.public_ip
+}
+
+output "bastion_instance_id" {
+  description = "Instance ID of bastion host"
+  value       = aws_instance.bastion.id
+}
+
+output "bastion_ssh_command" {
+  description = "SSH command to connect to bastion"
+  value       = "ssh -i /path/to/key.pem ubuntu@${aws_eip.bastion.public_ip}"
+}
+
+output "bastion_security_group_id" {
+  description = "Security group ID for bastion"
+  value       = aws_security_group.bastion.id
+}
+
+# ============================================
+# SSL Certificate Outputs
+# ============================================
+
+output "certificate_arn" {
+  description = "ARN of ACM certificate"
+  value       = aws_acm_certificate.main.arn
+}
+
+output "certificate_domain_validation_options" {
+  description = "DNS records to add for certificate validation"
+  value = [
+    for dvo in aws_acm_certificate.main.domain_validation_options : {
+      name   = dvo.resource_record_name
+      type   = dvo.resource_record_type
+      value  = dvo.resource_record_value
+      domain = dvo.domain_name
+    }
+  ]
+}
+

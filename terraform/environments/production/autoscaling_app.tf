@@ -81,7 +81,7 @@ resource "aws_launch_template" "app" {
   name_prefix            = "app-"
   image_id               = data.aws_ami.ubuntu.id # Ubuntu 22.04 LTS
   instance_type          = var.app_instance_type
-  key_name               = "" # No SSH keypair (use Session Manager)
+  key_name               = "vending-system-prod" # SSH keypair for Kamal deployment
   vpc_security_group_ids = [aws_security_group.app.id]
 
   iam_instance_profile {
@@ -105,13 +105,26 @@ resource "aws_launch_template" "app" {
     enabled = true
   }
 
-  # User data script - basic startup configuration
+  # User data script - install Docker and prepare for Kamal deployment
   user_data = base64encode(<<-EOF
               #!/bin/bash
               set -e
+              
               echo "Initializing app server..."
               echo "Environment: ${var.environment}"
               echo "Region: ${var.aws_region}"
+              
+              # Install Docker
+              echo "Installing Docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+              rm get-docker.sh
+              
+              # Add ubuntu user to docker group (required for Kamal deployment)
+              echo "Configuring Docker permissions..."
+              usermod -aG docker ubuntu
+              
+              echo "App server initialization complete"
               EOF
   )
 
@@ -161,7 +174,7 @@ resource "aws_autoscaling_group" "app" {
 
   # Health check configuration
   health_check_type         = "ELB" # Use ALB health checks
-  health_check_grace_period = 300   # 5 minutes (time to boot and become healthy)
+  health_check_grace_period = 600   # 10 minutes (time for Kamal setup to complete)
 
   # Termination policies
   termination_policies = [
@@ -379,7 +392,7 @@ data "aws_ami" "ubuntu" {
 #
 # Common issues:
 # - Instances failing health check:
-#   → Check /health endpoint
+#   → Check /up endpoint
 #   → Verify security groups allow ALB → App
 #   → Check application logs
 #

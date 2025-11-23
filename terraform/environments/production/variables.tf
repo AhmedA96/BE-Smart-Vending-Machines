@@ -38,7 +38,7 @@ variable "availability_zones" {
 variable "db_engine_version" {
   description = "PostgreSQL engine version"
   type        = string
-  default     = "16.4" # Aurora PostgreSQL compatible version
+  default     = "16.8" # Aurora PostgreSQL compatible version
 }
 
 variable "db_instance_class" {
@@ -259,7 +259,7 @@ variable "ami_name_filter" {
 variable "health_check_path" {
   description = "Health check endpoint path"
   type        = string
-  default     = "/health"
+  default     = "/up"
 }
 
 variable "health_check_interval" {
@@ -289,7 +289,7 @@ variable "health_check_unhealthy_threshold" {
 variable "health_check_matcher" {
   description = "HTTP status codes to consider healthy"
   type        = string
-  default     = "200"
+  default     = "200-404"
 }
 
 # ============================================
@@ -416,4 +416,14 @@ variable "s3_incomplete_upload_cleanup_days" {
   description = "Days after which to abort incomplete multipart uploads"
   type        = number
   default     = 7
+}
+
+# ============================================
+# Bastion Host Configuration
+# ============================================
+
+variable "bastion_admin_ips" {
+  description = "List of IP addresses/CIDRs allowed to SSH to bastion"
+  type        = list(string)
+  default     = ["154.179.17.169/32"] # Your public IP
 }

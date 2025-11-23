@@ -51,6 +51,11 @@ resource "aws_rds_cluster" "main" {
     Name = "${var.project_name}-aurora-cluster"
   }
 
+  # Ignore engine version changes since AWS auto-upgrades minor versions
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
+
   depends_on = [aws_db_subnet_group.main, aws_security_group.database]
 }
 

@@ -20,7 +20,7 @@
 
 resource "aws_lb_target_group" "app" {
   name_prefix = "app-"
-  port        = 8080 # Rails/app server port
+  port        = 80 # Forward ALB traffic to kamal-proxy on port 80
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
 
@@ -132,34 +132,12 @@ resource "aws_lb_listener" "https" {
 # ==============================================================================
 # 5. SSL/TLS Certificate (from ACM)
 # ==============================================================================
-# For now using self-signed certificate
-# In production, use valid certificate from CA or use AWS Certificate Manager
-
-resource "tls_private_key" "main" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-
-resource "tls_self_signed_cert" "main" {
-  private_key_pem = tls_private_key.main.private_key_pem
-
-  subject {
-    common_name  = var.domain_name
-    organization = var.project_name
-  }
-
-  validity_period_hours = 8760 # 1 year
-
-  allowed_uses = [
-    "key_encipherment",
-    "digital_signature",
-    "server_auth",
-  ]
-}
+# Request a valid certificate from AWS Certificate Manager
+# Uses DNS validation - requires adding CNAME record to your DNS
 
 resource "aws_acm_certificate" "main" {
-  private_key      = tls_private_key.main.private_key_pem
-  certificate_body = tls_self_signed_cert.main.cert_pem
+  domain_name       = var.domain_name
+  validation_method = "DNS"
 
   tags = {
     Name = "${var.project_name}-cert"
@@ -171,16 +149,24 @@ resource "aws_acm_certificate" "main" {
 }
 
 # ==============================================================================
-# 6. ACM Certificate Validation (for real certificates)
+# 6. ACM Certificate Validation
 # ==============================================================================
-# Note: Certificate validation is only needed for DNS-validated certificates
-# Imported certificates (like self-signed) don't require validation
-# Commenting out to avoid errors with imported certificates
+# IMPORTANT: Comment this out initially!
+# 
+# Steps:
+# 1. First apply WITHOUT this resource (keep it commented)
+# 2. Run: terraform output certificate_domain_validation_options
+# 3. Add the DNS CNAME record to Cloudflare
+# 4. Wait 5-15 minutes for DNS propagation
+# 5. Uncomment this resource and apply again
+#
+# This avoids terraform hanging while waiting for DNS records you haven't added yet
 
 # resource "aws_acm_certificate_validation" "main" {
 #   certificate_arn = aws_acm_certificate.main.arn
+#
 #   timeouts {
-#     create = "5m"
+#     create = "45m"
 #   }
 # }
 
@@ -221,7 +207,7 @@ resource "aws_acm_certificate" "main" {
 # 9. ALB encrypts response and sends back to client
 #
 # HEALTH CHECKS:
-# - Every 30 seconds, ALB calls /health endpoint
+# - Every 30 seconds, ALB calls /up endpoint
 # - If 2 consecutive checks fail, marks as unhealthy
 # - If 3 consecutive checks pass, marks as healthy
 # - Unhealthy targets are removed from rotation
@@ -265,17 +251,18 @@ resource "aws_acm_certificate" "main" {
 # Health Check Configuration Details
 # ==============================================================================
 #
-# Path: /health
+# Path: /up
 # Configure this endpoint in your Rails app:
 #
 # # config/routes.rb
-# get '/health', to: 'health#check'
+# get '/up', to: 'rails/health#show', as: :rails_health_check
 #
-# # app/controllers/health_controller.rb
-# class HealthController < ApplicationController
-#   skip_before_action :authenticate_user!, if: :health_check?
+# Rails built-in health check controller handles:
+#   - Basic application health
+#   - Database connectivity
+#   - Redis connectivity
 #
-#   def check
+#   def show
 #     # Simple health check - if we respond, we're healthy
 #     render json: { status: 'ok' }, status: :ok
 #   end
@@ -283,7 +270,7 @@ resource "aws_acm_certificate" "main" {
 #   private
 #
 #   def health_check?
-#     request.path == '/health'
+#     request.path == '/up'
 #   end
 # end
 #
@@ -345,4 +332,3 @@ resource "aws_acm_certificate" "main" {
 #    - Verify before full rollout
 #    - Automatic rollback on errors
 #
-

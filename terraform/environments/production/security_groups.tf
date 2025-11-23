@@ -40,7 +40,15 @@ resource "aws_security_group" "alb" {
     description = "HTTPS from internet (Cloudflare)"
   }
 
-  # Egress: Allow to app servers in private subnets (port 8080/3000 for Rails)
+  # Egress: Allow to app servers in private subnets (kamal-proxy on 80, Rails on 8080/3000)
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.main.cidr_block]
+    description = "To app servers on port 80 (kamal-proxy)"
+  }
+
   egress {
     from_port   = 8080
     to_port     = 8080
@@ -81,6 +89,15 @@ resource "aws_security_group" "app" {
   name_prefix = "${var.project_name}-app-"
   description = "Security group for application servers"
   vpc_id      = aws_vpc.main.id
+
+  # Ingress: Allow from ALB on port 80 (kamal-proxy)
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+    description     = "Proxy/app from ALB"
+  }
 
   # Ingress: Allow from ALB on port 8080 (Rails server)
   ingress {
@@ -146,6 +163,15 @@ resource "aws_security_group" "app" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "HTTPS to internet (API calls, bundle install)"
+  }
+
+  # Egress: Allow responses to ALB (all TCP ports)
+  egress {
+    from_port       = 0
+    to_port         = 65535
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+    description     = "All TCP to ALB (health checks / traffic)"
   }
 
   # Egress: Allow HTTP to internet
@@ -352,4 +378,3 @@ resource "aws_security_group" "redis" {
 #    - AWS managed threat detection
 #    - Alerts on suspicious activity
 #
-
