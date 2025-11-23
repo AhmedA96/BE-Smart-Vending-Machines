@@ -56,7 +56,7 @@ module Avo
           font-weight: 700; font-size: 16px; text-transform: uppercase;
           box-shadow: 0 1px 3px rgba(0,0,0,0.2);'>
           #{text}
-   </span>".html_safe
+   </span>".html_safe # rubocop:disable Rails/OutputSafety
         end
 
         field :line_number, as: :number, required: true, hide_on: :index,
