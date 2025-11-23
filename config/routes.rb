@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  get '/', to: redirect('/admin')
+  # Root endpoint - API info
+  root to: proc { [200, { 'Content-Type' => 'application/json' }, [{ 
+    api: 'VNDG.ME Backend API', 
+    version: 'v1', 
+    docs: '/api-docs',
+    health: '/up'
+  }.to_json]] }
 
   # Admin-only API docs
   authenticate :user, ->(u) { u.admin? } do
