@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Populate .kamal/secrets.production by fetching from AWS Secrets Manager
 # This script is run BEFORE kamal deploy to populate the secrets file with actual values
@@ -20,9 +21,7 @@ def fetch_secret(secret_id, key = nil)
 
   stdout, stderr, status = Open3.capture3(*cmd)
 
-  if !status.success?
-    raise "Failed to fetch secret '#{secret_id}': #{stderr}"
-  end
+  raise "Failed to fetch secret '#{secret_id}': #{stderr}" unless status.success?
 
   secret_value = stdout.strip
 
@@ -40,18 +39,18 @@ def fetch_secret(secret_id, key = nil)
 end
 
 begin
-  puts "Fetching production secrets from AWS Secrets Manager..."
+  puts 'Fetching production secrets from AWS Secrets Manager...'
 
   # Fetch all required secrets
-  puts "  - Fetching GitHub Container Registry token..."
+  puts '  - Fetching GitHub Container Registry token...'
   registry_password = fetch_secret('vending-system/production/github-container-registry-token')
 
-  puts "  - Fetching database credentials..."
+  puts '  - Fetching database credentials...'
   db_creds = fetch_secret('vending-system/production/db/credentials')
   postgres_user = JSON.parse(db_creds)['username']
   postgres_password = JSON.parse(db_creds)['password']
 
-  puts "  - Fetching Rails master key..."
+  puts '  - Fetching Rails master key...'
   rails_master_key = fetch_secret('vending-system/production/app/secrets', 'rails_master_key')
 
   # Write to secrets file
@@ -60,7 +59,7 @@ begin
     # Kamal Production Secrets for AWS Infrastructure
     # ================================================
     # Auto-populated by scripts/populate-production-secrets.rb
-    # Generated at: #{Time.now}
+    # Generated at: #{Time.zone.now}
 
     KAMAL_REGISTRY_PASSWORD=#{registry_password}
     POSTGRES_USER=#{postgres_user}
@@ -70,9 +69,8 @@ begin
 
   File.chmod(0o600, SECRETS_FILE)
 
-  puts "✓ Production secrets loaded successfully!"
+  puts '✓ Production secrets loaded successfully!'
   puts "\nReady to deploy: kamal deploy -d production"
-
 rescue StandardError => e
   puts "\n❌ ERROR: #{e.message}"
   exit 1
