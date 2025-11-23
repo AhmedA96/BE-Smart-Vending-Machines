@@ -321,7 +321,7 @@ Impact: None (library retries transparently)
 - **Protocol**: HTTP (internal communication)
 - **Port**: 8080/3000 (app server ports)
 - **Health Check**:
-  - Path: `/health`
+  - Path: `/up`
   - Interval: 30 seconds
   - Timeout: 5 seconds
   - Healthy Threshold: 2 consecutive passes
