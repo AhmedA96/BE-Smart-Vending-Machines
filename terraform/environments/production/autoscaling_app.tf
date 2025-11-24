@@ -114,6 +114,11 @@ resource "aws_launch_template" "app" {
               echo "Environment: ${var.environment}"
               echo "Region: ${var.aws_region}"
               
+              # Update system packages
+              echo "Updating system packages..."
+              apt-get update
+              apt-get upgrade -y
+              
               # Install Docker
               echo "Installing Docker..."
               curl -fsSL https://get.docker.com -o get-docker.sh
@@ -123,6 +128,26 @@ resource "aws_launch_template" "app" {
               # Add ubuntu user to docker group (required for Kamal deployment)
               echo "Configuring Docker permissions..."
               usermod -aG docker ubuntu
+              
+              # Start Docker daemon
+              echo "Starting Docker daemon..."
+              systemctl enable docker
+              systemctl start docker
+              
+              # Wait for Docker daemon to be ready
+              echo "Waiting for Docker daemon to be ready..."
+              for i in {1..30}; do
+                if docker info &>/dev/null; then
+                  echo "Docker daemon is ready"
+                  break
+                fi
+                echo "Waiting... ($i/30)"
+                sleep 1
+              done
+              
+              # Verify Docker installation
+              echo "Verifying Docker installation..."
+              docker --version
               
               echo "App server initialization complete"
               EOF

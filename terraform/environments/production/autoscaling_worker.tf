@@ -76,6 +76,7 @@ resource "aws_launch_template" "worker" {
   name_prefix            = "worker-"
   image_id               = data.aws_ami.ubuntu.id
   instance_type          = var.worker_instance_type
+  key_name               = "vending-system-prod"
   vpc_security_group_ids = [aws_security_group.app.id]
 
   iam_instance_profile {
@@ -99,15 +100,11 @@ resource "aws_launch_template" "worker" {
     enabled = true
   }
 
-  # User data script - basic startup configuration
-  user_data = base64encode(<<-EOF
-              #!/bin/bash
-              set -e
-              echo "Initializing worker server..."
-              echo "Environment: ${var.environment}"
-              echo "Region: ${var.aws_region}"
-              EOF
-  )
+  # User data script - install Docker and prepare for Kamal deployment
+  user_data = base64encode(templatefile("${path.module}/worker_init.sh", {
+    environment = var.environment
+    aws_region  = var.aws_region
+  }))
 
   tag_specifications {
     resource_type = "instance"

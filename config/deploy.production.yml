@@ -79,9 +79,21 @@ ssh:
 # Current Running Instances (2025-11-23):
 #   - 10.0.2.46 (private_app subnet)
 #   - 10.0.3.78 (private_app subnet)
+#
+# Worker servers from AWS Auto Scaling Group
+# ASG: worker-* (dynamically fetched)
+# Tag: vending-system-worker-server
 
 servers:
-  web: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_production.sh`.split %>
+  web: 
+    hosts: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_production.sh`.split %>
+  job:
+    hosts: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_workers.sh`.split %>
+    cmd: bin/jobs
+    env:
+      clear:
+        SOLID_QUEUE_IN_PUMA: "true"
+        JOB_CONCURRENCY: "3"
 
 # ============================================
 # PROXY CONFIGURATION
