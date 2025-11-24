@@ -30,7 +30,7 @@ module Api
           render json: {
             error: I18n.t('verification.mobile.errors.send_failed'),
             details: result[:error]
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
       end
 

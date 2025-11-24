@@ -12,7 +12,7 @@ module Api
         if complete_charge_operation
           render :create, status: :created
         else
-          render json: { errors: @wallet_refill.message }, status: :unprocessable_entity
+          render json: { errors: @wallet_refill.message }, status: :unprocessable_content
         end
       end
 
