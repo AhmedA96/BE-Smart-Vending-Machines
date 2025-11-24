@@ -142,7 +142,7 @@ resource "aws_autoscaling_group" "worker" {
 
   # Health checks: Use EC2 status checks (no load balancer)
   health_check_type         = "EC2"
-  health_check_grace_period = 300 # 5 minutes for startup
+  health_check_grace_period = 600 # 10 minutes (time for Docker init to complete)
 
   # Termination policies
   termination_policies = [

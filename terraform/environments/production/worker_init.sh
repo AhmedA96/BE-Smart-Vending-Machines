@@ -16,12 +16,12 @@ exec > >(tee -a /var/log/worker-init.log)
 exec 2>&1
 
 # Update system packages
-echo "[1/5] Updating system packages..."
+echo "[1/4] Updating system packages..."
 apt-get update
 apt-get upgrade -y
 
 # Install required dependencies
-echo "[2/5] Installing dependencies..."
+echo "[2/4] Installing dependencies..."
 apt-get install -y \
   curl \
   wget \
@@ -35,13 +35,13 @@ apt-get install -y \
   awscli
 
 # Install Docker
-echo "[3/5] Installing Docker..."
+echo "[3/4] Installing Docker..."
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 rm get-docker.sh
 
 # Add ubuntu user to docker group (required for Kamal deployment)
-echo "[4/5] Configuring Docker permissions..."
+echo "[4/4] Configuring Docker permissions..."
 usermod -aG docker ubuntu
 
 # Start Docker daemon
@@ -59,11 +59,9 @@ for i in {1..30}; do
   sleep 1
 done
 
-# Verify Docker installation
-echo "[5/5] Verifying Docker installation..."
-docker --version
-
 echo "=========================================="
 echo "Worker server initialization complete!"
 echo "Docker is ready for Kamal deployment"
 echo "=========================================="
+
+

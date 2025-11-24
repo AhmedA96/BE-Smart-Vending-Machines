@@ -105,7 +105,7 @@ resource "aws_launch_template" "app" {
     enabled = true
   }
 
-  # User data script - install Docker and prepare for Kamal deployment
+  # User data script - install Docker and start container
   user_data = base64encode(<<-EOF
               #!/bin/bash
               set -e
@@ -145,11 +145,7 @@ resource "aws_launch_template" "app" {
                 sleep 1
               done
               
-              # Verify Docker installation
-              echo "Verifying Docker installation..."
-              docker --version
-              
-              echo "App server initialization complete"
+              echo "App server initialization complete - ready for Kamal deployment"
               EOF
   )
 
@@ -199,7 +195,7 @@ resource "aws_autoscaling_group" "app" {
 
   # Health check configuration
   health_check_type         = "ELB" # Use ALB health checks
-  health_check_grace_period = 600   # 10 minutes (time for Kamal setup to complete)
+  health_check_grace_period = 900   # 15 minutes (time for Docker init + app startup)
 
   # Termination policies
   termination_policies = [
