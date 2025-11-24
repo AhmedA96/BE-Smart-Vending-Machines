@@ -68,7 +68,7 @@ class User < ApplicationRecord
             uniqueness: { case_sensitive: false }
   validates :email,
             allow_blank: true,
-            uniqueness: { case_sensitive: false, message: I18n.t('user.email_taken') }
+            uniqueness: { case_sensitive: false, message: I18n.t('user.errors.email_taken') }
 
   validate :password_complexity
   validate :new_and_old_password_must_be_different
