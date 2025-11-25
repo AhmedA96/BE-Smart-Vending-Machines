@@ -92,6 +92,10 @@ module Avo
           field :orders, as: :has_many, reloadable: true, name: 'Orders', linkable: true
         end
       end
+
+      def actions
+        action Avo::Actions::Machines::ToggleStatus
+      end
     end
   end
 end

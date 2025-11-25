@@ -132,19 +132,26 @@ Avo.configure do |config|
   ## == Branding ==
   config.branding = {
     colors: {
-      background: '248 246 242',
-      100 => '#CEE7F8',
-      400 => '#399EE5',
-      500 => '#0886DE',
-      600 => '#066BB2'
+      # Background color for the app
+      background: '248 242 249', # Your $bg-color: #F8F2F9 converted to RGB
+
+      # Primary color shades (your purple brand color)
+      100 => '#E8D4EA',  # Lighter shade of primary
+      400 => '#C74DD1',  # Medium shade
+      500 => '#B526BE',  # Your primary color
+      600 => '#924290' # Your secondary color (darker)
     },
-    chart_colors: ['#0B8AE2', '#34C683', '#2AB1EE', '#34C6A8'],
+
+    # Chart colors using your brand palette
+    chart_colors: ['#B526BE', '#924290', '#961E92', '#C74DD1'],
+
+    # Keep your existing logo/icon paths
     logo: '/avo-assets/logo.png',
     logomark: '/avo-assets/logomark.png',
     placeholder: '/avo-assets/placeholder.svg',
     favicon: '/avo-assets/favicon.ico'
-  }
 
+  }
   config.turbo = lambda {
     {
       instant_click: true
