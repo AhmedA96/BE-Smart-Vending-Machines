@@ -30,7 +30,7 @@ RSpec.describe Order, type: :model do
     end
 
     it 'returns user orders' do
-      user_order = Order.create!(number: 'VNDG1002', machine: machines(:machine_001), user: users(:user_one))
+      user_order = Order.create!(number: 'VNDG1002', machine: machines(:machine_001), user: users(:user_two))
       expect(Order.user_orders).to include(user_order)
     end
 

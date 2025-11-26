@@ -9,7 +9,10 @@ module Payments
       end
 
       amount = order.items_total
-      return if amount <= 0
+      if amount <= 0
+        raise FailedRequestError,
+              'Cannot create a payment for an empty order.'
+      end
 
       payment = create_payment(amount, payment_data, order)
 
