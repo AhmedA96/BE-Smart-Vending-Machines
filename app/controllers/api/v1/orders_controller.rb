@@ -42,8 +42,9 @@ module Api
 
       def status
         unless Rails.env.production?
-          render json: { order_number: @order.number, status: 'ready',
-                         message: 'Order is ready to be dispensed (mocked)' }
+
+          @order.update(status: 'dispensed')
+          render json: { order_number: @order.number, status: @order.status }
           return
         end
 
