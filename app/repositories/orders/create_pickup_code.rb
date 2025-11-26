@@ -4,14 +4,14 @@ module Orders
   class CreatePickupCode
     class << self
       def call(order)
-        unless order.status == 'paid'
+        unless order.status == 'completed'
           return error_response('Order must be paid to generate pickup code',
                                 :unprocessable_content)
         end
 
         machine = order.machine
         client = machine.supplier
-        order_manager = Suppliers::VendlifeService.new(client)
+        order_manager = client.api_service
         pickup_code = order_manager.create_pickup_order(machine, order)
 
         order.update!(pick_up_code: pickup_code)

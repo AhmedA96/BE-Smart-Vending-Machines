@@ -25,7 +25,7 @@ class MachinesSyncJob < ApplicationJob
   end
 
   def build_machine_manager(machine)
-    service = Suppliers::VendlifeService.new(machine.supplier)
+    service = machine.supplier.api_service
     service.authenticate
     service
   end

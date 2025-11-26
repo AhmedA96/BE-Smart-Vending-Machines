@@ -28,7 +28,7 @@ class InventorySyncJob < ApplicationJob
   end
 
   def build_vendlife_service(machine)
-    service = Suppliers::VendlifeService.new(machine.supplier)
+    service = machine.supplier.api_service
     service.authenticate
     service
   end

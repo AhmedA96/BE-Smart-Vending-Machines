@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# app/avo/actions/machine_items/sync_inventory.rb
 module Avo
   module Actions
     module MachineItems
@@ -46,7 +45,7 @@ module Avo
         def initialize_service(machine)
           return nil unless machine.supplier
 
-          service = Suppliers::VendlifeService.new(machine.supplier)
+          service = machine.supplier.api_service
           service.refresh_token! unless service.token_valid?
           service
         end

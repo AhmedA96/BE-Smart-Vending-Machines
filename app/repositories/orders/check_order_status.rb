@@ -15,7 +15,7 @@ module Orders
     def self.service_for_supplier(supplier)
       case supplier.supplier_type
       when 'vendlife'
-        Suppliers::VendlifeService.new(supplier)
+        supplier.api_service
       else
         raise ArgumentError, "Unsupported supplier type: #{supplier.supplier_type}"
       end
