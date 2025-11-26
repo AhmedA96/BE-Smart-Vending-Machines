@@ -1,0 +1,790 @@
+{
+	"info": {
+		"_postman_id": "4608fcdf-29d9-4d5c-a244-d70b1b316cab",
+		"name": "VNDG API Integration",
+		"description": "Phase I End-to-End user journey integration test suite for VNDG backend.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42786259",
+		"_collection_link": "https://universal-zodiac-263296.postman.co/workspace/Team-Workspace~abd283b3-f060-4220-8181-cdb67fd2966f/collection/42786259-4608fcdf-29d9-4d5c-a244-d70b1b316cab?action=share&source=collection_link&creator=42786259"
+	},
+	"item": [
+		{
+			"name": "Phase I - User Journey",
+			"item": [
+				{
+					"name": "Step 1 - Obtain Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Access Token Response Code:', status);",
+									"console.log('Access Token Response Body:', pm.response.text());",
+									"if ([200,201].includes(status)) {",
+									"  const json = pm.response.json();",
+									"  pm.environment.set('access_token', json.access_token);",
+									"  pm.test('Access Token Retrieved', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"} else {",
+									"  pm.test(`Access Token Failed (${status})`, function () { pm.expect.fail('Access token request failed'); });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "mobile_number",
+									"value": "{{phone}}"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/oauth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 2 - Get Nearby Machines",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Nearby Machines Response Code:', status);",
+									"console.log('Nearby Machines Response Body:', pm.response.text());",
+									"if ([200,201].includes(status)) {",
+									"  const json = pm.response.json();",
+									"  const firstMachine = json.machines && json.machines.length > 0 ? json.machines[0].id : null;",
+									"  if (firstMachine) { pm.environment.set('machine_id', firstMachine); console.log('Saved machine_id:', firstMachine); }",
+									"  pm.test('Nearby Machines Retrieved', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"} else {",
+									"  pm.test(`Nearby Machines Failed (${status})`, function () { pm.expect.fail('Nearby Machines request failed'); });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/machines/nearby?latitude={{latitude}}&longitude={{longitude}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"machines",
+								"nearby"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "{{latitude}}"
+								},
+								{
+									"key": "longitude",
+									"value": "{{longitude}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 3 - Get Machine Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Machine Products Response Code:', status);",
+									"console.log('Machine Products Response Body:', pm.response.text());",
+									"if ([200,201].includes(status)) {",
+									"  const json = pm.response.json();",
+									"  const firstProduct = json.products && json.products.length > 0 ? json.products[0].id : null;",
+									"  if (firstProduct) { pm.environment.set('product_id', firstProduct); console.log('Saved product_id:', firstProduct); }",
+									"  pm.test('Machine Products Retrieved', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"} else {",
+									"  pm.test(`Machine Products Failed (${status})`, function () { pm.expect.fail('Machine Products request failed'); });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/products?q[machine_id]={{machine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "q[machine_id]",
+									"value": "{{machine_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 4 - Select a Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Product details retrieved\", function () {",
+									"  pm.response.to.have.status(200);",
+									"",
+									"  const json = pm.response.json();",
+									"  const product = json.product;",
+									"",
+									"  pm.expect(product).to.have.property(\"variants\");",
+									"  pm.expect(product.variants.length).to.be.above(0);",
+									"",
+									"  const firstVariantId = product.variants[0].id;",
+									"  pm.environment.set(\"variant_id\", firstVariantId);",
+									"",
+									"  console.log(\"Saved variant_id:\", firstVariantId);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/products/:product_id?q[machine_id]={{machine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								":product_id"
+							],
+							"query": [
+								{
+									"key": "q[machine_id]",
+									"value": "{{machine_id}}"
+								}
+							],
+							"variable": [
+								{
+									"key": "product_id",
+									"value": "{{product_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 5 - Create Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Create Cart Response Code:', status);",
+									"console.log('Create Cart Response Body:', pm.response.text());",
+									"if ([200,201].includes(status)) {",
+									"  const json = pm.response.json();",
+									"  pm.environment.set('cart_id', json.cart.id);",
+									"  pm.test('Cart Created Successfully', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"  console.log('Saved cart_id:', json.cart.id);",
+									"} else {",
+									"  pm.test(`Cart Creation Failed (${status})`, function () { pm.expect.fail('Cart creation failed'); });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/carts?machine_id={{machine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							],
+							"query": [
+								{
+									"key": "machine_id",
+									"value": "{{machine_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 6 - Add Items to Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Add Items Response Code:', status);",
+									"console.log('Add Items Response Body:', pm.response.text());",
+									"if ([200,201].includes(status)) {",
+									"  pm.test('Items Added to Cart', function () { pm.expect(status).to.be.oneOf([200,201]); });",
+									"} else {",
+									"  pm.test(`Add Items Failed (${status})`, function () { pm.expect.fail('Add items request failed'); });",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"line_item\": { \n        \"variant_id\": \"{{variant_id}}\",\n        \"quantity\": 1\n        \n    }\n  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/carts/:cart_id/line_items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								":cart_id",
+								"line_items"
+							],
+							"variable": [
+								{
+									"key": "cart_id",
+									"value": "{{cart_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 7A - Select Payment Way",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Select credit_card payment method\", function () {",
+									"  pm.response.to.have.status(200);",
+									"",
+									"  const json = pm.response.json();",
+									"  const paymentMethods = json.payment_methods;",
+									"",
+									"  pm.expect(Array.isArray(paymentMethods)).to.be.true;",
+									"  pm.expect(paymentMethods.length).to.be.above(0);",
+									"",
+									"  // Find the payment method with name = credit_card",
+									"  const creditCardMethod = paymentMethods.find(pm => pm.name === \"credit_card\");",
+									"",
+									"  pm.expect(creditCardMethod, \"credit_card payment method not found\").to.exist;",
+									"",
+									"  pm.environment.set(\"payment_method_id\", creditCardMethod.id);",
+									"",
+									"  console.log(\"Saved payment_method_id:\", creditCardMethod.id);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payment_methods",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payment_methods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 7B - Select Payment Card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Select first payment card\", function () {",
+									"  pm.response.to.have.status(200);",
+									"",
+									"  const json = pm.response.json();",
+									"  const cards = json.payment_cards || json.cards || [];",
+									"",
+									"  pm.expect(Array.isArray(cards), \"payment_cards is not an array\").to.be.true;",
+									"  pm.expect(cards.length, \"No payment cards returned\").to.be.above(0);",
+									"",
+									"  const firstCardId = cards[0].id;",
+									"",
+									"  pm.environment.set(\"card_id\", firstCardId);",
+									"",
+									"  console.log(\"Saved card_id:\", firstCardId);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"card\": {\n    \"number\": \"4242424242424242\",\n    \"exp_month\": \"01\",\n    \"exp_year\": \"29\",\n    \"cvc\": \"100\",\n    \"name\": \"Test User\"\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/payment_cards",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payment_cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 7C - Make Payment via Backend",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Order Status Response Code:', status);",
+									"console.log('Order Status Response Body:', pm.response.text());",
+									"",
+									"if ([200, 201].includes(status)) {",
+									"    pm.test('Order Confirmed', function () { ",
+									"        pm.expect(status).to.be.oneOf([200, 201]); ",
+									"    });",
+									"",
+									"    const responseJson = pm.response.json();",
+									"",
+									"    // Set order_id env variable",
+									"    if (responseJson.order && responseJson.order.id) {",
+									"        pm.environment.set('order_id', responseJson.order.id);",
+									"        console.log('order_id set to:', responseJson.order.id);",
+									"    } else {",
+									"        console.warn('order.id not found in response');",
+									"    }",
+									"",
+									"    // Set payment_id env variable",
+									"    if (responseJson.order && responseJson.order.payment && responseJson.order.payment.id) {",
+									"        pm.environment.set('payment_id', responseJson.order.payment.id);",
+									"        console.log('payment_id set to:', responseJson.order.payment.id);",
+									"    } else {",
+									"        console.warn('order.payment.id not found in response');",
+									"    }",
+									"",
+									"    // Log if order is dispensed (check both status fields)",
+									"    if (",
+									"        responseJson.order &&",
+									"        (responseJson.order.status === 'dispensed' || responseJson.order.dispense_status === 'dispensed')",
+									"    ) {",
+									"        console.log('Order has been dispensed');",
+									"    }",
+									"",
+									"} else {",
+									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
+									"        pm.expect.fail('Order status request failed'); ",
+									"    });",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/payments?payment_method_id=3&card_id={{card_id}}&order_id={{cart_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments"
+							],
+							"query": [
+								{
+									"key": "payment_method_id",
+									"value": "3"
+								},
+								{
+									"key": "card_id",
+									"value": "{{card_id}}"
+								},
+								{
+									"key": "order_id",
+									"value": "{{cart_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 8 - Checkout Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const status = pm.response.code;",
+									"console.log('Order Status Response Code:', status);",
+									"console.log('Order Status Response Body:', pm.response.text());",
+									"",
+									"if ([200, 201].includes(status)) {",
+									"    pm.test('Order Confirmed', function () { ",
+									"        pm.expect(status).to.be.oneOf([200, 201]); ",
+									"    });",
+									"",
+									"    // Parse response JSON and set order_id env variable from id",
+									"    const responseJson = pm.response.json();",
+									"    if (responseJson.id) {",
+									"        pm.environment.set('order_id', responseJson.id);",
+									"        console.log('order_id set to:', responseJson.id);",
+									"    } else {",
+									"        console.warn('id not found in response');",
+									"    }",
+									"",
+									"} else {",
+									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
+									"        pm.expect.fail('Order status request failed'); ",
+									"    });",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/:cart_id/checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								":cart_id",
+								"checkout"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "cart_id",
+									"value": "{{cart_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Step 10 - Confirm Order Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get response code and parse JSON",
+									"const status = pm.response.code;",
+									"const responseJson = pm.response.json();",
+									"",
+									"// Log response code and body",
+									"console.log('Order Status Response Code:', status);",
+									"console.log('Order Status Response Body:', pm.response.text());",
+									"",
+									"// Confirm HTTP success",
+									"if ([200, 201].includes(status)) {",
+									"",
+									"    pm.test('Order Confirmed', function () { ",
+									"        pm.expect(status).to.be.oneOf([200, 201]); ",
+									"    });",
+									"",
+									"    // Set environment variable for order_id",
+									"    if (responseJson.order && responseJson.order.id) {",
+									"        pm.environment.set('order_id', responseJson.order.id);",
+									"        console.log('order_id set to:', responseJson.order.id);",
+									"    } else {",
+									"        console.warn('⚠️ order.id not found in response');",
+									"    }",
+									"",
+									"    // Set environment variable for payment_id",
+									"    if (responseJson.order && responseJson.order.payment && responseJson.order.payment.id) {",
+									"        pm.environment.set('payment_id', responseJson.order.payment.id);",
+									"        console.log('payment_id set to:', responseJson.order.payment.id);",
+									"    } else {",
+									"        console.warn('⚠️ order.payment.id not found in response');",
+									"    }",
+									"",
+									"    // Check if order is dispensed (either status or dispense_status)",
+									"    const isDispensed = responseJson.order &&",
+									"        (responseJson.order.status === 'dispensed' || responseJson.order.dispense_status === 'dispensed');",
+									"",
+									"    // Log dispense status",
+									"    if (isDispensed) {",
+									"        console.log('Order has been dispensed. Order ID:', responseJson.order.id);",
+									"    } else {",
+									"        console.log('Order is not dispensed yet. Order ID:', responseJson.order.id);",
+									"    }",
+									"",
+									"    // Postman test for dispensed order",
+									"    pm.test('Order is dispensed', function () {",
+									"        pm.expect(isDispensed).to.be.true;",
+									"    });",
+									"",
+									"} else {",
+									"    // HTTP request failed",
+									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
+									"        pm.expect.fail('Order status request failed'); ",
+									"    });",
+									"}",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/:order_id/status?",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								":order_id",
+								"status"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null
+								}
+							],
+							"variable": [
+								{
+									"key": "order_id",
+									"value": "{{order_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
