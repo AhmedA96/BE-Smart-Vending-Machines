@@ -48,7 +48,7 @@ RSpec.describe 'OAuth Token Endpoints', type: :request do
 
         run_test! do
           json_response = response.parsed_body
-          expect(json_response['error']).to eq('The entered credentials are incorrect. Please check your mobile number and password.') # rubocop:disable Layout/LineLength
+          expect(json_response['error']).to eq('The credentials you entered are incorrect. Please check your mobile number and password.') # rubocop:disable Layout/LineLength
         end
       end
     end

@@ -47,7 +47,7 @@ class LineItem < ApplicationRecord
 
     return if order.machine.machine_items.exists?(variant: variant)
 
-    errors.add(:base, I18n.t('errors.orders.variant_not_available_for_machine'))
+    errors.add(:base, I18n.t('orders.errors.variant_not_available_for_machine'))
   end
 
   def within_machine_item_limit
@@ -59,7 +59,7 @@ class LineItem < ApplicationRecord
     return unless new_total > order.machine.max_items_per_order
 
     errors.add(:base,
-               I18n.t('errors.orders.exceeds_machine_max_items_limit', count: order.machine.max_items_per_order))
+               I18n.t('orders.errors.exceeds_machine_max_items_limit', count: order.machine.max_items_per_order))
   end
 
   def sufficient_stock
@@ -72,7 +72,8 @@ class LineItem < ApplicationRecord
     return if stock >= quantity.to_i
 
     errors.add(:base,
-               I18n.t('errors.orders.required_quantity_is_not_available_in_the_machine', product_name: variant.name))
+               I18n.t('orders.errors.required_quantity_is_not_available_in_the_machine',
+                      product_name: variant.name))
   end
 
   def available_quantity

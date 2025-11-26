@@ -18,7 +18,10 @@ Doorkeeper.configure do
                     end
     end
     authenticated_user = User.authenticate(params[:mobile_number], params[:password])
-    raise Doorkeeper::Errors::DoorkeeperError, I18n.t('doorkeeper.errors.invalid_credentials') unless authenticated_user
+    unless authenticated_user
+      raise Doorkeeper::Errors::DoorkeeperError,
+            I18n.t('user.authentication.errors.invalid_credentials')
+    end
 
     authenticated_user
   end
