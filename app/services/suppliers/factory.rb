@@ -3,8 +3,7 @@
 module Suppliers
   class Factory
     SUPPLIER_SERVICES = {
-      'vendlife' => Suppliers::VendlifeService,
-      'reyah' => Suppliers::ReyahService
+      'vendlife' => Suppliers::VendlifeService
     }.freeze
 
     def self.build(supplier)
