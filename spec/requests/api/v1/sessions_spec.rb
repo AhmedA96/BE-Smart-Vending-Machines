@@ -31,7 +31,7 @@ RSpec.describe 'User Sessions', type: :request do
         let(:credentials) { { mobile_number: user.mobile_number, password: 'wrongpassword' } }
         run_test! do
           expect(response).to have_http_status(:unprocessable_content)
-          expect(response.body).to include('Invalid mobile or password')
+          expect(response.body).to include('Invalid mobile number or password')
         end
       end
 
@@ -39,7 +39,7 @@ RSpec.describe 'User Sessions', type: :request do
         let(:credentials) { { mobile_number: '', password: 'password123' } }
         run_test! do
           expect(response).to have_http_status(:unprocessable_content)
-          expect(response.body).to include('Invalid mobile or password')
+          expect(response.body).to include('Invalid mobile number or password')
         end
       end
     end

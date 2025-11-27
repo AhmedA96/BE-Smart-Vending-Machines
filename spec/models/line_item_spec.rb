@@ -29,7 +29,7 @@ RSpec.describe LineItem, type: :model do
 
         expect(line_item).not_to be_valid
         expect(line_item.errors[:base]).to include(
-          I18n.t('errors.orders.variant_not_available_for_machine')
+          I18n.t('orders.errors.variant_not_available_for_machine')
         )
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe LineItem, type: :model do
 
         expect(line_item).not_to be_valid
         expect(line_item.errors[:base]).to include(
-          I18n.t('errors.orders.exceeds_machine_max_items_limit', count: order.machine.max_items_per_order)
+          I18n.t('orders.errors.exceeds_machine_max_items_limit', count: order.machine.max_items_per_order)
         )
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe LineItem, type: :model do
 
         expect(line_item).not_to be_valid
         expect(line_item.errors[:base]).to include(
-          I18n.t('errors.orders.required_quantity_is_not_available_in_the_machine', product_name: variant.name)
+          I18n.t('orders.errors.required_quantity_is_not_available_in_the_machine', product_name: variant.name)
         )
       end
     end
