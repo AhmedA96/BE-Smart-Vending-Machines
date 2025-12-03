@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'solid_queue_monitor'
+
 Rails.application.routes.draw do
   get '/', to: redirect('/admin')
 
@@ -7,6 +9,8 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
+    mount SolidQueueMonitor::Engine => '/solid_queue'
+    mount SolidQueueDashboard::Engine, at: '/solid-queue'
   end
 
   # Authenticated Avo panel

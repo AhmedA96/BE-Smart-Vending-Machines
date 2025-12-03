@@ -31,7 +31,7 @@ module Api
 
       def checkout
         if Rails.env.production? && !@order.ensure_machine_online?
-          render json: { errors: I18n.t('errors.orders.machine_offline') },
+          render json: { errors: I18n.t('orders.errors.machine_offline') },
                  status: :unprocessable_content
           return
         end
@@ -42,8 +42,9 @@ module Api
 
       def status
         unless Rails.env.production?
-          render json: { order_number: @order.number, status: 'ready',
-                         message: 'Order is ready to be dispensed (mocked)' }
+
+          @order.update(status: 'dispensed')
+          render json: { order_number: @order.number, status: @order.status }
           return
         end
 

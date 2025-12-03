@@ -25,7 +25,7 @@ module Api
           else
             render json: {
               error: current_user.errors.full_messages.first
-            }, status: :unprocessable_entity
+            }, status: :unprocessable_content
           end
         end
 
@@ -44,7 +44,7 @@ module Api
             render json: {
               error: I18n.t('user.password_reset.send_failed'),
               details: result[:error]
-            }, status: :unprocessable_entity
+            }, status: :unprocessable_content
           end
         end
 
@@ -63,7 +63,7 @@ module Api
           else
             render json: {
               error: result[:error]
-            }, status: :unprocessable_entity
+            }, status: :unprocessable_content
           end
         end
 

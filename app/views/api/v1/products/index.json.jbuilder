@@ -4,7 +4,7 @@ json.products do
   json.array! @products do |product|
     json.partial! 'product', product: product
 
-    total_stock = product.variants.sum { |variant| variant.machine_stock(@machine).to_i }
+    total_stock = product.variants.sum { |variant| variant.machine_available_stock(@machine).to_i }
     json.stock_available total_stock.positive?
     json.total_stock total_stock
 
@@ -13,7 +13,7 @@ json.products do
     if master_variant
       json.master_variant do
         json.extract! master_variant, :id, :name, :presentation, :sku, :is_master, :max_orderable_quantity
-        json.stock master_variant.machine_stock(@machine).to_i
+        json.stock master_variant.machine_available_stock(@machine).to_i
 
         if @machine&.price_list
           price_item = @machine.price_list.price_list_items.find_by(variant_id: master_variant.id)

@@ -12,24 +12,25 @@ module Api
       def send_verification_code
         mobile_number = params[:mobile_number]
 
-        if Rails.env.development?
-          verification_code = '123456'
-          MobileVerifications::Create.call(mobile_number, verification_code, @user)
-          result = { success: true, code: verification_code }
-        else
-          result = Verification::Mobile.send_code(mobile_number, @user)
-        end
+        result = if Rails.env.production?
+                   Verification::Mobile.send_code(mobile_number, @user)
+                 else
+                   verification_code = '123456'
+                   MobileVerifications::Create.call(mobile_number, verification_code, @user)
+                   { success: true, code: verification_code }
+                 end
 
         if result[:success]
           response_data = { message: I18n.t('verification.mobile.code_sent') }
-          response_data[:verification_code] = result[:code] if Rails.env.development?
+
+          response_data[:verification_code] = result[:code] unless Rails.env.production?
 
           render json: response_data, status: :ok
         else
           render json: {
             error: I18n.t('verification.mobile.errors.send_failed'),
             details: result[:error]
-          }, status: :unprocessable_entity
+          }, status: :unprocessable_content
         end
       end
 
