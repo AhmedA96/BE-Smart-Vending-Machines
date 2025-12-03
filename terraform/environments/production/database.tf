@@ -40,7 +40,7 @@ resource "aws_rds_cluster" "main" {
 
   # Performance and availability
   enabled_cloudwatch_logs_exports = ["postgresql"] # Send logs to CloudWatch
-  deletion_protection             = true           # Prevent accidental deletion
+  deletion_protection             = false          # Allow deletion via Terraform
   storage_encrypted               = true           # Encrypt data at rest
   skip_final_snapshot             = true           # Skip snapshot on deletion
 
