@@ -65,6 +65,12 @@ variable "db_password" {
   sensitive   = true
 }
 
+variable "db_allocated_storage" {
+  description = "Initial database storage in GB"
+  type        = number
+  default     = 50
+}
+
 variable "db_backup_retention_period" {
   description = "Database backup retention in days"
   type        = number
