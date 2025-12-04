@@ -1,25 +1,16 @@
 ################################################################################
-# Auto Scaling Group for Application Servers
+# Auto Scaling Group for Application Servers - SINGLE INSTANCE CONFIGURATION
 #
-# This configuration creates a Launch Template and Auto Scaling Group
-# that automatically scales app servers based on CPU utilization.
-#
-# Key features:
-# - Launch template with security group, IAM role, and user data script
-# - Auto Scaling Group with min/max/desired capacity
-# - Scaling policies based on CPU utilization
-# - Target group attachment for load balancer
-# - Termination policies for graceful replacement
+# Updated to run only 1 application server instance for cost optimization.
+# Changes made:
+# - min_size = 1, max_size = 1, desired_capacity = 1
+# - Disabled auto-scaling policies (not needed for single instance)
+# - Kept health checks for automatic recovery if instance fails
 ################################################################################
 
 # ==============================================================================
 # 1. IAM Role for EC2 Instances
 # ==============================================================================
-# Allows app servers to:
-# - Read secrets from AWS Secrets Manager
-# - Access S3 for backups/storage
-# - CloudWatch logs
-# - Systems Manager Session Manager (SSM)
 
 resource "aws_iam_role" "app_role" {
   name_prefix = "${var.project_name}-app-role-"
@@ -174,13 +165,12 @@ resource "aws_launch_template" "app" {
 }
 
 # ==============================================================================
-# 3. Auto Scaling Group
+# 3. Auto Scaling Group - SINGLE INSTANCE
 # ==============================================================================
-# Automatically launches/terminates instances based on demand
 
 resource "aws_autoscaling_group" "app" {
   name_prefix         = "app-"
-  vpc_zone_identifier = [aws_subnet.private_app_1.id, aws_subnet.private_app_2.id]
+  vpc_zone_identifier = [aws_subnet.private_app_1.id] # Single subnet only
 
   min_size         = var.app_min_capacity
   max_size         = var.app_max_capacity
@@ -203,14 +193,13 @@ resource "aws_autoscaling_group" "app" {
     "Default"
   ]
 
-  # Enable capacity rebalancing (for Spot instances in future)
   capacity_rebalance = false
 
-  # Instance refresh (for rolling updates)
+  # Instance refresh for updates
   instance_refresh {
     strategy = "Rolling"
     preferences {
-      min_healthy_percentage = 50
+      min_healthy_percentage = 0 # Allow full replacement for single instance
     }
   }
 
@@ -239,68 +228,10 @@ resource "aws_autoscaling_group" "app" {
 }
 
 # ==============================================================================
-# 4. Scaling Policies
+# 4. Scaling Policies - DISABLED FOR SINGLE INSTANCE
 # ==============================================================================
-
-# Scale UP when CPU > 70%
-resource "aws_autoscaling_policy" "app_scale_up" {
-  name                   = "${var.project_name}-app-scale-up"
-  scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300 # 5 minutes between scale events
-  autoscaling_group_name = aws_autoscaling_group.app.name
-}
-
-# Scale DOWN when CPU < 30%
-resource "aws_autoscaling_policy" "app_scale_down" {
-  name                   = "${var.project_name}-app-scale-down"
-  scaling_adjustment     = -1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
-  autoscaling_group_name = aws_autoscaling_group.app.name
-}
-
-# CloudWatch Alarm: Scale UP
-resource "aws_cloudwatch_metric_alarm" "app_scale_up_alarm" {
-  alarm_name          = "${var.project_name}-app-scale-up-alarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "300" # 5 minutes
-  statistic           = "Average"
-  threshold           = tostring(var.app_scale_up_cpu_threshold)
-  alarm_description   = "Scale up when CPU > ${var.app_scale_up_cpu_threshold}%"
-  alarm_actions       = [aws_autoscaling_policy.app_scale_up.arn]
-  treat_missing_data  = "notBreaching"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.app.name
-  }
-
-  depends_on = [aws_autoscaling_policy.app_scale_up]
-}
-
-# CloudWatch Alarm: Scale DOWN
-resource "aws_cloudwatch_metric_alarm" "app_scale_down_alarm" {
-  alarm_name          = "${var.project_name}-app-scale-down-alarm"
-  comparison_operator = "LessThanThreshold"
-  evaluation_periods  = "4" # More evaluations before scaling down
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "300"
-  statistic           = "Average"
-  threshold           = tostring(var.app_scale_down_cpu_threshold)
-  alarm_description   = "Scale down when CPU < ${var.app_scale_down_cpu_threshold}%"
-  alarm_actions       = [aws_autoscaling_policy.app_scale_down.arn]
-  treat_missing_data  = "notBreaching"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.app.name
-  }
-
-  depends_on = [aws_autoscaling_policy.app_scale_down]
-}
+# Scaling policies removed as they're not needed for single instance setup.
+# The ASG will maintain exactly 1 instance and replace it if it fails.
 
 # ==============================================================================
 # 5. Data Source: Ubuntu AMI
@@ -323,108 +254,38 @@ data "aws_ami" "ubuntu" {
 }
 
 # ==============================================================================
-# App Server Auto Scaling Notes
+# Single Instance Configuration Notes
 # ==============================================================================
 #
-# LAUNCH TEMPLATE:
-# - Defines how instances are launched
-# - Includes security groups, IAM roles, user data
-# - Can be versioned for rolling updates
-# - Launch template used instead of Launch Configuration
-#   (Launch Configuration is deprecated)
+# CHANGES FROM MULTI-INSTANCE SETUP:
+# ✓ min_size = 1, max_size = 1, desired_capacity = 1
+# ✓ Removed auto-scaling policies (no CPU-based scaling)
+# ✓ Removed CloudWatch alarms for scaling
+# ✓ Uses single subnet only
+# ✓ min_healthy_percentage = 0 for instance refresh
 #
-# AUTO SCALING GROUP:
-# - Launches instances from template
-# - Maintains desired capacity
-# - Replaces unhealthy instances
-# - Distributes across multiple subnets (AZs)
-# - Attaches instances to target group
+# WHAT STILL WORKS:
+# ✓ Automatic instance replacement if health check fails
+# ✓ Load balancer health checks
+# ✓ Rolling updates via instance refresh
+# ✓ CloudWatch monitoring
+# ✓ SSM Session Manager access
 #
-# HEALTH CHECKS:
-# - Type: ELB (use load balancer health checks)
-# - Grace period: 300 seconds (5 minutes)
-# - Time for instance to boot and become healthy
-# - If health check fails 3x, instance is replaced
+# TRADE-OFFS:
+# ✓ Reduced cost: ~50-75% savings on EC2 costs
+# ✗ No horizontal scaling during traffic spikes
+# ✗ Brief downtime during instance replacement/updates
+# ✗ Single point of failure
 #
-# SCALING POLICIES:
-# - Scale UP when CPU > 70% for 2 periods (10 minutes)
-# - Scale DOWN when CPU < 30% for 4 periods (20 minutes)
-# - Cooldown prevents rapid scaling
-# - Min: 2, Max: 4, can scale to 1 instance if needed
+# RECOMMENDED FOR:
+# - Development environments
+# - Staging environments
+# - Low-traffic production (< 1000 requests/min)
+# - Cost-sensitive deployments
 #
-# TERMINATION POLICIES:
-# - OldestLaunchTemplate: Remove instances with old launch template
-# - Default: Balanced termination
-# - Ensures rolling updates work smoothly
-#
-# INSTANCE REFRESH:
-# - Rolling updates: Replace instances gradually
-# - Min healthy percentage: 50% (keep at least 1 instance healthy)
-# - Useful for deployments without downtime
-#
-# IAM ROLE PERMISSIONS:
-# - Secrets Manager: Read database/Redis/app credentials
-# - S3: Read/write external storage
-# - CloudWatch: Write logs
-# - SSM: Session Manager (for SSH without key pairs)
-#
-# USER DATA SCRIPT (user_data_app.sh):
-# - Runs on instance startup
-# - Updates packages
-# - Installs Docker (if using containers)
-# - Pulls application code
-# - Starts application server
-# - Configures logging
+# COST IMPACT:
+# Before: 2-4 instances × $30/month = $60-120/month
+# After:  1 instance × $30/month = $30/month
+# Savings: $30-90/month (~50-75%)
 #
 # ==============================================================================
-# Deployment Strategy (Future)
-# ==============================================================================
-#
-# Blue-Green Deployment:
-# 1. Create new launch template version (Green)
-# 2. Create new ASG with Green template
-# 3. Update load balancer target group
-# 4. Verify Green is healthy
-# 5. Delete Blue ASG
-#
-# Rolling Deployment (Current):
-# 1. Update launch template
-# 2. Trigger instance refresh
-# 3. ASG replaces instances one by one
-# 4. Load balancer keeps healthy instance in rotation
-# 5. Zero downtime (if min 2 instances)
-#
-# Canary Deployment:
-# 1. Route 5% of traffic to new version
-# 2. Monitor for errors
-# 3. Gradually increase traffic
-# 4. Full rollout or rollback
-#
-# ==============================================================================
-# Monitoring & Debugging
-# ==============================================================================
-#
-# Key metrics to monitor:
-# - GroupDesiredCapacity: Desired vs actual instances
-# - GroupInServiceInstances: Healthy instances
-# - GroupPendingInstances: Starting up
-# - GroupTerminatingInstances: Shutting down
-# - GroupTotalInstances: Total across all states
-#
-# Common issues:
-# - Instances failing health check:
-#   → Check /up endpoint
-#   → Verify security groups allow ALB → App
-#   → Check application logs
-#
-# - Scaling not happening:
-#   → Check CloudWatch alarms
-#   → Verify CPU metrics are being reported
-#   → Check ASG cooldown
-#
-# - Stuck in pending:
-#   → Check IAM role permissions
-#   → Verify subnet has available IPs
-#   → Check security group allows required traffic
-#
-

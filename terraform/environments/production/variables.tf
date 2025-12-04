@@ -106,19 +106,19 @@ variable "app_instance_type" {
 variable "app_desired_capacity" {
   description = "Desired number of application instances"
   type        = number
-  default     = 2 # 2 app servers for redundancy
+  default     = 1 # 1 app server for redundancy
 }
 
 variable "app_min_capacity" {
   description = "Minimum number of application instances"
   type        = number
-  default     = 2 # Maintain 2 servers minimum
+  default     = 1 # Maintain 1 server minimum
 }
 
 variable "app_max_capacity" {
   description = "Maximum number of application instances"
   type        = number
-  default     = 4 # Allow scaling up to 4 under load
+  default     = 1 # Allow scaling up to 1 under load
 }
 
 # Worker Configuration
@@ -131,19 +131,19 @@ variable "worker_instance_type" {
 variable "worker_desired_capacity" {
   description = "Desired number of worker instances"
   type        = number
-  default     = 2 # 2 workers for redundancy and reliability
+  default     = 1 # 1 worker for redundancy and reliability
 }
 
 variable "worker_min_capacity" {
   description = "Minimum number of worker instances"
   type        = number
-  default     = 2 # Keep 2 workers running for fault tolerance
+  default     = 1 # Keep 1 worker running for fault tolerance
 }
 
 variable "worker_max_capacity" {
   description = "Maximum number of worker instances"
   type        = number
-  default     = 2 # Scale to 2 workers if queue gets large
+  default     = 1 # Scale to 1 worker if queue gets large
 }
 
 # Domain Configuration

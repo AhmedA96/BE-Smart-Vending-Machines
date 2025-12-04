@@ -1,21 +1,16 @@
 ################################################################################
-# Auto Scaling Group for Worker Servers
+# Auto Scaling Group for Worker Servers - SINGLE INSTANCE CONFIGURATION
 #
-# Worker servers process background jobs from Redis queue.
-# This configuration creates a separate ASG for workers with different
-# scaling policies (based on queue depth instead of CPU).
-#
-# Key differences from app servers:
-# - Not behind load balancer
-# - Scales based on Redis queue depth
-# - Processes async jobs (long-running tasks)
-# - Can tolerate longer startup time
+# Updated to run only 1 worker server instance for cost optimization.
+# Changes made:
+# - min_size = 1, max_size = 1, desired_capacity = 1
+# - Disabled auto-scaling policies (not needed for single instance)
+# - Kept health checks for automatic recovery if instance fails
 ################################################################################
 
 # ==============================================================================
 # 1. IAM Role for Worker Instances
 # ==============================================================================
-# Similar to app servers but may not need all permissions
 
 resource "aws_iam_role" "worker_role" {
   name_prefix = "${var.project_name}-worker-role-"
@@ -124,12 +119,12 @@ resource "aws_launch_template" "worker" {
 }
 
 # ==============================================================================
-# 3. Auto Scaling Group for Workers
+# 3. Auto Scaling Group for Workers - SINGLE INSTANCE
 # ==============================================================================
 
 resource "aws_autoscaling_group" "worker" {
   name_prefix         = "worker-"
-  vpc_zone_identifier = [aws_subnet.private_app_1.id, aws_subnet.private_app_2.id]
+  vpc_zone_identifier = [aws_subnet.private_app_1.id] # Single subnet only
 
   min_size         = var.worker_min_capacity
   max_size         = var.worker_max_capacity
@@ -154,7 +149,7 @@ resource "aws_autoscaling_group" "worker" {
   instance_refresh {
     strategy = "Rolling"
     preferences {
-      min_healthy_percentage = 50
+      min_healthy_percentage = 0 # Allow full replacement for single instance
     }
   }
 
@@ -181,145 +176,54 @@ resource "aws_autoscaling_group" "worker" {
 }
 
 # ==============================================================================
-# 4. Scaling Policies - CPU Based (Simple)
+# 4. Scaling Policies - DISABLED FOR SINGLE INSTANCE
 # ==============================================================================
-# Note: For production, implement queue-depth-based scaling
-
-# Scale UP when CPU > 60%
-resource "aws_autoscaling_policy" "worker_scale_up" {
-  name                   = "${var.project_name}-worker-scale-up"
-  scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
-  autoscaling_group_name = aws_autoscaling_group.worker.name
-}
-
-# Scale DOWN when CPU < 20%
-resource "aws_autoscaling_policy" "worker_scale_down" {
-  name                   = "${var.project_name}-worker-scale-down"
-  scaling_adjustment     = -1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
-  autoscaling_group_name = aws_autoscaling_group.worker.name
-}
-
-# CloudWatch Alarm: Scale UP
-resource "aws_cloudwatch_metric_alarm" "worker_scale_up_alarm" {
-  alarm_name          = "${var.project_name}-worker-scale-up-alarm"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "300"
-  statistic           = "Average"
-  threshold           = tostring(var.worker_scale_up_cpu_threshold)
-  alarm_description   = "Scale up workers when CPU > ${var.worker_scale_up_cpu_threshold}%"
-  alarm_actions       = [aws_autoscaling_policy.worker_scale_up.arn]
-  treat_missing_data  = "notBreaching"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.worker.name
-  }
-}
-
-# CloudWatch Alarm: Scale DOWN
-resource "aws_cloudwatch_metric_alarm" "worker_scale_down_alarm" {
-  alarm_name          = "${var.project_name}-worker-scale-down-alarm"
-  comparison_operator = "LessThanThreshold"
-  evaluation_periods  = "4"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "300"
-  statistic           = "Average"
-  threshold           = tostring(var.worker_scale_down_cpu_threshold)
-  alarm_description   = "Scale down workers when CPU < ${var.worker_scale_down_cpu_threshold}%"
-  alarm_actions       = [aws_autoscaling_policy.worker_scale_down.arn]
-  treat_missing_data  = "notBreaching"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.worker.name
-  }
-}
+# All scaling policies and CloudWatch alarms removed.
+# Single instance will process all background jobs.
+# If queue depth becomes too high, you'll need to manually increase capacity
+# or implement queue-depth monitoring alerts.
 
 # ==============================================================================
-# 5. Custom Metric: Queue Depth (Future Enhancement)
-# ==============================================================================
-# For production, implement queue depth monitoring:
-#
-# In your worker code, periodically publish queue depth to CloudWatch:
-#
-# aws cloudwatch put-metric-data \
-#   --namespace VendingSystem \
-#   --metric-name RedisQueueDepth \
-#   --value <queue_length> \
-#   --unit Count \
-#   --region me-south-1
-#
-# Then create scaling policy based on queue depth:
-#
-# resource "aws_autoscaling_policy" "worker_scale_up_queue" {
-#   name                   = "${var.project_name}-worker-scale-up-queue"
-#   autoscaling_group_name = aws_autoscaling_group.worker.name
-#   policy_type            = "TargetTrackingScaling"
-#
-#   target_tracking_configuration {
-#     predefined_metric_specification {
-#       predefined_metric_type = "ASGAverageCPUUtilization"
-#     }
-#     target_value = 0.7
-#   }
-# }
-#
-# Or use custom metrics:
-#
-# resource "aws_autoscaling_policy" "worker_queue_based" {
-#   name                   = "${var.project_name}-worker-queue-based"
-#   autoscaling_group_name = aws_autoscaling_group.worker.name
-#   policy_type            = "TargetTrackingScaling"
-#
-#   target_tracking_configuration {
-#     customized_metric_specification {
-#       metric_name = "RedisQueueDepth"
-#       namespace   = "VendingSystem"
-#       statistic   = "Average"
-#     }
-#     target_value = 100  # Jobs per worker
-#   }
-# }
-
-# ==============================================================================
-# Worker Scaling Strategy Notes
+# Single Worker Instance Notes
 # ==============================================================================
 #
-# DIFFERENCES FROM APP SERVERS:
-# 1. Not behind ALB (no target group)
-# 2. No health checks from ALB (uses EC2 status checks)
-# 3. Longer startup time acceptable (background jobs not time-critical)
-# 4. Should scale based on queue depth, not CPU
+# CHANGES FROM MULTI-INSTANCE SETUP:
+# ✓ min_size = 1, max_size = 1, desired_capacity = 1
+# ✓ Removed all auto-scaling policies
+# ✓ Removed CloudWatch alarms for scaling
+# ✓ Uses single subnet only
+# ✓ min_healthy_percentage = 0 for instance refresh
 #
-# CURRENT IMPLEMENTATION:
-# - CPU-based scaling (simple, no external monitoring needed)
-# - Scale up at 60% CPU (more aggressive than app servers)
-# - Scale down at 20% CPU (allow to cool off before removing)
-# - Min: 2, Max: 5
+# WHAT STILL WORKS:
+# ✓ Automatic instance replacement if health check fails
+# ✓ EC2 health checks
+# ✓ Rolling updates via instance refresh
+# ✓ CloudWatch monitoring
+# ✓ SSM Session Manager access
+# ✓ Background job processing
 #
-# FUTURE IMPROVEMENTS:
-# 1. Publish queue depth to CloudWatch custom metric
-# 2. Scale based on queue depth (jobs/worker ratio)
-# 3. Target: 100 jobs per worker in queue
-# 4. Minimum 1 job per worker to keep processing
+# TRADE-OFFS:
+# ✓ Reduced cost: ~50-80% savings on worker EC2 costs
+# ✗ No horizontal scaling during high job volume
+# ✗ Jobs may queue up during peak times
+# ✗ Brief processing pause during instance replacement
+# ✗ Single point of failure for background jobs
 #
-# IMPLEMENTATION:
-# In your worker process (Sidekiq, Resque, etc.):
-#   - Get queue length: LLEN vending_queue
-#   - Divide by workers: jobs_per_worker = queue_length / num_workers
-#   - If jobs_per_worker > 100: scale up
-#   - If jobs_per_worker < 10: scale down
+# MONITORING RECOMMENDATIONS:
+# - Set up CloudWatch alarm for high Redis queue depth
+# - Alert when queue > 1000 jobs
+# - Monitor job processing rate
+# - Track failed job count
+#
+# WHEN TO SCALE BACK TO MULTIPLE WORKERS:
+# - Consistent queue depth > 500 jobs
+# - Job processing time > 5 minutes per job
+# - Critical time-sensitive background jobs
+# - High job failure rate due to timeouts
 #
 # COST IMPACT:
-# - With queue-depth scaling: Better resource utilization
-# - With CPU scaling: Simpler to implement
-# - Balance: Start with CPU, add queue-depth scaling in Phase 2
+# Before: 2-5 workers × $30/month = $60-150/month
+# After:  1 worker × $30/month = $30/month
+# Savings: $30-120/month (~50-80%)
 #
 # ==============================================================================
-
