@@ -30,7 +30,12 @@ resource "aws_secretsmanager_secret" "db_credentials" {
   name                    = "${var.project_name}/${var.environment}/db/credentials"
   description             = "Aurora PostgreSQL master credentials for ${var.project_name}"
   kms_key_id              = aws_kms_key.secrets.id
-  recovery_window_in_days = 7 # Allow recovery if accidentally deleted
+  recovery_window_in_days = 0 # Immediate delete for clean terraform destroy/apply cycles
+
+  lifecycle {
+    # Prevent errors when secret already exists - import instead of recreate
+    ignore_changes = [name]
+  }
 
   tags = {
     Name        = "${var.project_name}-db-credentials"
@@ -59,7 +64,11 @@ resource "aws_secretsmanager_secret" "redis_credentials" {
   name                    = "${var.project_name}/${var.environment}/redis/credentials"
   description             = "Redis ElastiCache credentials for ${var.project_name}"
   kms_key_id              = aws_kms_key.secrets.id
-  recovery_window_in_days = 7
+  recovery_window_in_days = 0 # Immediate delete for clean terraform destroy/apply cycles
+
+  lifecycle {
+    ignore_changes = [name]
+  }
 
   tags = {
     Name        = "${var.project_name}-redis-credentials"
@@ -84,7 +93,11 @@ resource "aws_secretsmanager_secret" "app_secrets" {
   name                    = "${var.project_name}/${var.environment}/app/secrets"
   description             = "Application secrets: API keys, third-party credentials, etc."
   kms_key_id              = aws_kms_key.secrets.id
-  recovery_window_in_days = 7
+  recovery_window_in_days = 0 # Immediate delete for clean terraform destroy/apply cycles
+
+  lifecycle {
+    ignore_changes = [name]
+  }
 
   tags = {
     Name        = "${var.project_name}-app-secrets"
