@@ -1,3 +1,7 @@
+# ============================================
+# VPC Outputs
+# ============================================
+
 output "vpc_id" {
   description = "VPC ID"
   value       = aws_vpc.main.id
@@ -38,6 +42,10 @@ output "private_db_subnet_b_id" {
   value       = aws_subnet.private_db_b.id
 }
 
+# ============================================
+# Load Balancer Outputs
+# ============================================
+
 output "load_balancer_dns" {
   description = "Load Balancer DNS name"
   value       = aws_lb.main.dns_name
@@ -53,14 +61,18 @@ output "app_target_group_arn" {
   value       = aws_lb_target_group.app.arn
 }
 
+# ============================================
+# RDS Aurora Outputs (Updated for Single Instance)
+# ============================================
+
 output "rds_endpoint" {
-  description = "Aurora cluster writer endpoint (for writes)"
+  description = "Aurora cluster writer endpoint (for all database operations)"
   value       = aws_rds_cluster.main.endpoint
   sensitive   = true
 }
 
 output "rds_reader_endpoint" {
-  description = "Aurora cluster reader endpoint (for read-only queries)"
+  description = "Aurora cluster reader endpoint (points to primary since no replicas)"
   value       = aws_rds_cluster.main.reader_endpoint
   sensitive   = true
 }
@@ -75,16 +87,29 @@ output "rds_primary_instance_id" {
   value       = aws_rds_cluster_instance.primary.identifier
 }
 
-output "rds_replica_instance_id" {
-  description = "Aurora read replica instance identifier"
-  value       = aws_rds_cluster_instance.replica.identifier
+output "rds_port" {
+  description = "Aurora database port"
+  value       = aws_rds_cluster.main.port
 }
+
+output "rds_database_name" {
+  description = "Aurora database name"
+  value       = aws_rds_cluster.main.database_name
+}
+
+# ============================================
+# Redis Outputs
+# ============================================
 
 output "redis_endpoint" {
   description = "Redis primary node endpoint"
   value       = aws_elasticache_replication_group.redis.primary_endpoint_address
   sensitive   = true
 }
+
+# ============================================
+# Auto Scaling Group Outputs
+# ============================================
 
 output "app_asg_name" {
   description = "Application Auto Scaling Group name"
@@ -95,6 +120,10 @@ output "worker_asg_name" {
   description = "Worker Auto Scaling Group name"
   value       = aws_autoscaling_group.worker.name
 }
+
+# ============================================
+# Security Group Outputs
+# ============================================
 
 output "security_group_alb_id" {
   description = "Security group ID for ALB"
@@ -115,6 +144,10 @@ output "security_group_database_id" {
   description = "Security group ID for database"
   value       = aws_security_group.database.id
 }
+
+# ============================================
+# S3 Bucket Outputs
+# ============================================
 
 output "s3_backups_bucket_name" {
   description = "S3 bucket name for backups"
@@ -214,4 +247,3 @@ output "certificate_domain_validation_options" {
     }
   ]
 }
-

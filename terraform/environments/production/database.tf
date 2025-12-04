@@ -39,13 +39,14 @@ resource "aws_rds_cluster" "main" {
   preferred_maintenance_window = var.db_maintenance_window
 
   # Performance and availability
-  enabled_cloudwatch_logs_exports = ["postgresql"] # Send logs to CloudWatch
-  deletion_protection             = false          # Allow deletion via Terraform
-  storage_encrypted               = true           # Encrypt data at rest
-  skip_final_snapshot             = true           # Skip snapshot on deletion
+  enabled_cloudwatch_logs_exports = ["postgresql"]
+  deletion_protection             = true  # Protected from accidental deletion
+  storage_encrypted               = true  # Encrypt data at rest
+  skip_final_snapshot             = false # Create snapshot on deletion
+  final_snapshot_identifier       = "${var.project_name}-aurora-final-snapshot-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"
 
-  # Multi-AZ configuration (set to true for production across AZs)
-  availability_zones = var.availability_zones
+  # Single AZ configuration (cost optimization)
+  availability_zones = [var.availability_zones[0]] # Use only first AZ
 
   tags = {
     Name = "${var.project_name}-aurora-cluster"
@@ -54,9 +55,10 @@ resource "aws_rds_cluster" "main" {
   # Ignore changes that would force cluster replacement
   lifecycle {
     ignore_changes = [
-      engine_version,      # AWS auto-upgrades minor versions
-      availability_zones,  # Can't change AZs on existing cluster
-      master_username,     # Can't change username on existing cluster
+      engine_version,             # AWS auto-upgrades minor versions
+      availability_zones,         # Can't change AZs on existing cluster
+      master_username,            # Can't change username on existing cluster
+      final_snapshot_identifier,  # Timestamp will change, ignore it
     ]
   }
 
@@ -64,10 +66,10 @@ resource "aws_rds_cluster" "main" {
 }
 
 # ==============================================================================
-# 2. Aurora Primary Instance (Writer Node)
+# 2. Aurora Single Instance (Writer Node)
 # ==============================================================================
-# The primary instance is where all writes go.
-# Reads can also go here, but typically you'd use the reader endpoint.
+# Single instance handles both reads and writes
+# Cost-optimized for development/staging environments
 
 resource "aws_rds_cluster_instance" "primary" {
   cluster_identifier  = aws_rds_cluster.main.id
@@ -87,49 +89,21 @@ resource "aws_rds_cluster_instance" "primary" {
 
   tags = {
     Name = "${var.project_name}-aurora-primary"
-    Role = "writer"
+    Role = "writer-reader"
   }
 
   depends_on = [aws_rds_cluster.main]
 }
 
 # ==============================================================================
-# 3. Aurora Read Replica Instance
+# REMOVED: Aurora Read Replica Instance
 # ==============================================================================
-# Read replicas allow you to offload read traffic from the primary.
-# In Aurora, replicas are part of the cluster and share the same storage.
-# If the primary fails, a replica can be promoted to primary instantly.
-
-resource "aws_rds_cluster_instance" "replica" {
-  cluster_identifier  = aws_rds_cluster.main.id
-  identifier          = "${var.project_name}-aurora-replica"
-  instance_class      = var.db_instance_class
-  engine              = aws_rds_cluster.main.engine
-  engine_version      = aws_rds_cluster.main.engine_version
-  publicly_accessible = false # Private subnet - no internet access
-
-  # Monitoring and metrics
-  monitoring_interval          = 60 # Monitor every 60 seconds
-  monitoring_role_arn          = aws_iam_role.rds_monitoring.arn
-  performance_insights_enabled = true
-
-  # When to perform maintenance
-  auto_minor_version_upgrade = true
-
-  tags = {
-    Name = "${var.project_name}-aurora-replica"
-    Role = "reader"
-  }
-
-  depends_on = [aws_rds_cluster_instance.primary]
-}
+# The replica has been removed to reduce costs and simplify the setup.
+# All reads and writes now go through the single primary instance.
 
 # ==============================================================================
-# 4. DB Subnet Group
+# 3. DB Subnet Group
 # ==============================================================================
-# Subnet group tells Aurora which subnets it can use for instances.
-# Must span 2 AZs (AWS requirement), but instances deployed to AZ-a only.
-
 resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-db-subnet-group"
   subnet_ids = [aws_subnet.private_db_a.id, aws_subnet.private_db_b.id]
@@ -200,44 +174,20 @@ resource "aws_iam_role_policy_attachment" "rds_monitoring" {
 #   DATABASE_URL=postgresql://master:password@endpoint:5432/vendingdb
 
 # ==============================================================================
-# Cost Breakdown (Updated for Aurora)
+# Updated Cost Breakdown
 # ==============================================================================
 #
-# Aurora Primary (db.t3.small):    ~$60/month
-# Aurora Replica (db.t3.small):    ~$60/month
-# I/O (estimate 1M requests):      ~$1/month
-# Storage (auto-scaling):          ~$0.10/GB/month
+# Aurora Single Instance (db.t3.small): ~$60/month
+# I/O (estimate 1M requests):           ~$1/month
+# Storage (auto-scaling):               ~$0.10/GB/month
 # 
-# Total Aurora: ~$120/month
-# vs Traditional RDS: ~$80/month
-# Trade-off: +$40/month for automatic failover, HA, and scaling
+# Total: ~$61/month
+# Savings: ~$59/month compared to primary + replica setup
 #
-# Future optimization: Switch to Aurora Serverless v2 for auto-scaling compute
-
-# ==============================================================================
-# How Aurora Failover Works (Automatic)
-# ==============================================================================
+# Trade-offs:
+# ✓ Reduced cost by ~50%
+# ✓ Simpler architecture
+# ✗ No automatic failover to replica
+# ✗ Single point of failure
+# ✗ Cannot offload read traffic
 #
-# Scenario 1: Primary Instance Failure
-# ─────────────────────────────────────
-# 1. Primary instance becomes unhealthy
-# 2. Aurora detects failure within ~30 seconds
-# 3. Automatically promotes replica to primary
-# 4. No manual intervention needed
-# 5. Application reconnects to reader endpoint automatically
-#
-# Scenario 2: Full Cluster Failure
-# ──────────────────────────────────
-# 1. Cluster data replicated across 6 nodes (across AZs/Zones)
-# 2. Data loss is virtually impossible
-# 3. Automatic recovery from backups if all instances fail
-#
-# Scenario 3: Network Partition
-# ───────────────────────────────
-# 1. If primary becomes unreachable from app servers
-# 2. Replica endpoint is still accessible
-# 3. Application can route reads through replica endpoint
-#
-# Note: Single AZ means no automatic failover across AZs.
-# If the entire AZ fails, requires manual failover to another AZ (if configured).
-
