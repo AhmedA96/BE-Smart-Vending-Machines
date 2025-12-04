@@ -118,7 +118,7 @@ variable "app_min_capacity" {
 variable "app_max_capacity" {
   description = "Maximum number of application instances"
   type        = number
-  default     = 1 # Allow scaling up to 1 under load
+  default     = 2 # Allow scaling up to 2 under load
 }
 
 # Worker Configuration
@@ -143,7 +143,7 @@ variable "worker_min_capacity" {
 variable "worker_max_capacity" {
   description = "Maximum number of worker instances"
   type        = number
-  default     = 1 # Scale to 1 worker if queue gets large
+  default     = 2 # Scale to 2 workers if queue gets large
 }
 
 # Domain Configuration
