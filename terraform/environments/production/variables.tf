@@ -433,3 +433,52 @@ variable "bastion_admin_ips" {
   type        = list(string)
   default     = ["154.179.17.169/32"] # Your public IP
 }
+
+# ============================================
+# Cloudflare Configuration
+# ============================================
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token for DNS management"
+  type        = string
+  sensitive   = true
+  default     = ""
+  
+  validation {
+    condition     = var.cloudflare_api_token != "" || var.cloudflare_zone_id == ""
+    error_message = "cloudflare_api_token must be set when cloudflare_zone_id is provided."
+  }
+}
+
+variable "cloudflare_zone_id" {
+  description = "Cloudflare Zone ID (domain ID)"
+  type        = string
+  default     = ""
+  
+  validation {
+    condition     = can(regex("^[a-z0-9]{32}$", var.cloudflare_zone_id)) || var.cloudflare_zone_id == ""
+    error_message = "cloudflare_zone_id must be a 32-character hex string or empty."
+  }
+}
+
+variable "cloudflare_proxy_enabled" {
+  description = "Enable Cloudflare proxy (orange cloud) for DNS record"
+  type        = bool
+  default     = true
+  
+  validation {
+    condition     = contains([true, false], var.cloudflare_proxy_enabled)
+    error_message = "cloudflare_proxy_enabled must be true or false."
+  }
+}
+
+variable "enable_acm_validation" {
+  description = "Enable ACM certificate validation via Cloudflare DNS"
+  type        = bool
+  default     = false
+  
+  validation {
+    condition     = contains([true, false], var.enable_acm_validation)
+    error_message = "enable_acm_validation must be true or false."
+  }
+}

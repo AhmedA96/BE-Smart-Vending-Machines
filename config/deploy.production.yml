@@ -57,17 +57,20 @@ builder:
 # SSH CONFIGURATION
 # ============================================
 # SSH proxy through bastion host
-# Bastion: 40.172.242.129 (public IP)
+# Bastion: 158.252.98.228 (public IP) - Updated 2025-12-05
+# Previous IP: 40.172.242.129 (changed after restart - needs Elastic IP)
 # App servers: Private IPs in 10.0.2.x, 10.0.3.x
 #
 # Kamal connects: Your computer → Bastion → App servers
 # 
 # Note: Bastion host is created by Terraform in production subnet
-# Private key should be in ~/.ssh/id_rsa (same key for all servers)
+# Private key should be in ~/.ssh/vending-system-prod.pem
+#
+# TODO: Assign Elastic IP to bastion to prevent IP changes
 
 ssh:
   user: ubuntu
-  proxy: ubuntu@40.172.242.129
+  proxy: ubuntu@158.252.98.228
 
 # ============================================
 # DEPLOYMENT SERVERS
@@ -87,11 +90,19 @@ ssh:
 servers:
   web: 
     hosts: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_production.sh`.split %>
+    env:
+      clear:
+        # IMPORTANT: Must be "false" (string) for web servers
+        # See config/puma.rb - uses explicit == 'true' check
+        # This prevents Solid Queue from starting on web servers
+        SOLID_QUEUE_IN_PUMA: "false"
   job:
     hosts: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_workers.sh`.split %>
     cmd: bin/jobs
     env:
       clear:
+        # IMPORTANT: Must be "true" (string) for worker servers
+        # Only workers should run the Solid Queue supervisor
         SOLID_QUEUE_IN_PUMA: "true"
         JOB_CONCURRENCY: "3"
 

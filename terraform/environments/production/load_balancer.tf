@@ -149,26 +149,15 @@ resource "aws_acm_certificate" "main" {
 }
 
 # ==============================================================================
-# 6. ACM Certificate Validation
+# 6. ACM Certificate Validation (via Cloudflare DNS)
 # ==============================================================================
-# IMPORTANT: Comment this out initially!
+# AUTOMATED: This is now handled in cloudflare_dns.tf
 # 
-# Steps:
-# 1. First apply WITHOUT this resource (keep it commented)
-# 2. Run: terraform output certificate_domain_validation_options
-# 3. Add the DNS CNAME record to Cloudflare
-# 4. Wait 5-15 minutes for DNS propagation
-# 5. Uncomment this resource and apply again
+# The validation automatically creates DNS records via Cloudflare provider
+# and waits for certificate validation when enable_acm_validation=true
 #
-# This avoids terraform hanging while waiting for DNS records you haven't added yet
-
-# resource "aws_acm_certificate_validation" "main" {
-#   certificate_arn = aws_acm_certificate.main.arn
-#
-#   timeouts {
-#     create = "45m"
-#   }
-# }
+# Previous manual process is no longer needed!
+# Just set: enable_acm_validation = true in terraform.tfvars after DNS propagates
 
 # ==============================================================================
 # 7. Listener Rule (Optional Path-Based Routing)

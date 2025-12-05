@@ -244,6 +244,54 @@ AWS_PROFILE=vndg aws ec2 describe-instances ...
 
 ## Troubleshooting
 
+### Database Not Found (500 Error)
+
+**Symptom:** `ActiveRecord::NoDatabaseError (Database not found: vndgme_production)`
+
+**Solution:**
+```bash
+# Create the database
+kamal app exec -d production "bin/rails db:create"
+
+# Run migrations (skip postgis if it already exists)
+kamal app exec -d production "bin/rails db:migrate SKIP_POSTGIS_EXTENSION=true"
+
+# Verify
+curl https://api.vndg.me/users/sign_in  # Should return login page (200)
+```
+
+**Note:** When ASG scales up with new instances, they need the database migrations applied.
+
+### Solid Queue Configuration Error
+
+**Symptom:** Container keeps exiting with "Solid Queue has gone away"
+
+**Root Cause:** Puma config was checking `if ENV['SOLID_QUEUE_IN_PUMA']` which treats string `"false"` as truthy in Ruby
+
+**Fix:** Changed to `if ENV['SOLID_QUEUE_IN_PUMA'] == 'true'` in `config/puma.rb`
+
+**Details:**
+- Web servers should have `SOLID_QUEUE_IN_PUMA: "false"`
+- Worker servers should have `SOLID_QUEUE_IN_PUMA: "true"`
+- The check must be explicit string comparison, not just truthiness
+
+### Docker Permissions Error
+
+**Symptom:** `permission denied while trying to connect to the docker API at unix:///var/run/docker.sock`
+
+**Solution:** Add ubuntu user to docker group:
+```bash
+# Via SSH to instance
+sudo usermod -aG docker ubuntu
+
+# Or via Systems Manager
+aws ssm start-session --target i-XXXXXXXXX --region me-central-1 \
+  --document-name "AWS-StartInteractiveCommand" \
+  --parameters 'command=["sudo usermod -aG docker ubuntu"]'
+```
+
+**When:** New instances from ASG don't have ubuntu in docker group
+
 ### Instances Still Restarting?
 
 1. Check grace period: `aws autoscaling describe-auto-scaling-groups --region me-central-1 --query "AutoScalingGroups[].HealthCheckGracePeriod"`

@@ -1,0 +1,122 @@
+# ============================================================================
+# TERRAFORM VARIABLES - CLOUDFLARE DNS CONFIGURATION
+# ============================================================================
+#
+# Copy this file to: terraform/environments/production/terraform.tfvars
+# Fill in the values from your AWS and Cloudflare accounts
+#
+# To get Cloudflare credentials:
+# 1. Zone ID: Cloudflare Dashboard → Your Domain → Overview → API → Zone ID
+# 2. API Token: Cloudflare Dashboard → Account Settings → API Tokens → Create Token
+#
+
+# ============================================================================
+# AWS Configuration (from your existing setup)
+# ============================================================================
+
+aws_region   = "me-central-1"
+project_name = "vending-system"
+environment  = "production"
+
+# ============================================================================
+# Domain Configuration
+# ============================================================================
+# Full domain name for your API
+# This will be: api.yourdomain.com (or just yourdomain.com)
+
+domain_name = "api.example.com"
+
+# ============================================================================
+# Cloudflare Configuration (NEW)
+# ============================================================================
+
+# Get from: Cloudflare Dashboard → Account Settings → API Tokens
+# Steps:
+#   1. Click "Create Token"
+#   2. Use "Edit zone DNS" template
+#   3. Select your zone (e.g., example.com)
+#   4. Copy the token
+cloudflare_api_token = "v1.0-abcdef123456..."
+
+# Get from: Cloudflare Dashboard → Your Domain → Overview → API section
+# It's a 32-character hex string
+cloudflare_zone_id = "d1a2b3c4e5f6g7h8i9j0k1l2m3n4o5p6"
+
+# Set to true to enable the CNAME record in Cloudflare (recommended)
+# false = DNS only, true = Cloudflare proxied (orange cloud)
+cloudflare_proxy_enabled = true
+
+# IMPORTANT: Set to false initially!
+# After DNS propagates (5-15 mins), set to true to enable certificate validation
+enable_acm_validation = true
+
+# ============================================================================
+# Database Configuration (existing)
+# ============================================================================
+
+db_name      = "vendingdb"
+db_username  = "vendingadmin"
+db_password  = "your-strong-password-here"  # At least 20 characters
+
+# ============================================================================
+# Application Secrets (existing)
+# ============================================================================
+
+rails_master_key      = "your-rails-master-key-here"
+rails_secret_key_base = "your-secret-key-base-here"
+jwt_secret            = "your-jwt-secret-here"
+
+# ============================================================================
+# Optional: Third-party API Keys
+# ============================================================================
+
+# supplier_api_key      = "..."
+# supplier_api_secret   = "..."
+# payment_provider_key  = "..."
+# sms_provider_key      = "..."
+
+# ============================================================================
+# Deployment Instructions
+# ============================================================================
+#
+# FIRST TIME SETUP:
+# ================
+# 1. Fill in the values above
+# 2. Save as: terraform/environments/production/terraform.tfvars
+# 3. Run: cd terraform/environments/production
+# 4. Run: terraform init
+# 5. Run: terraform plan -out=tfplan
+# 6. Review the plan output
+# 7. Run: terraform apply tfplan
+# 8. Wait 5-15 minutes for DNS propagation
+# 9. Verify: dig api.example.com
+# 10. Update this file: enable_acm_validation = true
+# 11. Run: terraform apply
+# 12. Wait 5-15 minutes for ACM validation
+# 13. Verify: curl -v https://api.example.com/up
+#
+# AFTERWARD:
+# ===========
+# terraform apply          # For updates
+# terraform plan           # To preview changes
+# terraform destroy        # To remove infrastructure (be careful!)
+#
+# ============================================================================
+# Security Notes
+# ============================================================================
+#
+# ⚠️  NEVER commit this file to git with real secrets!
+#
+# Option 1: Use environment variables (recommended)
+#   export TF_VAR_cloudflare_api_token="..."
+#   export TF_VAR_db_password="..."
+#   etc.
+#
+# Option 2: Store in .gitignored tfvars file
+#   Add to .gitignore: terraform.tfvars
+#   Then: git config --global core.excludesfile ~/.gitignore_global
+#
+# Option 3: Use AWS Secrets Manager + Terraform data source
+#   (More complex, but more secure)
+#
+# ============================================================================

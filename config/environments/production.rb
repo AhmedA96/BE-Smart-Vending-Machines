@@ -81,6 +81,10 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [:id]
 
+  # Disable SassC CSS compression to avoid issues with modern CSS syntax
+  # SassC doesn't support modern CSS features like hsl(var(--custom-property))
+  config.assets.css_compressor = nil
+
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
