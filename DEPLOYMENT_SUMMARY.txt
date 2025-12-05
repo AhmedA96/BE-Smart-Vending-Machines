@@ -308,3 +308,45 @@ Developers have clear guides for deployment and troubleshooting.
 ================================================================================
 END OF SUMMARY
 ================================================================================
+
+================================================================================
+TERRAFORM UPDATES (POST-DOCUMENTATION)
+================================================================================
+
+Enhanced EC2 Launch Templates to prevent future issues:
+
+1. terraform/environments/production/autoscaling_app.tf
+   ─────────────────────────────────────────────────────
+   ✅ Enhanced user_data script with:
+      - Step-by-step logging (5 steps)
+      - Output logged to /var/log/app-init.log
+      - Comments linking to troubleshooting docs
+      - Error handling improvements
+   
+   Result: New instances automatically have docker group configured
+
+2. terraform/environments/production/worker_init.sh
+   ──────────────────────────────────────────────
+   ✅ Added troubleshooting documentation reference
+   ✅ Clarified that this fixes docker permission denied errors
+   
+   Result: Clear documentation in init script
+
+PERMANENT FIX BENEFITS:
+
+✓ No manual docker group setup needed when ASG scales up
+✓ All new instances have proper docker permissions from launch
+✓ Logging helps troubleshoot initialization issues
+✓ Future deployments won't hit Issue #1 (Docker Permission Denied)
+
+TERRAFORM COMMIT:
+
+  terraform: enhance EC2 launch templates with improved docker setup
+  and logging
+  
+  - Enhanced app server initialization with comprehensive logging
+  - Added documentation references to troubleshooting guide
+  - Made error handling more robust
+  - Consistent with worker server init script
+
+================================================================================

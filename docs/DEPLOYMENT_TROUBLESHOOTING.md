@@ -24,7 +24,11 @@ aws ssm start-session --target i-XXXXXXXXX --region me-central-1 \
   --parameters 'command=["sudo usermod -aG docker ubuntu"]'
 ```
 
-**Prevention:** Add this to the ASG launch template user data script.
+**Permanent Fix:** ✅ Already configured in Terraform launch templates
+- App servers: `terraform/environments/production/autoscaling_app.tf`
+- Worker servers: `terraform/environments/production/worker_init.sh`
+- Both templates now add ubuntu to docker group during EC2 initialization
+- New instances from ASG scale-up automatically have docker permissions configured
 
 ---
 
