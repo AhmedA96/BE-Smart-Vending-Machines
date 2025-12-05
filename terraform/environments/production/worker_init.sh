@@ -41,6 +41,8 @@ sh get-docker.sh
 rm get-docker.sh
 
 # Add ubuntu user to docker group (required for Kamal deployment)
+# This fix resolves: "permission denied while trying to connect to docker API"
+# See: docs/DEPLOYMENT_TROUBLESHOOTING.md - Issue 1
 echo "[4/4] Configuring Docker permissions..."
 usermod -aG docker ubuntu
 

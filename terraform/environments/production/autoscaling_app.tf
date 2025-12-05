@@ -96,32 +96,58 @@ resource "aws_launch_template" "app" {
     enabled = true
   }
 
-  # User data script - install Docker and start container
+  # User data script - install Docker and prepare for Kamal deployment
   user_data = base64encode(<<-EOF
               #!/bin/bash
+              # App Server Initialization Script
+              # Sets up Docker and prepares for Kamal web deployment
+              # This runs on EC2 instance startup to configure the app server
+              
               set -e
               
+              # Log all output
+              exec > >(tee -a /var/log/app-init.log)
+              exec 2>&1
+              
+              echo "=========================================="
               echo "Initializing app server..."
               echo "Environment: ${var.environment}"
               echo "Region: ${var.aws_region}"
+              echo "=========================================="
               
               # Update system packages
-              echo "Updating system packages..."
+              echo "[1/5] Updating system packages..."
               apt-get update
               apt-get upgrade -y
               
+              # Install required dependencies
+              echo "[2/5] Installing dependencies..."
+              apt-get install -y \
+                curl \
+                wget \
+                git \
+                ca-certificates \
+                gnupg \
+                lsb-release \
+                apt-transport-https \
+                software-properties-common \
+                jq \
+                awscli
+              
               # Install Docker
-              echo "Installing Docker..."
+              echo "[3/5] Installing Docker..."
               curl -fsSL https://get.docker.com -o get-docker.sh
               sh get-docker.sh
               rm get-docker.sh
               
               # Add ubuntu user to docker group (required for Kamal deployment)
-              echo "Configuring Docker permissions..."
+              # This fix resolves: "permission denied while trying to connect to docker API"
+              # See: docs/DEPLOYMENT_TROUBLESHOOTING.md - Issue 1
+              echo "[4/5] Configuring Docker permissions..."
               usermod -aG docker ubuntu
               
               # Start Docker daemon
-              echo "Starting Docker daemon..."
+              echo "[5/5] Starting Docker daemon..."
               systemctl enable docker
               systemctl start docker
               
@@ -136,7 +162,10 @@ resource "aws_launch_template" "app" {
                 sleep 1
               done
               
-              echo "App server initialization complete - ready for Kamal deployment"
+              echo "=========================================="
+              echo "App server initialization complete!"
+              echo "Docker is ready for Kamal deployment"
+              echo "=========================================="
               EOF
   )
 
