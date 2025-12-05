@@ -28,16 +28,16 @@ Start here for production deployments:
   - Log locations
   - Quick recovery steps
 
-### [DEPLOYMENT_FIX_SUMMARY.md](DEPLOYMENT_FIX_SUMMARY.md)
-- **What:** Summary of all issues fixed on Dec 5, 2025
-- **When:** Understanding what was fixed and why
-- **Duration:** 2 min read
+### [DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md)
+- **What:** Complete summary of all deployment work done on Dec 5, 2025
+- **When:** Understanding what was fixed, code changes, and verification
+- **Duration:** 5 min read
 - **Key sections:**
-  - Issue summaries
-  - Root causes
-  - Fixes applied
-  - Verification results
-  - Timeline
+  - Detailed issue analysis
+  - Code changes with explanations
+  - Files changed and why
+  - Complete timeline
+  - Key learnings
 
 ---
 
