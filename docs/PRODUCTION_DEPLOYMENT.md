@@ -312,8 +312,12 @@ aws ssm start-session --target i-XXXXXXXXX --region me-central-1 \
 
 ### Can't SSH via Bastion?
 
-1. Check bastion SG: `aws ec2 describe-security-groups --region me-central-1 --filters "Name=tag:Name,Values=*bastion*"`
-2. Add your IP if needed: `aws ec2 authorize-security-group-ingress --group-id <sg-id> --protocol tcp --port 22 --cidr <your-ip>/32 --region me-central-1`
+See **SSH_BASTION_ACCESS.md** for complete SSH setup guide.
+
+Quick checks:
+1. Verify SSH key in agent: `ssh-add -l | grep vending`
+2. Test bastion: `ssh ubuntu@158.252.98.228`
+3. Check security group: `aws ec2 describe-security-groups --region me-central-1 --filters "Name=tag:Name,Values=*bastion*"`
 
 ---
 
@@ -450,8 +454,8 @@ kamal app status -d production
 # Run command on app
 kamal app exec "bin/rails db:migrate"
 
-# SSH to instance
-ssh -o ProxyCommand="ssh -W %h:%p ubuntu@40.172.242.129" ubuntu@10.0.2.X
+# SSH to instance (requires SSH setup - see SSH_BASTION_ACCESS.md)
+ssh ubuntu@10.0.2.X
 
 # Check health
 aws elbv2 describe-target-health --target-group-arn <arn> --region me-central-1

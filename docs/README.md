@@ -74,6 +74,20 @@ Start here for production deployments:
 
 ---
 
+## 🔑 SSH & Bastion Access
+
+### [SSH_BASTION_ACCESS.md](SSH_BASTION_ACCESS.md)
+- **What:** Complete SSH setup and bastion access guide
+- **When:** First time setup or troubleshooting SSH issues
+- **Duration:** 5 min read + 5 min setup
+- **Key sections:**
+  - Quick start (5 minutes)
+  - SSH configuration
+  - Kamal integration
+  - Troubleshooting SSH issues
+  - Team onboarding
+  - Security best practices
+
 ## 📋 Quick Reference
 
 ### Deployment Checklist
@@ -100,7 +114,7 @@ curl https://api.vndg.me/up  # Should return 200 OK
 | Docker permission denied | `sudo usermod -aG docker ubuntu` | [Troubleshooting](DEPLOYMENT_TROUBLESHOOTING.md#issue-1-docker-permission-denied) |
 | Solid Queue error | Check puma.rb uses `== 'true'` | [Troubleshooting](DEPLOYMENT_TROUBLESHOOTING.md#issue-2-solid-queue-configuration-error) |
 | 500 error on login | Run `db:create` and `db:migrate` | [Troubleshooting](DEPLOYMENT_TROUBLESHOOTING.md#issue-4-500-error-on-userssign_in-database-missing) |
-| Can't SSH to bastion | Add your IP to security group | [Troubleshooting](DEPLOYMENT_TROUBLESHOOTING.md#symptom-new-instances-in-asg-but-deploy-fails-to-connect) |
+| Can't SSH to bastion | SSH key setup required | [SSH_BASTION_ACCESS.md](SSH_BASTION_ACCESS.md#troubleshooting) |
 
 ### Useful Commands
 
@@ -118,9 +132,10 @@ kamal logs -d production --lines 100    # View last 100 lines
 kamal app exec -d production "bin/rails db:create"
 kamal app exec -d production "bin/rails db:migrate SKIP_POSTGIS_EXTENSION=true"
 
-# SSH
+# SSH & Bastion (see SSH_BASTION_ACCESS.md for setup)
 ssh ubuntu@158.252.98.228               # Connect to bastion
-# From bastion, SSH to app servers with their private IPs
+ssh ubuntu@10.0.2.225                   # Connect to app server (via bastion)
+ssh-add ~/.ssh/vending-system-prod.pem  # Add key to agent
 
 # Verification
 curl https://api.vndg.me/up             # Health check
@@ -134,6 +149,8 @@ curl -L https://api.vndg.me/            # Full login flow
 ```
 docs/
 ├── PRODUCTION_DEPLOYMENT.md           ← START HERE for deployments
+├── SSH_BASTION_ACCESS.md              ← SSH setup & bastion access
+├── ONBOARDING_CHECKLIST.md            ← Onboarding new team members
 ├── DEPLOYMENT_TROUBLESHOOTING.md      ← Go here if something breaks
 ├── DEPLOYMENT_FIX_SUMMARY.md          ← What was fixed on Dec 5
 ├── PRODUCTION_SECRETS_SETUP.md        ← Secrets configuration
@@ -143,6 +160,21 @@ docs/
 ├── README_CLOUDFLARE_INTEGRATION.md  ← Cloudflare details
 └── README.md (this file)              ← You are here!
 ```
+
+---
+
+## 👥 Team Onboarding
+
+### [ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)
+- **What:** Step-by-step checklist for onboarding new team members
+- **When:** Adding someone new to the team
+- **Duration:** 45 minutes (setup + verification)
+- **Key sections:**
+  - SSH setup (10 min)
+  - AWS credentials (5 min)
+  - Kamal setup (5 min)
+  - Verification checklist
+  - Troubleshooting during onboarding
 
 ---
 
