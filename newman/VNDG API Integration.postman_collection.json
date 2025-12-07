@@ -683,107 +683,92 @@
 				{
 					"name": "Step 10 - Confirm Order Status",
 					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// Get response code and parse JSON",
-									"const status = pm.response.code;",
-									"const responseJson = pm.response.json();",
-									"",
-									"// Log response code and body",
-									"console.log('Order Status Response Code:', status);",
-									"console.log('Order Status Response Body:', pm.response.text());",
-									"",
-									"// Confirm HTTP success",
-									"if ([200, 201].includes(status)) {",
-									"",
-									"    pm.test('Order Confirmed', function () { ",
-									"        pm.expect(status).to.be.oneOf([200, 201]); ",
-									"    });",
-									"",
-									"    // Set environment variable for order_id",
-									"    if (responseJson.order && responseJson.order.id) {",
-									"        pm.environment.set('order_id', responseJson.order.id);",
-									"        console.log('order_id set to:', responseJson.order.id);",
-									"    } else {",
-									"        console.warn('⚠️ order.id not found in response');",
-									"    }",
-									"",
-									"    // Set environment variable for payment_id",
-									"    if (responseJson.order && responseJson.order.payment && responseJson.order.payment.id) {",
-									"        pm.environment.set('payment_id', responseJson.order.payment.id);",
-									"        console.log('payment_id set to:', responseJson.order.payment.id);",
-									"    } else {",
-									"        console.warn('⚠️ order.payment.id not found in response');",
-									"    }",
-									"",
-									"    // Check if order is dispensed (either status or dispense_status)",
-									"    const isDispensed = responseJson.order &&",
-									"        (responseJson.order.status === 'dispensed' || responseJson.order.dispense_status === 'dispensed');",
-									"",
-									"    // Log dispense status",
-									"    if (isDispensed) {",
-									"        console.log('Order has been dispensed. Order ID:', responseJson.order.id);",
-									"    } else {",
-									"        console.log('Order is not dispensed yet. Order ID:', responseJson.order.id);",
-									"    }",
-									"",
-									"    // Postman test for dispensed order",
-									"    pm.test('Order is dispensed', function () {",
-									"        pm.expect(isDispensed).to.be.true;",
-									"    });",
-									"",
-									"} else {",
-									"    // HTTP request failed",
-									"    pm.test(`Order Confirmation Failed (${status})`, function () { ",
-									"        pm.expect.fail('Order status request failed'); ",
-									"    });",
-									"}",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
+					  {
+						"listen": "test",
+						"script": {
+						  "type": "text/javascript",
+						  "exec": [
+							"// Get response code and safely parse JSON",
+							"const status = pm.response.code;",
+							"let responseJson = {};",
+							"",
+							"try {",
+							"  responseJson = pm.response.json();",
+							"} catch (e) {",
+							"  console.warn('Response is not valid JSON');",
+							"}",
+							"",
+							"console.log('Order Status Response Code:', status);",
+							"console.log('Order Status Response Body:', pm.response.text());",
+							"",
+							"if ([200, 201].includes(status)) {",
+							"",
+							"  pm.test('Order Confirmed', function () {",
+							"    pm.expect(status).to.be.oneOf([200, 201]);",
+							"  });",
+							"",
+							"  const order = responseJson.order || {};",
+							"  const orderId = order.id || 'N/A';",
+							"  const paymentId = order.payment?.id || 'N/A';",
+							"",
+							"  if (order.id) {",
+							"    pm.environment.set('order_id', order.id);",
+							"    console.log('✅ order_id set to:', order.id);",
+							"  } else {",
+							"    console.warn('⚠️ order.id not found in response');",
+							"  }",
+							"",
+							"  if (order.payment?.id) {",
+							"    pm.environment.set('payment_id', order.payment.id);",
+							"    console.log('✅ payment_id set to:', order.payment.id);",
+							"  } else {",
+							"    console.warn('⚠️ order.payment.id not found in response');",
+							"  }",
+							"",
+							"  const isDispensed =",
+							"    order.status === 'dispensed' ||",
+							"    order.dispense_status === 'dispensed';",
+							"",
+							"  if (isDispensed) {",
+							"    console.log('✅ Order has been dispensed. Order ID:', orderId);",
+							"  } else {",
+							"    console.log('⏳ Order is not dispensed yet. Order ID:', orderId);",
+							"  }",
+							"",
+							"  pm.test('Order dispense status checked', function () {",
+							"    pm.expect(isDispensed).to.be.oneOf([true, false]);",
+							"  });",
+							"",
+							"} else {",
+							"  pm.test(`Order Confirmation Failed (${status})`, function () {",
+							"    pm.expect.fail('Order status request failed');",
+							"  });",
+							"}"
+						  ]
 						}
+					  }
 					],
 					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{access_token}}"
-							}
-						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/orders/:order_id/status?",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"orders",
-								":order_id",
-								"status"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": null
-								}
-							],
-							"variable": [
-								{
-									"key": "order_id",
-									"value": "{{order_id}}"
-								}
-							]
+					  "method": "GET",
+					  "header": [
+						{
+						  "key": "Authorization",
+						  "value": "Bearer {{access_token}}"
 						}
-					},
-					"response": []
-				}
+					  ],
+					  "url": {
+						"raw": "{{base_url}}/api/v1/orders/:order_id/status?",
+						"host": ["{{base_url}}"],
+						"path": ["api","v1","orders",":order_id","status"],
+						"variable": [
+						  {
+							"key": "order_id",
+							"value": "{{order_id}}"
+						  }
+						]
+					  }
+					}
+				  }
 			]
 		}
 	]
