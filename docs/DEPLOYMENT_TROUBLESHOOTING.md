@@ -5,6 +5,7 @@
 ### Issue 1: Docker Permission Denied
 
 **Error:**
+
 ```
 permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
 ```
@@ -12,6 +13,7 @@ permission denied while trying to connect to the docker API at unix:///var/run/d
 **Root Cause:** New instances from AWS ASG don't have the `ubuntu` user in the `docker` group.
 
 **Solution:**
+
 ```bash
 # Option 1: Via SSH (if you already have access)
 ssh ubuntu@<instance-ip>
@@ -25,6 +27,7 @@ aws ssm start-session --target i-XXXXXXXXX --region me-central-1 \
 ```
 
 **Permanent Fix:** ✅ Already configured in Terraform launch templates
+
 - App servers: `terraform/environments/production/autoscaling_app.tf`
 - Worker servers: `terraform/environments/production/worker_init.sh`
 - Both templates now add ubuntu to docker group during EC2 initialization
@@ -35,12 +38,14 @@ aws ssm start-session --target i-XXXXXXXXX --region me-central-1 \
 ### Issue 2: Solid Queue Configuration Error
 
 **Error:**
+
 ```
 ActiveRecord::ConfigurationError: You must specify mode for solid_queue
 [container kept restarting]
 ```
 
 **Root Cause:** The puma configuration check was wrong:
+
 ```ruby
 # WRONG - treats any non-nil value as true
 plugin :solid_queue if ENV['SOLID_QUEUE_IN_PUMA']
@@ -52,11 +57,13 @@ plugin :solid_queue if ENV['SOLID_QUEUE_IN_PUMA'] == 'true'
 In Ruby, the string `"false"` is truthy because it's not `nil` or `false`. So even when we set `SOLID_QUEUE_IN_PUMA="false"` on web servers, the plugin was still being loaded.
 
 **Solution:** Update `config/puma.rb`:
+
 ```ruby
 plugin :solid_queue if ENV['SOLID_QUEUE_IN_PUMA'] == 'true'
 ```
 
 **Configuration:**
+
 - **Web servers:** `SOLID_QUEUE_IN_PUMA: "false"` (process requests only)
 - **Worker servers:** `SOLID_QUEUE_IN_PUMA: "true"` (run job processor)
 
@@ -65,6 +72,7 @@ plugin :solid_queue if ENV['SOLID_QUEUE_IN_PUMA'] == 'true'
 ### Issue 3: 502 Bad Gateway During Startup
 
 **Error:**
+
 ```
 502 Bad Gateway - Unable to proxy request
 dial tcp [::1]:3000: connect: connection refused
@@ -73,11 +81,13 @@ dial tcp [::1]:3000: connect: connection refused
 **Root Cause:** Kamal health check ran before Rails app fully booted.
 
 **Solution:** This is expected during deployment. The proxy automatically retries until the app is ready. Monitor with:
+
 ```bash
 kamal logs -d production -f
 ```
 
 Wait for:
+
 ```
 [12] - Worker 0 (PID: 21) booted in 0.01s, phase: 0
 [12] - Worker 1 (PID: 32) booted in 0.0s, phase: 0
@@ -89,9 +99,10 @@ Wait for:
 ### Issue 4: 500 Error on /users/sign_in (Database Missing)
 
 **Error:**
+
 ```
 ActiveRecord::NoDatabaseError (Database not found: vndgme_production)
-Caused by: PG::ConnectionBad (connection to server at "10.0.6.214", port 5432 failed: 
+Caused by: PG::ConnectionBad (connection to server at "10.0.6.214", port 5432 failed:
 FATAL: database "vndgme_production" does not exist)
 ```
 
@@ -100,11 +111,13 @@ FATAL: database "vndgme_production" does not exist)
 **Solution:**
 
 **Step 1: Create the database**
+
 ```bash
 kamal app exec -d production "bin/rails db:create"
 ```
 
 Expected output:
+
 ```
 App Host: 10.0.3.12
 Database 'vndgme_production' created
@@ -113,17 +126,20 @@ Database 'vndgme_production' created
 (Errors on other hosts about duplicate key are OK - database already exists)
 
 **Step 2: Run migrations**
+
 ```bash
 kamal app exec -d production "bin/rails db:migrate SKIP_POSTGIS_EXTENSION=true"
 ```
 
 **Why SKIP_POSTGIS_EXTENSION?** The postgis extension was already created on the RDS instance. Trying to create it again causes:
+
 ```
 PG::UniqueViolation: ERROR duplicate key value violates unique constraint "pg_extension_name_index"
 DETAIL: Key (extname)=(postgis) already exists.
 ```
 
 **Verify:**
+
 ```bash
 curl https://api.vndg.me/users/sign_in
 # Should return HTML login page (200 OK)
@@ -134,6 +150,7 @@ curl https://api.vndg.me/users/sign_in
 ### Issue 5: 301 Redirect Chain
 
 **Flow:**
+
 ```
 GET / → 301 Redirect to /admin
 GET /admin → 302 Redirect to /users/sign_in
@@ -178,6 +195,7 @@ kamal app exec -d production "bin/rails dbconsole --mode=inspect"
 
 **Cause:** Docker socket permissions  
 **Fix:**
+
 ```bash
 sudo usermod -aG docker ubuntu
 # Restart container or re-login
@@ -202,9 +220,13 @@ sudo usermod -aG docker ubuntu
 
 **Cause:** Bastion security group doesn't allow your IP  
 **Fix:**
+
 ```bash
 # Find your IP
 curl https://checkip.amazonaws.com
+
+# Find security group
+aws ec2 describe-instances --filters "Name=tag:Name,Values=vending-system-bastion" "Name=instance-state-name,Values=running" --region me-central-1 --query 'Reservations[].Instances[].SecurityGroups[0].GroupId' --output text
 
 # Add to Bastion security group
 aws ec2 authorize-security-group-ingress \
@@ -220,6 +242,7 @@ aws ec2 authorize-security-group-ingress \
 ## Deployment Timeline (Expected)
 
 ### First Deploy (Cold Build)
+
 ```
 0:00  Deploy starts
 0:05  Pre-hook syncs IPs from AWS
@@ -235,6 +258,7 @@ Total: ~9-10 minutes
 ```
 
 ### Subsequent Deploys (Warm Build)
+
 ```
 0:00  Deploy starts
 0:05  Pre-hook syncs IPs from AWS
@@ -252,11 +276,13 @@ Total: ~6-8 minutes
 ## Log Locations
 
 ### View live logs
+
 ```bash
 kamal logs -d production -f
 ```
 
 ### Check specific container
+
 ```bash
 # Get container name
 aws ssm start-session --target i-XXXXXXXXX --region me-central-1 \
