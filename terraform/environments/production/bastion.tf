@@ -3,7 +3,8 @@
 # ============================================
 # Bastion host in public subnet for SSH access to private app servers
 # Used by Kamal for deployment
-# Minimal security footprint - only SSH access from your IP
+# Security: SSH key-based authentication (not IP-restricted)
+# All team members with the SSH private key can access
 
 # ==============================================================================
 # 1. Security Group for Bastion
@@ -18,15 +19,16 @@ resource "aws_security_group" "bastion" {
   }
 }
 
-# Allow SSH inbound from your IP (set in variables)
+# Allow SSH inbound from anywhere
+# Security relies on SSH key authentication, not IP whitelisting
 resource "aws_security_group_rule" "bastion_ingress_ssh" {
   type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = var.bastion_admin_ips
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.bastion.id
-  description       = "SSH from admin IPs"
+  description       = "SSH from anywhere (secured by SSH key authentication)"
 }
 
 # Allow SSH outbound to app servers
