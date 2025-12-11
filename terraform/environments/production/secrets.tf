@@ -120,6 +120,15 @@ resource "aws_secretsmanager_secret_version" "app_secrets" {
       payment_provider_key = var.payment_provider_key
       sms_provider_key     = var.sms_provider_key
     }
+    cloudflare = {
+      api_token = var.cloudflare_api_token
+      zone_id   = var.cloudflare_zone_id
+    }
+    aws = {
+      s3_media_bucket   = aws_s3_bucket.app_media.id
+      s3_backup_bucket  = aws_s3_bucket.app_backups.id
+      region            = var.aws_region
+    }
   })
 }
 
