@@ -192,6 +192,15 @@ resource "aws_security_group" "app" {
     description = "DNS queries"
   }
 
+    # Egress: Allow outbound TCP to 39.108.211.124:8087
+    egress {
+      from_port   = 8087
+      to_port     = 8087
+      protocol    = "tcp"
+      cidr_blocks = ["39.108.211.124/32"]
+      description = "Allow outbound TCP to 39.108.211.124:8087"
+    }
+
   tags = {
     Name = "${var.project_name}-app-sg"
   }
