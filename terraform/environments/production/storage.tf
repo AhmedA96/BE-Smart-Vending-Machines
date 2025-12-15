@@ -53,6 +53,18 @@ resource "aws_s3_bucket" "app_backups" {
   }
 }
 
+resource "aws_s3_bucket_cors_configuration" "app_backups" {
+  bucket = aws_s3_bucket.app_backups.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "POST", "PUT", "DELETE", "HEAD"]
+    allowed_origins = ["*"] # Replace with your frontend domain for production
+    expose_headers  = ["ETag", "Content-Length", "Content-Type", "Content-Disposition", "Content-Encoding"]
+    max_age_seconds = 3000
+  }
+}
+
 # Versioning for backup safety
 resource "aws_s3_bucket_versioning" "app_backups" {
   bucket = aws_s3_bucket.app_backups.id
@@ -110,6 +122,18 @@ resource "aws_s3_bucket" "app_media" {
     Environment = var.environment
     Purpose     = "Application media and assets"
     Storage     = "Cloudflare R2"
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "app_media" {
+  bucket = aws_s3_bucket.app_media.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "POST", "PUT", "DELETE", "HEAD"]
+    allowed_origins = ["*"] # Replace with your frontend domain for production
+    expose_headers  = ["ETag", "Content-Length", "Content-Type", "Content-Disposition", "Content-Encoding"]
+    max_age_seconds = 3000
   }
 }
 
@@ -208,6 +232,20 @@ resource "aws_iam_policy" "app_s3_access" {
           "kms:DescribeKey"
         ]
         Resource = "arn:aws:kms:${var.aws_region}:${data.aws_caller_identity.current.account_id}:key/*"
+      },
+      {
+        Sid    = "S3AppBackupsAccess"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.app_backups.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.app_backups.bucket}/*"
+        ]
       }
     ]
   })
