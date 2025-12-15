@@ -16,6 +16,7 @@ module Avo
         field :description, as: :text
         field :active, as: :boolean
         field :image, as: :file, is_image: true, accept: 'image/*', direct_upload: true
+        field :payment_method_translations, as: :has_many
       end
     end
   end
