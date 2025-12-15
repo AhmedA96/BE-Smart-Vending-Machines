@@ -76,7 +76,7 @@ begin
     # Kamal Production Secrets for AWS Infrastructure
     # ================================================
     # Auto-populated by scripts/populate-production-secrets.rb
-    # Generated at: #{Time.now}
+    # Generated at: #{Time.now.to_f}
 
     # Container Registry
     KAMAL_REGISTRY_PASSWORD=#{registry_password}
