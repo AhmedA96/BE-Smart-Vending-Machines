@@ -163,6 +163,19 @@ deploy:
 	@echo "Deploying with Kamal..."
 	kamal deploy
 
+.PHONY: deploy-production
+deploy-production:
+	@echo "Production Deployment"
+	@echo "===================="
+	@./scripts/populate-production-secrets.rb
+	@echo ""
+	@kamal deploy -d production
+
+.PHONY: deploy-production-secrets
+deploy-production-secrets:
+	@echo "Fetching production secrets from AWS..."
+	@./scripts/populate-production-secrets.rb
+
 .PHONY: deploy-setup
 deploy-setup:
 	@echo "Setting up deployment with Kamal..."

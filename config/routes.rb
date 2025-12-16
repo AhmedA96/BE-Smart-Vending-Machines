@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'solid_queue_monitor'
-
 Rails.application.routes.draw do
   get '/', to: redirect('/admin')
 
@@ -9,17 +7,16 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     mount Rswag::Ui::Engine => '/api-docs'
     mount Rswag::Api::Engine => '/api-docs'
-    mount SolidQueueMonitor::Engine => '/solid_queue'
-    mount SolidQueueDashboard::Engine, at: '/solid-queue'
   end
 
   # Authenticated Avo panel
   authenticate :user do
     mount Avo::Engine, at: Avo.configuration.root_path
   end
+  get '/admin', to: redirect('/users/sign_in')
 
   devise_for :users,
-             skip: %i[sessions registrations],
+             skip: %i[registrations],
              path: 'users'
 
   use_doorkeeper

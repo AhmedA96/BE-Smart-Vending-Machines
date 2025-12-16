@@ -1,0 +1,300 @@
+# ============================================
+# KAMAL PRODUCTION CONFIGURATION
+# ============================================
+# Production environment with AWS managed services
+# Extends: config/deploy.yml (base common configuration)
+#
+# Infrastructure: Terraform
+# Database: Aurora PostgreSQL RDS
+# Cache: Redis ElastiCache
+# Load Balancer: AWS ALB
+#
+# Last Updated: 2025-11-20
+# Instances: 3 running (from ASG)
+#
+# Usage:
+#   kamal deploy -c config/deploy.production.yml
+#   kamal logs -c config/deploy.production.yml -f
+#   kamal console -c config/deploy.production.yml
+
+# Inherit base configuration from deploy.yml
+# Sections below override/extend base settings
+
+# ============================================
+# APPLICATION METADATA
+# ============================================
+
+service: vndgme
+image: vndg-me/backend
+
+# ============================================
+# CONTAINER REGISTRY
+# ============================================
+# Inherit from base, but ensure username is set
+
+registry:
+  server: ghcr.io
+  username: mahmoudaliibrahim
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# ============================================
+# DOCKER IMAGE BUILDER
+# ============================================
+# Build configuration for Docker images
+
+builder:
+  arch: amd64
+  context: .
+  cache:
+    type: registry
+    image: vndg-me/backend:buildcache
+    options: mode=max
+  args:
+    TARGETARCH: amd64
+
+# ============================================
+# SSH CONFIGURATION
+# ============================================
+# SSH proxy through bastion host
+# Bastion: 158.252.98.228 (public IP) - Updated 2025-12-05
+# Previous IP: 40.172.242.129 (changed after restart - needs Elastic IP)
+# App servers: Private IPs in 10.0.2.x, 10.0.3.x
+#
+# Kamal connects: Your computer → Bastion → App servers
+# 
+# Note: Bastion host is created by Terraform in production subnet
+# Private key should be in ~/.ssh/vending-system-prod.pem
+#
+# TODO: Assign Elastic IP to bastion to prevent IP changes
+
+ssh:
+  user: ubuntu
+  proxy: ubuntu@158.252.98.228
+
+# ============================================
+# DEPLOYMENT SERVERS
+# ============================================
+# App servers from AWS Auto Scaling Group
+# Region: me-central-1
+# ASG: app-20251120092209283400000002
+#
+# Current Running Instances (2025-11-23):
+#   - 10.0.2.46 (private_app subnet)
+#   - 10.0.3.78 (private_app subnet)
+#
+# Worker servers from AWS Auto Scaling Group
+# ASG: worker-* (dynamically fetched)
+# Tag: vending-system-worker-server
+
+servers:
+  web: 
+    hosts: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_production.sh`.split %>
+    env:
+      clear:
+        # IMPORTANT: Must be "false" (string) for web servers
+        # See config/puma.rb - uses explicit == 'true' check
+        # This prevents Solid Queue from starting on web servers
+        SOLID_QUEUE_IN_PUMA: "false"
+  job:
+    hosts: <%= `AWS_PROFILE=#{ENV.fetch("AWS_PROFILE", "vndg")} AWS_DEFAULT_REGION=#{ENV.fetch("AWS_DEFAULT_REGION", "me-central-1")} ./scripts/kamal_hosts_workers.sh`.split %>
+    cmd: bin/jobs
+    env:
+      clear:
+        # IMPORTANT: Must be "true" (string) for worker servers
+        # Only workers should run the Solid Queue supervisor
+        SOLID_QUEUE_IN_PUMA: "true"
+        JOB_CONCURRENCY: "3"
+
+# ============================================
+# PROXY CONFIGURATION
+# ============================================
+# ALB terminates SSL (external), routes to app servers over HTTP
+# Domain: api.vndg.me
+# ALB DNS: vnd-20251119182127754800000020-1379534351.me-central-1.elb.amazonaws.com
+# SSL termination: Done at ALB level (AWS ACM certificate)
+# App servers: Listen on HTTP only (ALB handles HTTPS)
+
+proxy:
+  host: api.vndg.me
+
+# ============================================
+# ENVIRONMENT-SPECIFIC VARIABLES
+# ============================================
+
+env:
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+    
+  clear:
+    # Application environment
+    RAILS_ENV: production
+    RAILS_LOG_LEVEL: info
+    
+    # Database - Aurora RDS
+    # Endpoint: (from terraform output - marked sensitive)
+    # Check: AWS_PROFILE=vndg terraform output rds_endpoint
+    POSTGRES_HOST: vending-system-aurora-cluster.cluster-cjiwg8wu2z06.me-central-1.rds.amazonaws.com
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: vendingdb
+    POSTGRES_USER: vndg
+    
+    # Redis - ElastiCache
+    # Endpoint: (from terraform output - marked sensitive)
+    # Check: AWS_PROFILE=vndg terraform output redis_endpoint
+    REDIS_HOST: vending-system-redis.me-central-1.cache.amazonaws.com
+    REDIS_PORT: 6379
+    REDIS_PASSWORD_REQUIRED: "false"
+    
+    # Job processing
+    # Disabled in web servers (use separate worker servers for jobs)
+    SOLID_QUEUE_IN_PUMA: "false"
+    
+    # File storage - AWS S3 / Cloudflare R2
+    ACTIVE_STORAGE_SERVICE: amazon
+    AWS_S3_REGION: me-central-1
+    AWS_S3_BUCKET: vending-system-backups
+    
+    # Alternative for Cloudflare R2:
+    # ACTIVE_STORAGE_SERVICE: cloudflare_r2
+    # CLOUDFLARE_R2_ENDPOINT: https://<account-id>.r2.cloudflarestorage.com
+    # CLOUDFLARE_R2_BUCKET: vending-system-media
+    
+    # Logging
+    RAILS_LOG_TO_STDOUT: "true"
+
+# ============================================
+# NO ACCESSORY SERVICES
+# ============================================
+# Production uses AWS managed services
+# Database: Aurora RDS (managed by Terraform)
+# Cache: ElastiCache Redis (managed by Terraform)
+# Storage: S3/R2 (configured above)
+
+# ============================================
+# NO PERSISTENT VOLUMES
+# ============================================
+# Production uses S3/R2 for file storage
+# Not using local Docker volumes
+
+# ============================================
+# INFRASTRUCTURE DETAILS
+# ============================================
+#
+# VPC: 10.0.0.0/16 (me-central-1)
+#
+# App Servers (Private Subnets):
+#   - 10.0.2.0/24 (private_app_1)
+#   - 10.0.3.0/24 (private_app_2)
+#
+# Database (Private Subnets):
+#   - 10.0.4.0/24 (private_db_a)
+#   - 10.0.6.0/24 (private_db_b)
+#
+# Load Balancer (Public Subnets):
+#   - 10.0.1.0/24 (public_a)
+#   - 10.0.5.0/24 (public_b)
+#
+# Instance Type: t3.medium
+# Security Group: vending-system-app
+#
+# ============================================
+# BEFORE DEPLOYING
+# ============================================
+#
+# 1. Create .kamal/secrets:
+#    mkdir -p .kamal
+#    touch .kamal/secrets
+#    chmod 600 .kamal/secrets
+#    
+#    Add these values:
+#    KAMAL_REGISTRY_PASSWORD=<github-token>
+#    RAILS_MASTER_KEY=<from-rails-credentials>
+#    POSTGRES_PASSWORD=<from-terraform-secrets>
+#    REDIS_PASSWORD=<optional-if-auth-enabled>
+#    AWS_ACCESS_KEY_ID=<aws-key>
+#    AWS_SECRET_ACCESS_KEY=<aws-secret>
+#
+# 2. Verify instances are accessible:
+#    kamal status -c config/deploy.production.yml
+#
+# 3. Check logs after deployment:
+#    kamal logs -c config/deploy.production.yml -f
+#
+# 4. Connect to console if needed:
+#    kamal console -c config/deploy.production.yml
+#
+# ============================================
+# DEPLOYMENT COMMANDS
+# ============================================
+#
+# Deploy to production:
+#   kamal deploy -c config/deploy.production.yml
+#
+# View logs:
+#   kamal logs -c config/deploy.production.yml -f
+#
+# Access Rails console:
+#   kamal console -c config/deploy.production.yml
+#
+# Run migrations:
+#   kamal -c config/deploy.production.yml app exec "bin/rails db:migrate"
+#
+# Check status:
+#   kamal status -c config/deploy.production.yml
+#
+# Rollback previous version:
+#   kamal rollback -c config/deploy.production.yml
+#
+# ============================================
+# NOTES FOR PRODUCTION
+# ============================================
+#
+# This configuration:
+# ✓ Uses AWS-managed database (Aurora RDS)
+# ✓ Uses AWS-managed cache (ElastiCache)
+# ✓ Uses AWS-managed load balancer (ALB)
+# ✓ Routes traffic through ALB
+# ✓ Separate worker servers handle jobs
+# ✓ Production-grade logging (info level)
+# ✓ Auto-scaling enabled (via Terraform ASG)
+# ✓ Automatic failover for database and cache
+# ✓ CloudWatch monitoring active
+# ✓ SNS alerts configured
+#
+# Current Instance Count: 3 (desired: 2, max: 4)
+# ACTION: Scale down to 2 if not needed for load testing
+#
+# To scale down:
+#   cd terraform/environments/production
+#   terraform apply -var="app_desired_capacity=2" -var-file=terraform.tfvars
+#   # Then redeploy with Kamal
+#
+# ============================================
+# TROUBLESHOOTING
+# ============================================
+#
+# Can't connect to instances:
+#   1. Check security group allows SSH (port 22)
+#   2. Verify instances are running
+#   3. Check IAM permissions
+#   4. Use AWS Systems Manager:
+#      aws ssm start-session --target i-xxxxx --region me-central-1
+#
+# Database connection fails:
+#   1. Check RDS security group allows 5432
+#   2. Verify POSTGRES_HOST is correct
+#   3. Test from app server: psql -h $POSTGRES_HOST -U $POSTGRES_USER
+#
+# Redis connection fails:
+#   1. Check ElastiCache security group allows 6379
+#   2. Verify REDIS_HOST is correct
+#   3. Test from app server: redis-cli -h $REDIS_HOST ping
+#
+# Health checks failing:
+#   1. Check app logs: kamal logs -c config/deploy.production.yml -f
+#   2. Verify /up endpoint is working
+#   3. Check ALB target group
+#
+# For more help, see: KAMAL_DEPLOYMENT_SETUP.md

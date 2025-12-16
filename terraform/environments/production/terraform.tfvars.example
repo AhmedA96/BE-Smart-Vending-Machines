@@ -1,0 +1,47 @@
+# Vending System Terraform Configuration
+# This file contains the configuration values for your deployment
+# NOTE: This file should NOT be committed to version control (see .gitignore)
+
+# AWS Configuration
+aws_region = "me-central-1"  # UAE (Middle East - UAE)
+
+# Project Configuration
+project_name = "vending-system"
+environment  = "production"  # Options: dev, staging, production
+
+# VPC Configuration
+# Default: 10.0.0.0/16 provides plenty of IP addresses for all components
+vpc_cidr = "10.0.0.0/16"
+
+# Availability Zones (should match your AWS region)
+# UAE region (me-central-1) has 3 availability zones
+# Using 2 AZs to satisfy ALB/RDS requirements (cost-optimized: resources stay in AZ-a)
+availability_zones = ["me-central-1a", "me-central-1b"]
+
+# Database Configuration (PostgreSQL)
+db_engine_version   = "15.4"
+db_instance_class   = "db.t3.medium"  # For production, consider db.r6i.large or larger
+db_allocated_storage = 100            # In GB
+db_name             = "vendingdb"
+db_username         = "admin"
+db_password         = "CHANGE_ME_TO_STRONG_PASSWORD_123!@#"  # Change this!
+
+# Redis Configuration
+redis_engine_version   = "7.0"
+redis_node_type        = "cache.t3.micro"  # For production, consider cache.r6g.large or larger
+redis_num_cache_nodes  = 2                 # Should be 2+ for replication
+
+# Application Server Configuration
+app_instance_type       = "t3.medium"
+app_desired_capacity    = 2
+app_min_capacity        = 2
+app_max_capacity        = 6
+
+# Worker Configuration
+worker_instance_type    = "t3.medium"
+worker_desired_capacity = 2
+worker_min_capacity     = 2  # 2 workers for redundancy (no single point of failure)
+worker_max_capacity     = 5
+
+# Domain Configuration
+domain_name = "api.vending.example.com"
