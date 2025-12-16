@@ -24,7 +24,7 @@ image: vndg-me/backend
 
 registry:
   server: ghcr.io
-  username: mahmoudaliibrahim
+  username: <%= `git config user.name`.strip.downcase.gsub(/\s+/, '') %>
   password:
     - KAMAL_REGISTRY_PASSWORD  # Set in .kamal/secrets
 
