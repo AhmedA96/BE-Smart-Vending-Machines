@@ -4,8 +4,8 @@ module Orders
   class CreatePickupCode
     class << self
       def call(order)
-        unless order.status == 'paid'
-          return error_response('Order must be paid to generate pickup code',
+        unless order.status == 'completed'
+          return error_response('Order must be completed to generate pickup code',
                                 :unprocessable_content)
         end
 
