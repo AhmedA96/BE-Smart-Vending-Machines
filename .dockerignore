@@ -49,3 +49,29 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+
+# Ignore Terraform and infrastructure code
+/terraform/
+/.terraform/
+*.tfstate*
+*.tfvars
+
+# Ignore test/coverage files
+/coverage/
+/test/
+/spec/
+
+# Ignore documentation
+/*.md
+/docs/
+
+# Ignore IDE files
+/.vscode/
+/.idea/
+*.swp
+*.swo
+*~
+
+# Ignore cache directories
+/tmp/cache/
+/vendor/cache/

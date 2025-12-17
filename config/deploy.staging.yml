@@ -1,0 +1,106 @@
+# ============================================
+# KAMAL STAGING CONFIGURATION
+# ============================================
+# Staging environment with local Docker services
+# Extends: config/deploy.yml (base common configuration)
+#
+# Usage:
+#   kamal deploy -c config/deploy.staging.yml
+#   kamal logs -c config/deploy.staging.yml -f
+
+# Inherit base configuration from deploy.yml
+# Sections below override/extend base settings
+
+# ============================================
+# DEPLOYMENT SERVERS
+# ============================================
+
+servers:
+  web:
+    - 3.29.98.60
+
+# ============================================
+# PROXY CONFIGURATION
+# ============================================
+
+proxy:
+  ssl: true
+  host: staging.vndg.me
+
+# ============================================
+# ENVIRONMENT-SPECIFIC VARIABLES
+# ============================================
+
+env:
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+    
+  clear:
+    # Application environment
+    RAILS_ENV: staging
+    
+    # Database - Local Docker container
+    POSTGRES_HOST: vndgme-db
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: vndgme_staging
+    POSTGRES_USER: vndgme
+    
+    # Redis - Local Docker container
+    REDIS_HOST: localhost
+    REDIS_PORT: 6379
+    
+    # Job processing
+    SOLID_QUEUE_IN_PUMA: "true"
+    JOB_CONCURRENCY: 3
+    
+    # Logging
+    RAILS_LOG_LEVEL: debug
+
+# ============================================
+# ACCESSORY SERVICES (LOCAL)
+# ============================================
+# Staging uses local Docker containers
+# These run on the same server
+
+accessories:
+  db:
+    image: postgis/postgis:latest
+    host: 3.29.98.60
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: vndgme
+        POSTGRES_DB: vndgme_staging
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - data:/var/lib/postgresql/data
+      
+  redis:
+    image: redis:7.0
+    host: 3.29.98.60
+    port: 6379
+    directories:
+      - data:/data
+
+# ============================================
+# PERSISTENT STORAGE
+# ============================================
+# Staging uses local Docker volumes
+
+volumes:
+  - "vndgme_storage:/rails/storage"
+
+# ============================================
+# NOTES FOR STAGING
+# ============================================
+#
+# This configuration:
+# ✓ Uses simple single-server deployment
+# ✓ Uses local Docker services (database and cache)
+# ✓ Good for testing and development
+# ✓ Enables job processing in Puma
+# ✓ Debug logging enabled
+#
+# For production, see: config/deploy.production.yml
