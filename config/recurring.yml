@@ -15,12 +15,28 @@ development:
     class: InventorySyncJob
     queue: inventory_sync
     schedule: every 5 minutes
+  machines_sync:
+    class: MachinesSyncJob
+    queue: machine_status_sync
+    schedule: every 5 minutes
+  cleanup_expired_carts:
+    class: CleanupExpiredCartsJob
+    queue: default
+    schedule: every 10 minutes
 
 staging:
   inventory_sync:
     class: InventorySyncJob
     queue: inventory_sync
     schedule: every 5 minutes
+  machines_sync:
+    class: MachinesSyncJob
+    queue: machine_status_sync
+    schedule: every 5 minutes
+  cleanup_expired_carts:
+    class: CleanupExpiredCartsJob
+    queue: default
+    schedule: every 10 minutes
 
 production:
   inventory_sync:
@@ -31,3 +47,13 @@ production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
+
+  machines_sync:
+    class: MachinesSyncJob
+    queue: machine_status_sync
+    schedule: every 5 minutes
+
+  cleanup_expired_carts:
+    class: CleanupExpiredCartsJob
+    queue: default
+    schedule: every 10 minutes
