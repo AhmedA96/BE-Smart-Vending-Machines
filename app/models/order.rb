@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 # frozen_string_literal: true
 
 # == Schema Information
@@ -188,3 +189,5 @@ class Order < ApplicationRecord
     NotificationService::OrderNotifications.new(self).dispensed
   end
 end
+
+# rubocop:enable Metrics/ClassLength

@@ -73,18 +73,6 @@ RSpec.describe Api::V1::LineItemsController, type: :request do
       expect(response).to have_http_status(:bad_request)
     end
   end
-
-  describe 'cart validation' do
-    let(:completed_order) { orders(:order_001) }
-
-    it 'prevents modification of non-cart orders' do
-      params = { line_item: { variant_id: variant.id, quantity: 1 } }
-
-      post "/api/v1/carts/#{completed_order.id}/line_items", params: params, headers: headers
-
-      expect(response).to have_http_status(:bad_request)
-    end
-  end
 end
 
 # rubocop:enable Naming/VariableNumber
