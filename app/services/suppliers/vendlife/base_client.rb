@@ -29,10 +29,10 @@ module Suppliers
         options[:query] = params if params.any?
         options[:body] = body.to_json if body
 
-        attempts = 0
+        attempt_count = 0
 
         begin
-          attempts += 1
+          attempt_count += 1
 
           response = self.class.send(method, endpoint, options)
 
@@ -40,7 +40,7 @@ module Suppliers
 
           handle_response(response)
         rescue SupplierApiError => e
-          if attempts == 1 && authentication_error_message?(e.message)
+          if attempt_count == 1 && authentication_error_message?(e.message)
             Rails.logger.warn "Vendlife API: #{method.to_s.upcase} #{endpoint} - " \
                               "authentication error (#{e.message}), refreshing token and retrying once"
 
@@ -51,6 +51,10 @@ module Suppliers
 
           raise
         rescue StandardError => e
+          # If, for any reason, a SupplierApiError bubbles into this rescue,
+          # re-raise it so we don't double-handle it here.
+          raise if e.is_a?(SupplierApiError)
+
           handle_api_error(e, "#{method} #{endpoint}")
         end
       end
@@ -114,7 +118,10 @@ module Suppliers
         return false if message.nil?
 
         downcased = message.downcase
-        downcased.include?('token') || downcased.include?('unauthorized') || downcased.include?('forbidden')
+        downcased.include?('token 无效') ||
+          downcased.include?('token invalid') ||
+          downcased.include?('invalid token') ||
+          downcased.include?('token expired')
       end
 
       def log_api_request(method, endpoint, _params, response)
