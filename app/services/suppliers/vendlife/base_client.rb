@@ -29,12 +29,30 @@ module Suppliers
         options[:query] = params if params.any?
         options[:body] = body.to_json if body
 
-        response = self.class.send(method, endpoint, options)
-        log_api_request(method.to_s.upcase, endpoint, params, response)
+        attempts = 0
 
-        handle_response(response)
-      rescue StandardError => e
-        handle_api_error(e, "#{method} #{endpoint}")
+        begin
+          attempts += 1
+
+          response = self.class.send(method, endpoint, options)
+
+          log_api_request(method.to_s.upcase, endpoint, params, response)
+
+          handle_response(response)
+        rescue SupplierApiError => e
+          if attempts == 1 && authentication_error_message?(e.message)
+            Rails.logger.warn "Vendlife API: #{method.to_s.upcase} #{endpoint} - " \
+                              "authentication error (#{e.message}), refreshing token and retrying once"
+
+            refresh_token!
+            options[:headers] = @headers
+            retry
+          end
+
+          raise
+        rescue StandardError => e
+          handle_api_error(e, "#{method} #{endpoint}")
+        end
       end
 
       def refresh_token!
@@ -90,6 +108,13 @@ module Suppliers
           error_msg = parsed_response['resultDesc'] || 'Unknown error'
           raise SupplierApiError.new(error_msg, supplier_type: 'vendlife')
         end
+      end
+
+      def authentication_error_message?(message)
+        return false if message.nil?
+
+        downcased = message.downcase
+        downcased.include?('token') || downcased.include?('unauthorized') || downcased.include?('forbidden')
       end
 
       def log_api_request(method, endpoint, _params, response)
