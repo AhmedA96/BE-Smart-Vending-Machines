@@ -4,6 +4,18 @@ Welcome! This guide helps you clone, build, run, and seed the app quickly. Keep 
 
 ---
 
+### Naming Conventions
+
+Across all docs and code comments, we use explicit service names and avoid internal codenames. Examples:
+
+- DNS: Cloudflare DNS
+- Load Balancer: AWS Application Load Balancer (ALB)
+- Auto Scaling: AWS Auto Scaling Groups (ASG)
+
+If you see any alias in older materials, prefer the explicit service name.
+
+---
+
 ### 1) Project Overview
 
 Backend API for VNDG-ME powering ordering, users, payments, catalog, and admin.
@@ -32,13 +44,15 @@ Backend API for VNDG-ME powering ordering, users, payments, catalog, and admin.
 
 Prerequisite: Docker Desktop installed.
 
-1) Clone the repo
+1. Clone the repo
+
 ```bash
 git clone <https://github.com/yourusername/vndgme-backend.git>
 cd backend
 ```
 
-2) Start Postgres (PostGIS)
+2. Start Postgres (PostGIS)
+
 ```bash
 docker run -d --name vndgme-db \
   -e POSTGRES_USER=postgres \
@@ -47,19 +61,23 @@ docker run -d --name vndgme-db \
   postgis/postgis:16-3.4
 ```
 
-3) Build the app image
+3. Build the app image
+
 ```bash
 make build
 # or
 docker build -t vndgme:latest .
 ```
 
-4) Run the app
-Set your Rails master key (required for production boot). If you have `config/master.key`:
+4. Run the app
+   Set your Rails master key (required for production boot). If you have `config/master.key`:
+
 ```bash
 export RAILS_MASTER_KEY=$(cat config/master.key)
 ```
+
 Then start the container (connects to DB via host.docker.internal):
+
 ```bash
 docker run -d --name vndgme -p 80:80 \
   -e RAILS_MASTER_KEY=$RAILS_MASTER_KEY \
@@ -68,14 +86,17 @@ docker run -d --name vndgme -p 80:80 \
   -e POSTGRES_PASSWORD=postgres \
   vndgme:latest
 ```
+
 The entrypoint runs `bin/rails db:prepare` on boot. Visit http://localhost
 
-5) Seed the database
+5. Seed the database
+
 ```bash
 docker exec vndgme ./bin/rails db:seed
 ```
 
 Handy Docker commands:
+
 ```bash
 docker logs -f vndgme        # tail logs
 docker stop vndgme           # stop app
@@ -85,6 +106,7 @@ docker rmi vndgme:latest     # remove image
 ```
 
 Makefile shortcuts:
+
 ```bash
 make build   # build image
 make logs    # docker logs
@@ -102,6 +124,7 @@ Prerequisites: Ruby 3.4.2, PostgreSQL + PostGIS.
 make setup   # bundle install + db:prepare + db:seed
 make dev     # run dev server (bin/dev)
 ```
+
 App runs on http://localhost:3000 in dev.
 
 ---
