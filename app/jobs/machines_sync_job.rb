@@ -6,8 +6,10 @@ class MachinesSyncJob < ApplicationJob
   RATE_LIMIT_DELAY = 1.2
 
   def perform
-    machines = Machine.joins(:supplier)
+    machines = Machine.active
+                      .joins(:supplier)
                       .where(suppliers: { name: 'vendlife' })
+                      .where.not(machineuuid: nil)
                       .includes(:supplier)
 
     machines.each_with_index do |machine, index|
