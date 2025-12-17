@@ -37,9 +37,6 @@ module Api
 
       def find_cart
         @cart = Order.find(params[:cart_id])
-        raise FailedRequestError, 'Cannot modify non-cart order' unless @cart.cart?
-      rescue ActiveRecord::RecordNotFound
-        raise FailedRequestError, "Cart with id #{params[:cart_id]} not found"
       end
 
       def find_line_item

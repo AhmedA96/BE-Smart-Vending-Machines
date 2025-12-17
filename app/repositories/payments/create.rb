@@ -3,6 +3,8 @@
 module Payments
   class Create
     def self.call(payment_data, order)
+      order.recalculate_totals!
+
       if order.payments.completed.exists?
         raise FailedRequestError,
               'This order has already been paid and cannot accept new payments.'
