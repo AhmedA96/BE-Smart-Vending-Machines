@@ -22,6 +22,7 @@ class PaymentMethod < ApplicationRecord
 
   has_many :machine_payment_methods, dependent: :destroy
   has_many :payments, dependent: :nullify
+  has_many :payment_method_translations, dependent: :destroy
 
   validates :name, presence: true
 

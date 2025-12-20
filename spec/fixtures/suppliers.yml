@@ -3,9 +3,11 @@ acme_supplier:
   app_id: "acme_app_123"
   app_secret: "acme_secret_456"
   base_url: "https://api.acmevending.com"
+  supplier_type: "vendlife"
 
 global_vendor:
   name: "Global Vending Solutions"
   app_id: "global_app_789"
   app_secret: "global_secret_012"
   base_url: "https://api.globalvending.com"
+  supplier_type: "vendlife"

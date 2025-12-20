@@ -51,7 +51,8 @@ module Avo
         status = %w[Active Inactive Maintenance Retired]
         field :id, as: :id
         field :name, as: :text
-        field :machineuuid, as: :text
+        field :machineuuid, as: :text, hide_on: %i[index]
+
         field :vendor, as: :belongs_to
         field :supplier, as: :belongs_to
         field :location, as: :belongs_to
@@ -61,7 +62,6 @@ module Avo
                        options: { danger: %i[Inactive], success: %i[Active],
                                   warning: %i[Maintenance], neutral: %i[Retired] }
         field :category, as: :belongs_to, hide_on: %i[index]
-        field :machineuuid, as: :text, hide_on: %i[index]
         field :stock_indicator,
               as: :text,
               name: 'Stock',
