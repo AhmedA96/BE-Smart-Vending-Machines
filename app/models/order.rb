@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 # frozen_string_literal: true
 
 # == Schema Information
@@ -125,6 +126,13 @@ class Order < ApplicationRecord
   end
 
   def recalculate_totals!
+    line_items.includes(:variant).find_each do |line_item|
+      variant_price = LineItems::Create.variant_price(machine, line_item.variant)
+      if variant_price&.positive? && (line_item.price.to_f - variant_price.to_f).abs > 0.0001
+        line_item.update!(price: variant_price)
+      end
+    end
+
     self.items_total = line_items.sum { |item| item.quantity * item.price }
     save!
   end
@@ -181,3 +189,5 @@ class Order < ApplicationRecord
     NotificationService::OrderNotifications.new(self).dispensed
   end
 end
+
+# rubocop:enable Metrics/ClassLength

@@ -13,6 +13,7 @@ module Api
       end
 
       def show
+        @cart.recalculate_totals!
         @line_items = @cart.line_items.includes(variant: :product).order(:created_at)
       end
 
