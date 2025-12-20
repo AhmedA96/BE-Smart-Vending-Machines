@@ -136,7 +136,7 @@ class Order < ApplicationRecord
   def ensure_machine_online?
     return false if machine.blank?
 
-    service = Suppliers::VendlifeService.new(machine.supplier)
+    service = machine.supplier.api_service
     response = service.get_machine_status(machine.machineuuid)
 
     status = response.dig('data', 0, 'netStat')

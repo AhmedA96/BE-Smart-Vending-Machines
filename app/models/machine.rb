@@ -119,7 +119,7 @@ class Machine < ApplicationRecord
   def sync_machine_coordinates
     return unless supplier&.name&.downcase == 'vendlife'
 
-    service = Suppliers::VendlifeService.new(supplier)
+    service = supplier.api_service
     service.sync_machine_data(self)
   rescue StandardError => e
     Rails.logger.error "Failed to sync coordinates for machine #{machineuuid}: #{e.message}"
