@@ -29,12 +29,34 @@ module Suppliers
         options[:query] = params if params.any?
         options[:body] = body.to_json if body
 
-        response = self.class.send(method, endpoint, options)
-        log_api_request(method.to_s.upcase, endpoint, params, response)
+        attempt_count = 0
 
-        handle_response(response)
-      rescue StandardError => e
-        handle_api_error(e, "#{method} #{endpoint}")
+        begin
+          attempt_count += 1
+
+          response = self.class.send(method, endpoint, options)
+
+          log_api_request(method.to_s.upcase, endpoint, params, response)
+
+          handle_response(response)
+        rescue SupplierApiError => e
+          if attempt_count == 1 && authentication_error_message?(e.message)
+            Rails.logger.warn "Vendlife API: #{method.to_s.upcase} #{endpoint} - " \
+                              "authentication error (#{e.message}), refreshing token and retrying once"
+
+            refresh_token!
+            options[:headers] = @headers
+            retry
+          end
+
+          raise
+        rescue StandardError => e
+          # If, for any reason, a SupplierApiError bubbles into this rescue,
+          # re-raise it so we don't double-handle it here.
+          raise if e.is_a?(SupplierApiError)
+
+          handle_api_error(e, "#{method} #{endpoint}")
+        end
       end
 
       def refresh_token!
@@ -90,6 +112,16 @@ module Suppliers
           error_msg = parsed_response['resultDesc'] || 'Unknown error'
           raise SupplierApiError.new(error_msg, supplier_type: 'vendlife')
         end
+      end
+
+      def authentication_error_message?(message)
+        return false if message.nil?
+
+        downcased = message.downcase
+        downcased.include?('token 无效') ||
+          downcased.include?('token invalid') ||
+          downcased.include?('invalid token') ||
+          downcased.include?('token expired')
       end
 
       def log_api_request(method, endpoint, _params, response)
