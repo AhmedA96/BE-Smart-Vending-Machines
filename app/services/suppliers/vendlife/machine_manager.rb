@@ -45,7 +45,9 @@ module Suppliers
 
         # Update machine status record
         machine.machine_statuses.create!(
-          status: machine.status
+          status: machine.status,
+          changed_at: Time.current,
+          notes: 'Synchronized from Vendlife'
         )
       end
 

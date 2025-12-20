@@ -3,7 +3,7 @@
 class CleanupExpiredCartsJob < ApplicationJob
   queue_as :default
 
-  def perform(timeout_minutes: 10)
+  def perform(timeout_minutes: 30)
     expired_orders = Order.expired_carts(timeout_minutes)
 
     Rails.logger.info "Cleaning up #{expired_orders.count} expired carts"

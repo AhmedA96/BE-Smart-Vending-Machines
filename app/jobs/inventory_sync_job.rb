@@ -6,10 +6,11 @@ class InventorySyncJob < ApplicationJob
   RATE_LIMIT_DELAY = 1.2
 
   def perform
-    machines = Machine.joins(:supplier)
+    machines = Machine.active
+                      .joins(:supplier)
                       .where(suppliers: { name: 'vendlife' })
+                      .where.not(machineuuid: nil)
                       .includes(:supplier, machine_items: :variant)
-
     machines.each_with_index do |machine, index|
       sync_machine_inventory(machine)
 
