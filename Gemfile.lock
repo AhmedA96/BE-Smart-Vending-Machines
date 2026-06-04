@@ -342,7 +342,7 @@ GEM
     json-schema (6.0.0)
       addressable (~> 2.8)
       bigdecimal (~> 3.1)
-    jwt (3.1.2)
+    jwt (3.2.0)
       base64
     kredis (1.8.0)
       activemodel (>= 6.0.0)
